@@ -1,0 +1,14 @@
+{
+  "bitstreams": [
+    { "region": 0, "file": "region0.bin", "size_kb": 4 },
+    { "region": 1, "file": "region1.bin", "size_kb": 4 }
+  ],
+  "tinyml_weights": {
+    "file": "weights.bin",
+    "format": "Q8.8"
+  },
+  "apoptosis_trigger": {
+    "timeout_ms": 3600000,
+    "fitness_threshold": 0.1
+  }
+}

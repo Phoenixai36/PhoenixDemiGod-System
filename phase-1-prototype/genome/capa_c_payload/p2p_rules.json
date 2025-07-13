@@ -1,0 +1,9 @@
+{
+  "share_data": [
+    { "type": "sensor_gradient", "fee_fitcoins": 0.05 },
+    { "type": "model_accuracy", "fee_fitcoins": 0.02 }
+  ],
+  "request_data": [
+    { "type": "trained_model", "max_fee_fitcoins": 1.5 }
+  ]
+}

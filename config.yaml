@@ -1,0 +1,19 @@
+# Configuración de la Base de Datos
+database:
+  host: "localhost"
+  port: 5432
+  user: "admin"
+  password: "password_seguro"
+  dbname: "mi_aplicacion"
+
+# Claves de API para servicios externos
+api_keys:
+  servicio_externo_1: "clave_secreta_123"
+  servicio_externo_2: "otra_clave_secreta_456"
+
+# Configuración de Logging
+logging:
+  level: "INFO" # Puede ser DEBUG, INFO, WARNING, ERROR, CRITICAL
+  file: "app.log"
+  max_size_mb: 10
+  backup_count: 5

@@ -1,0 +1,14 @@
+numpy
+pandas
+matplotlib
+scikit-learn
+torch
+psutil
+pymongo
+redis
+python-dotenv
+librosa
+pydub
+
+pytest
+pytest-cov

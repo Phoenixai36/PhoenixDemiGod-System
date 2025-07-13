@@ -1,0 +1,23 @@
+# Production Dependencies
+absl-py>=1.0.0
+autogen==0.4.0
+fastapi==0.115.0
+h5py
+keras==3.5.0
+librosa
+matplotlib
+numpy>=2.0.1
+openai==1.47.0
+pandas
+podman-compose
+pydantic>=2.9.2,<3.0
+pydub
+pymongo
+python-dotenv
+rasa
+rasa-sdk
+redis
+scikit-learn
+torch
+typer==0.12.5
+uvicorn==0.30.6
