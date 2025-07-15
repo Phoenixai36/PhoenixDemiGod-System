@@ -1,0 +1,19 @@
+{
+  "router": {
+    "default":     ["ollama", "codestral-mamba-7b-instruct-q4"],
+    "think":       ["ollama", "deepseek-r1-7b-instruct-q4"],
+    "background":  ["ollama", "phi-3mini-4k-instruct-q4"],
+    "longContext": ["ollama", "rwkv-7b-world-q4"]
+  },
+  "providers": {
+    "ollama": {
+      "api_base": "http://ollama:11434/v1/chat/completions",
+      "api_key":  "ollama-local"
+    }
+  },
+  "fallback_strategy": {
+    "enabled": true,
+    "provider": "ollama",
+    "model":    "llama3-8b-instruct-q4"
+  }
+}

@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  windsuf:
+    image: ghcr.io/windsurf/ide:latest
+    container_name: windsuf
+    ports:
+      - "3001:3001"          # UI
+    volumes:
+      - ./workspace:/workspace
+      - ./windsuf-config:/root/.config/windsurf
+    environment:
+      - WINDMILL_API=http://ollama:11434
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./models:/root/.ollama
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+    restart: unless-stopped
