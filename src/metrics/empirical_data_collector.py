@@ -1,0 +1,415 @@
+# empirical_data_collector.py
+# Ubicación: src/metrics/empirical_data_collector.py
+
+import os
+import time
+import json
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple, Any, Union
+from dataclasses import dataclass, asdict
+
+# Clases para diferentes tipos de métricas
+class PerformanceMetrics:
+    """Métricas relacionadas con la performance musical."""
+    
+    def __init__(self, db_connection=None):
+        self.db_connection = db_connection
+        self.metrics_dir = os.path.join(os.path.dirname(__file__), "../../data/metrics/performance")
+        os.makedirs(self.metrics_dir, exist_ok=True)
+    
+    def record_metrics(self, session_id: str, metrics: Dict[str, Any]):
+        """Registra métricas de performance."""
+        timestamp = datetime.now().isoformat()
+        
+        # Añadir timestamp y session_id
+        metrics["timestamp"] = timestamp
+        metrics["session_id"] = session_id
+        
+        # Guardar en archivo
+        filename = os.path.join(self.metrics_dir, f"{session_id}_{int(time.time())}.json")
+        with open(filename, 'w') as f:
+            json.dump(metrics, f, indent=2)
+    
+    def get_session_data(self, session_id: str) -> Dict[str, Any]:
+        """Obtiene datos de una sesión específica."""
+        session_files = [f for f in os.listdir(self.metrics_dir) 
+                        if f.startswith(f"{session_id}_") and f.endswith(".json")]
+        
+        if not session_files:
+            return {}
+        
+        # Combinar datos de todos los archivos de la sesión
+        session_data = {
+            "bpm_history": [],
+            "energy_levels": [],
+            "complexity_metrics": [],
+            "phase_transitions": [],
+            "timestamps": []
+        }
+        
+        for file in sorted(session_files):
+            filepath = os.path.join(self.metrics_dir, file)
+            with open(filepath, 'r') as f:
+                data = json.load(f)
+                
+                # Extraer métricas relevantes
+                if "bpm" in data:
+                    session_data["bpm_history"].append(data["bpm"])
+                
+                if "audio_features" in data and "rms" in data["audio_features"]:
+                    session_data["energy_levels"].append(data["audio_features"]["rms"])
+                
+                if "midi_activity" in data and "note_density" in data["midi_activity"]:
+                    session_data["complexity_metrics"].append(data["midi_activity"]["note_density"])
+                
+                if "phase" in data:
+                    session_data["phase_transitions"].append(data["phase"])
+                
+                if "timestamp" in data:
+                    session_data["timestamps"].append(data["timestamp"])
+        
+        return session_data
+
+
+class AudienceMetrics:
+    """Métricas relacionadas con la respuesta de la audiencia."""
+    
+    def __init__(self, db_connection=None):
+        self.db_connection = db_connection
+        self.metrics_dir = os.path.join(os.path.dirname(__file__), "../../data/metrics/audience")
+        os.makedirs(self.metrics_dir, exist_ok=True)
+    
+    def record_metrics(self, session_id: str, metrics: Dict[str, Any]):
+        """Registra métricas de audiencia."""
+        timestamp = datetime.now().isoformat()
+        
+        # Añadir timestamp y session_id
+        metrics["timestamp"] = timestamp
+        metrics["session_id"] = session_id
+        
+        # Guardar en archivo
+        filename = os.path.join(self.metrics_dir, f"{session_id}_{int(time.time())}.json")
+        with open(filename, 'w') as f:
+            json.dump(metrics, f, indent=2)
+    
+    def get_session_data(self, session_id: str) -> Dict[str, Any]:
+        """Obtiene datos de una sesión específica."""
+        session_files = [f for f in os.listdir(self.metrics_dir) 
+                        if f.startswith(f"{session_id}_") and f.endswith(".json")]
+        
+        if not session_files:
+            return {}
+        
+        # Combinar datos de todos los archivos de la sesión
+        session_data = {
+            "engagement_scores": [],
+            "vote_counts": {},
+            "reaction_timestamps": [],
+            "heatmap_data": [],
+            "timestamps": []
+        }
+        
+        for file in sorted(session_files):
+            filepath = os.path.join(self.metrics_dir, file)
+            with open(filepath, 'r') as f:
+                data = json.load(f)
+                
+                # Extraer métricas relevantes
+                if "engagement_score" in data:
+                    session_data["engagement_scores"].append(data["engagement_score"])
+                
+                if "votes" in data:
+                    for vote_type, count in data["votes"].items():
+                        if vote_type not in session_data["vote_counts"]:
+                            session_data["vote_counts"][vote_type] = 0
+                        session_data["vote_counts"][vote_type] += count
+                
+                if "reaction" in data and "timestamp" in data["reaction"]:
+                    session_data["reaction_timestamps"].append(data["reaction"]["timestamp"])
+                
+                if "heatmap" in data:
+                    session_data["heatmap_data"].append(data["heatmap"])
+                
+                if "timestamp" in data:
+                    session_data["timestamps"].append(data["timestamp"])
+        
+        return session_data
+
+
+class SystemMetrics:
+    """Métricas relacionadas con el rendimiento del sistema."""
+    
+    def __init__(self, db_connection=None):
+        self.db_connection = db_connection
+        self.metrics_dir = os.path.join(os.path.dirname(__file__), "../../data/metrics/system")
+        os.makedirs(self.metrics_dir, exist_ok=True)
+    
+    def record_metrics(self, session_id: str, metrics: Dict[str, Any]):
+        """Registra métricas del sistema."""
+        timestamp = datetime.now().isoformat()
+        
+        # Añadir timestamp y session_id
+        metrics["timestamp"] = timestamp
+        metrics["session_id"] = session_id
+        
+        # Guardar en archivo
+        filename = os.path.join(self.metrics_dir, f"{session_id}_{int(time.time())}.json")
+        with open(filename, 'w') as f:
+            json.dump(metrics, f, indent=2)
+            
+        # Si hay conexión a base de datos, también guardar allí
+        if self.db_connection:
+            try:
+                self.db_connection.execute(
+                    "INSERT INTO system_metrics (session_id, timestamp, metrics) VALUES (?, ?, ?)",
+                    (session_id, timestamp, json.dumps(metrics))
+                )
+                self.db_connection.commit()
+            except Exception as e:
+                print(f"Error saving to database: {e}")
+    
+    def get_session_data(self, session_id: str) -> Dict[str, Any]:
+        """Obtiene datos de una sesión específica."""
+        session_files = [f for f in os.listdir(self.metrics_dir) 
+                        if f.startswith(f"{session_id}_") and f.endswith(".json")]
+        
+        if not session_files:
+            return {}
+        
+        # Combinar datos de todos los archivos de la sesión
+        session_data = {
+            "cpu_usage": [],
+            "memory_usage": [],
+            "gpu_usage": [],
+            "network_io": [],
+            "disk_io": [],
+            "latency_measurements": [],
+            "anomaly_events": [],
+            "recovery_events": [],
+            "timestamps": []
+        }
+        
+        for file in sorted(session_files):
+            filepath = os.path.join(self.metrics_dir, file)
+            with open(filepath, 'r') as f:
+                data = json.load(f)
+                
+                # Extraer métricas relevantes
+                if "cpu_usage" in data:
+                    session_data["cpu_usage"].append(data["cpu_usage"])
+                
+                if "memory_usage" in data:
+                    session_data["memory_usage"].append(data["memory_usage"])
+                
+                if "gpu_usage" in data:
+                    session_data["gpu_usage"].append(data["gpu_usage"])
+                
+                if "network_io" in data:
+                    session_data["network_io"].append(data["network_io"])
+                
+                if "disk_io" in data:
+                    session_data["disk_io"].append(data["disk_io"])
+                
+                if "latency" in data:
+                    session_data["latency_measurements"].append(data["latency"])
+                
+                if "anomaly" in data:
+                    session_data["anomaly_events"].append(data["anomaly"])
+                
+                if "recovery" in data:
+                    session_data["recovery_events"].append(data["recovery"])
+                
+                if "timestamp" in data:
+                    session_data["timestamps"].append(data["timestamp"])
+        
+        return session_data
+    
+    def monitor_resources(self) -> Dict[str, Any]:
+        """Monitoriza uso de recursos del sistema."""
+        metrics = {
+            "timestamp": time.time(),
+            "cpu_usage": psutil.cpu_percent(interval=1),
+            "memory_usage": psutil.virtual_memory().percent,
+            "gpu_usage": self._get_gpu_usage(),
+            "network_io": self._get_network_io_stats(),
+            "disk_io": self._get_disk_io_stats()
+        }
+        
+        return metrics
+    
+    def _get_gpu_usage(self) -> float:
+        """Obtiene uso de GPU si está disponible."""
+        try:
+            # Intenta obtener estadísticas de GPU con NVIDIA SMI
+            import subprocess
+            result = subprocess.run(
+                ['nvidia-smi', '--query-gpu=utilization.gpu', '--format=csv,noheader,nounits'],
+                stdout=subprocess.PIPE,
+                text=True
+            )
+            return float(result.stdout.strip())
+        except:
+            # Si falla, intenta con PyTorch
+            try:
+                import torch
+                if torch.cuda.is_available():
+                    # No hay una forma directa de obtener el uso en PyTorch
+                    # Esta es una aproximación basada en memoria utilizada
+                    return torch.cuda.memory_allocated() / torch.cuda.get_device_properties(0).total_memory * 100
+                return 0.0
+            except:
+                return 0.0
+    
+    def _get_network_io_stats(self) -> Dict[str, int]:
+        """Obtiene estadísticas de E/S de red."""
+        net_io = psutil.net_io_counters()
+        return {
+            "bytes_sent": net_io.bytes_sent,
+            "bytes_recv": net_io.bytes_recv,
+            "packets_sent": net_io.packets_sent,
+            "packets_recv": net_io.packets_recv
+        }
+    
+    def _get_disk_io_stats(self) -> Dict[str, int]:
+        """Obtiene estadísticas de E/S de disco."""
+        disk_io = psutil.disk_io_counters()
+        return {
+            "read_count": disk_io.read_count,
+            "write_count": disk_io.write_count,
+            "read_bytes": disk_io.read_bytes,
+            "write_bytes": disk_io.write_bytes
+        }
+    
+    def measure_latency(self, module: str, operation: callable) -> Tuple[Any, float]:
+        """Mide latencia de una operación específica."""
+        start_time = time.perf_counter()
+        result = operation()
+        end_time = time.perf_counter()
+        latency = (end_time - start_time) * 1000  # en milisegundos
+        
+        latency_data = {
+            "timestamp": time.time(),
+            "module": module,
+            "latency_ms": latency
+        }
+        
+        # Guardar en archivo temporal para análisis posterior
+        latency_dir = os.path.join(self.metrics_dir, "latency")
+        os.makedirs(latency_dir, exist_ok=True)
+        with open(os.path.join(latency_dir, f"latency_{int(time.time())}.json"), 'w') as f:
+            json.dump(latency_data, f)
+        
+        return result, latency
+    
+    def record_anomaly(self, module: str, error_type: str, details: str) -> Dict[str, Any]:
+        """Registra un evento de anomalía."""
+        anomaly = {
+            "timestamp": time.time(),
+            "module": module,
+            "error_type": error_type,
+            "details": details
+        }
+        
+        # Guardar en archivo
+        anomaly_dir = os.path.join(self.metrics_dir, "anomalies")
+        os.makedirs(anomaly_dir, exist_ok=True)
+        with open(os.path.join(anomaly_dir, f"anomaly_{int(time.time())}.json"), 'w') as f:
+            json.dump(anomaly, f)
+        
+        return anomaly
+    
+    def record_recovery(self, anomaly_id: str, resolution_method: str, success: bool) -> Dict[str, Any]:
+        """Registra un evento de recuperación de anomalía."""
+        recovery = {
+            "timestamp": time.time(),
+            "anomaly_id": anomaly_id,
+            "resolution_method": resolution_method,
+            "success": success
+        }
+        
+        # Guardar en archivo
+        recovery_dir = os.path.join(self.metrics_dir, "recoveries")
+        os.makedirs(recovery_dir, exist_ok=True)
+        with open(os.path.join(recovery_dir, f"recovery_{int(time.time())}.json"), 'w') as f:
+            json.dump(recovery, f)
+        
+        return recovery
+    
+    def generate_system_report(self, start_time: float, end_time: float) -> Dict[str, Any]:
+        """Genera un informe completo del rendimiento del sistema en un período."""
+        # Obtener todos los archivos en el rango de tiempo
+        all_files = []
+        for root, _, files in os.walk(self.metrics_dir):
+            for file in files:
+                if file.endswith(".json"):
+                    filepath = os.path.join(root, file)
+                    file_time = os.path.getmtime(filepath)
+                    if start_time <= file_time <= end_time:
+                        all_files.append(filepath)
+        
+        # Analizar los datos
+        cpu_usage = []
+        memory_usage = []
+        gpu_usage = []
+        latencies = []
+        anomalies = []
+        recoveries = []
+        
+        for filepath in all_files:
+            with open(filepath, 'r') as f:
+                data = json.load(f)
+                
+                if "cpu_usage" in data:
+                    cpu_usage.append(data["cpu_usage"])
+                if "memory_usage" in data:
+                    memory_usage.append(data["memory_usage"])
+                if "gpu_usage" in data:
+                    gpu_usage.append(data["gpu_usage"])
+                if "latency_ms" in data:
+                    latencies.append(data["latency_ms"])
+                if "error_type" in data:
+                    anomalies.append(data)
+                if "resolution_method" in data:
+                    recoveries.append(data)
+        
+        # Calcular estadísticas
+        report = {
+            "period": {
+                "start": datetime.fromtimestamp(start_time).isoformat(),
+                "end": datetime.fromtimestamp(end_time).isoformat()
+            },
+            "resources": {
+                "cpu": {
+                    "avg": sum(cpu_usage) / len(cpu_usage) if cpu_usage else 0,
+                    "max": max(cpu_usage) if cpu_usage else 0,
+                    "min": min(cpu_usage) if cpu_usage else 0
+                },
+                "memory": {
+                    "avg": sum(memory_usage) / len(memory_usage) if memory_usage else 0,
+                    "max": max(memory_usage) if memory_usage else 0,
+                    "min": min(memory_usage) if memory_usage else 0
+                },
+                "gpu": {
+                    "avg": sum(gpu_usage) / len(gpu_usage) if gpu_usage else 0,
+                    "max": max(gpu_usage) if gpu_usage else 0,
+                    "min": min(gpu_usage) if gpu_usage else 0
+                }
+            },
+            "performance": {
+                "latency": {
+                    "avg": sum(latencies) / len(latencies) if latencies else 0,
+                    "max": max(latencies) if latencies else 0,
+                    "min": min(latencies) if latencies else 0
+                }
+            },
+            "reliability": {
+                "anomaly_count": len(anomalies),
+                "recovery_count": len(recoveries),
+                "recovery_rate": len(recoveries) / len(anomalies) if len(anomalies) > 0 else 1.0
+            }
+        }
+        
+        return report

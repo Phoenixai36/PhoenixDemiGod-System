@@ -1,0 +1,57 @@
+# Traefik Static Configuration for Phoenix DemiGod
+# Place this file in /etc/traefik/traefik.toml on manager node
+
+[global]
+  checkNewVersion = true
+  sendAnonymousUsage = false
+
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+    [entryPoints.web.http]
+      [entryPoints.web.http.redirections]
+        [entryPoints.web.http.redirections.entryPoint]
+          to = "websecure"
+          scheme = "https"
+
+  [entryPoints.websecure]
+    address = ":443"
+    [entryPoints.websecure.http.tls]
+      certResolver = "letsencrypt"
+
+  [entryPoints.traefik]
+    address = ":8080"
+
+[api]
+  dashboard = true
+  insecure = false
+
+[providers]
+  [providers.docker]
+    endpoint = "unix:///var/run/docker.sock"
+    swarmMode = true
+    exposedByDefault = false
+    network = "traefik-public"
+    watch = true
+
+  [providers.file]
+    filename = "/etc/traefik/dynamic-conf.toml"
+    watch = true
+
+[certificatesResolvers.letsencrypt.acme]
+  email = "admin@phoenix-demigod.local"
+  storage = "/certificates/acme.json"
+  [certificatesResolvers.letsencrypt.acme.tlsChallenge]
+
+[log]
+  level = "INFO"
+
+[accessLog]
+  filePath = "/var/log/traefik/access.log"
+  bufferingSize = 100
+  
+[metrics]
+  [metrics.prometheus]
+    entryPoint = "metrics"
+    addEntryPointsLabels = true
+    addServicesLabels = true
