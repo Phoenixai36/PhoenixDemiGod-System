@@ -1,0 +1,42 @@
+{
+  "mcpServers": {
+    "phoenix_router": {
+      "command": "python",
+      "args": [
+        "scripts/automation/phoenix_mcp_router.py"
+      ],
+      "env": {
+        "PHOENIX_HOME": "/home/user/phoenix-demigod-v8.7",
+        "JAN_API_BASE": "http://localhost:1337"
+      }
+    },
+    "ollama_bridge": {
+      "command": "python",
+      "args": [
+        "scripts/automation/ollama_bridge.py"
+      ],
+      "env": {
+        "OLLAMA_HOST": "http://localhost:11434"
+      }
+    },
+    "omas_orchestrator": {
+      "command": "python",
+      "args": [
+        "agents/omas/orchestrator.py"
+      ],
+      "env": {
+        "OMAS_CONFIG": "agents/omas/config.yaml"
+      }
+    },
+    "workflow_automation": {
+      "command": "python",
+      "args": [
+        "workflows/automation_bridge.py"
+      ],
+      "env": {
+        "N8N_HOST": "http://localhost:5678",
+        "WINDMILL_HOST": "http://localhost:3000"
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+[database]
+url = "postgresql://windmill_user:phoenix_demigod@localhost/windmill"
+
+[server]
+port = 3000
+host = "0.0.0.0"
+workers_per_cpu = 2
+max_memory_per_worker = "2GB"
+
+[workers] 
+num = 4
+timeout = 600
+max_log_size = "10MB"
+
+[phoenix]
+integration_enabled = true
+mcp_bridge = true
+omas_support = true
+
+[security]
+jwt_secret = "phoenix_demigod_jwt_secret"
+cors_origins = ["http://localhost:1337", "http://localhost:5678"]

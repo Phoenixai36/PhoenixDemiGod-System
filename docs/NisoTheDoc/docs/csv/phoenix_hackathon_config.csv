@@ -1,0 +1,13 @@
+Componente,Comando_Instalación,Puerto_API,Configuración_Clave,Tiempo_Setup,Dependencias_Críticas,Comando_Testing
+Windsurf IDE,Download from windsurf.com,N/A,MCP Store → Add custom servers,30 min,"Electron, Node.js",Open project → Check MCP servers
+Jan.ai API Server,Download from jan.ai → Settings → API Server,localhost:1337,Settings → Advanced → Enable API Server,45 min,"llama.cpp engine, GGUF models",curl http://localhost:1337/v1/models
+Kilo Code Extension,VS Code Marketplace: kilocode.ai,N/A,kilocode.providers.local.type: ollama,15 min,"VS Code, Ollama running",Test with local model in VS Code
+Ollama + Mamba Models,curl -fsSL https://ollama.com/install.sh | sh,localhost:11434,ollama pull llama3.2:8b && ollama pull qwen2.5-coder:7b,60 min,"Docker optional, GPU drivers","ollama run llama3.2:8b ""Hello world"""
+MCP Servers Phoenix,Custom MCP server configuration,JSON-RPC,"phoenix_router, rasa_bridge, ollama_bridge",90 min,"Python 3.8+, JSON-RPC libraries",Test MCP connection in Windsurf
+n8n Workflows,docker run -it --rm --name n8n -p 5678:5678 n8nio/n8n,localhost:5678,Webhook triggers → API endpoints,45 min,"Docker, Node.js runtime",GET http://localhost:5678/rest/workflows
+Windmill Automation,curl -fsSL https://windmill.dev/install.sh | sh,localhost:3000,Python/TypeScript scripts → Visual workflows,60 min,"Python 3.8+, PostgreSQL",windmill flow run test_workflow
+Terraform Infrastructure,curl -fsSL https://releases.hashicorp.com/terraform/latest/terraform_linux_amd64.zip,N/A,HCL configuration → Resource provisioning,30 min,"Go runtime, Cloud credentials","terraform plan -var-file=""config.tfvars"""
+MAP-E Chatbot,Integración API Jan.ai localhost:1337,localhost:1337,OpenAI compatible API → localhost:1337,120 min,Jan.ai API running,curl -X POST localhost:1337/v1/chat/completions
+OMAS Multi-Agent System,pip install rasa && python -m rasa init,Custom ports,Ontology reasoners → Agent communication,180 min,"Python 3.8+, Ontology libraries",python test_agents.py
+Rasa Conversational Agents,python -m rasa shell,localhost:5005,NLU pipeline → Intent classification,90 min,"Python 3.8+, spaCy, TensorFlow",curl -X POST localhost:5005/webhooks/rest/webhook
+Gemini CLI Integration,pip install google-generativeai,CLI,export GOOGLE_API_KEY=your_key,20 min,"Python 3.8+, google-generativeai","gemini ""Test query for Phoenix DemiGod"""

@@ -1,0 +1,5 @@
+# This file includes the main requirements plus development-specific packages.
+-r requirements.txt
+flake8
+pytest
+httpx # Required for FastAPI's TestClient
