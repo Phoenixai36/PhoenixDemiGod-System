@@ -6,10 +6,8 @@ build-backend = "setuptools.build_meta"
 name = "phoenix-demigod-tests"
 version = "0.1.0"
 description = "Tests for Phoenix DemiGod v8.7 - Sistema cognitivo modular"
-authors = [
-  { name="Phoenix Team", email="contact@phoenix.ai" },
-]
-license = { file="LICENSE" }
+authors = [{ name = "Phoenix Team", email = "contact@phoenix.ai" }]
+license = { file = "LICENSE" }
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
@@ -24,7 +22,7 @@ dependencies = [
     "pydantic==2.9.2",
     "ollama",
     "autogen==0.4.0",
-    "openai==1.47.0"
+    "openai==1.47.0",
 ]
 
 [project.optional-dependencies]
@@ -35,20 +33,26 @@ dev = [
     "black",
     "flake8",
     "ruff==0.6.9",
-    "httpx"
+    "httpx",
 ]
 
 [project.urls]
 "Homepage" = "https://github.com/Phoenixai36/BooPhoenix369"
 "Bug Tracker" = "https://github.com/Phoenixai36/BooPhoenix369/issues"
 
+[tool.setuptools]
+package-dir = { "" = "src" }
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.pytest.ini_options]
 python_files = ["test_*.py", "*_test.py"]
-testpaths = ["autogen/tests"]
+testpaths = ["autogen/tests", "tests"]
 addopts = "-ra -q"
+
+[tool.pyright]
+include = ["src", "scripts", "tests"]
 
 [tool.black]
 line-length = 88
