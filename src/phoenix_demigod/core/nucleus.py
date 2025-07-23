@@ -21,6 +21,7 @@ from phoenix_demigod.engines.differentiation import DifferentiationEngine
 from phoenix_demigod.engines.regeneration import RegenerationEngine
 from phoenix_demigod.engines.traversal import TraversalEngine
 from phoenix_demigod.utils.logging import get_logger
+from phoenixxhydra.core.event_routing import EventRouter, DefaultPatternMatcher, InMemoryEventQueue
 
 
 class NucleusConfig(BaseModel):
@@ -63,14 +64,16 @@ class NucleusManager:
     def __init__(self):
         """Initialize the NucleusManager."""
         self.logger = get_logger("phoenix_demigod.nucleus")
-        self.config = NucleusConfig()
-        self.stats = NucleusStats()
+        self.config = NucleusConfig(cycle_interval=5.0, max_subsystems=50, resource_limit=0.8, max_tree_depth=10, snapshot_interval=300, max_snapshots=100)
+        self.stats = NucleusStats(cycle_count=0, last_cycle_duration=0.0, avg_cycle_duration=0.0, active_subsystems=0, snapshot_count=0, error_count=0, recovery_count=0)
         
-        self.state_tree_manager = None
-        self.state_tree = None
-        self.traversal_engine = None
-        self.differentiation_engine = None
-        self.regeneration_engine = None
+        self.state_tree_manager: Optional[StateTreeManager] = None
+        self.state_tree: Optional[StateTree] = None
+        self.traversal_engine: Optional[TraversalEngine] = None
+        self.differentiation_engine: Optional[DifferentiationEngine] = None
+        self.regeneration_engine: Optional[RegenerationEngine] = None
+        
+        self.event_router: Optional[EventRouter] = None
         
         self.is_initialized = False
         self.is_running = False
@@ -141,6 +144,13 @@ class NucleusManager:
             self.differentiation_engine = DifferentiationEngine(config_data.get('differentiation', {}))
             self.regeneration_engine = RegenerationEngine(config_data.get('regeneration', {}))
             
+            # Initialize event router
+            self.logger.info("Initializing event router")
+            self.event_router = EventRouter(
+                pattern_matcher=DefaultPatternMatcher(),
+                event_queue=InMemoryEventQueue()
+            )
+            
             # Register signal handlers for graceful shutdown
             self._register_signal_handlers()
             
@@ -177,9 +187,10 @@ class NucleusManager:
         )
         
         # Add to root
-        self.state_tree.add_node(configuration, parent_id="root")
-        self.state_tree.add_node(runtime_state, parent_id="root")
-        self.state_tree.add_node(snapshots, parent_id="root")
+        if self.state_tree:
+            self.state_tree.add_node(configuration, parent_id="root")
+            self.state_tree.add_node(runtime_state, parent_id="root")
+            self.state_tree.add_node(snapshots, parent_id="root")
         
         # Add sub-branches to runtime_state
         active_subsystems = StateNode(
@@ -214,9 +225,10 @@ class NucleusManager:
         )
         
         # Add to runtime_state
-        self.state_tree.add_node(active_subsystems, parent_id="runtime_state")
-        self.state_tree.add_node(resource_usage, parent_id="runtime_state")
-        self.state_tree.add_node(performance_metrics, parent_id="runtime_state")
+        if self.state_tree:
+            self.state_tree.add_node(active_subsystems, parent_id="runtime_state")
+            self.state_tree.add_node(resource_usage, parent_id="runtime_state")
+            self.state_tree.add_node(performance_metrics, parent_id="runtime_state")
     
     def _register_signal_handlers(self) -> None:
         """Register signal handlers for graceful shutdown."""
@@ -267,7 +279,9 @@ class NucleusManager:
                 # 2. Perform traversal to analyze the state tree
                 self.logger.debug("Starting traversal analysis")
                 traversal_start = time.time()
-                analysis_report = await self.traversal_engine.traverse(self.state_tree.root)
+                analysis_report = None
+                if self.traversal_engine and self.state_tree:
+                    analysis_report = await self.traversal_engine.traverse(self.state_tree.root)
                 traversal_time = time.time() - traversal_start
                 
                 # Update performance metrics
@@ -276,9 +290,10 @@ class NucleusManager:
                 # 3. Process analysis results with differentiation engine
                 self.logger.debug("Processing analysis results")
                 diff_start = time.time()
-                diff_results = await self.differentiation_engine.process_analysis(
-                    analysis_report, self.state_tree
-                )
+                if self.differentiation_engine and self.state_tree and analysis_report:
+                    diff_results = await self.differentiation_engine.process_analysis(
+                        analysis_report, self.state_tree
+                    )
                 diff_time = time.time() - diff_start
                 
                 # Update performance metrics
@@ -287,14 +302,15 @@ class NucleusManager:
                 # 4. Check system integrity with regeneration engine
                 self.logger.debug("Checking system integrity")
                 regen_start = time.time()
-                integrity_report = await self.regeneration_engine.check_integrity(self.state_tree)
-                
-                if not integrity_report.is_healthy:
-                    self.logger.warning(f"Integrity issues detected: {integrity_report.issues}")
-                    await self.regeneration_engine.restore_integrity(
-                        self.state_tree, integrity_report
-                    )
-                    self.stats.recovery_count += 1
+                if self.regeneration_engine and self.state_tree:
+                    integrity_report = await self.regeneration_engine.check_integrity(self.state_tree)
+                    
+                    if not integrity_report.is_healthy:
+                        self.logger.warning(f"Integrity issues detected: {integrity_report.issues}")
+                        await self.regeneration_engine.restore_integrity(
+                            self.state_tree, integrity_report
+                        )
+                        self.stats.recovery_count += 1
                     
                 regen_time = time.time() - regen_start
                 
@@ -346,7 +362,9 @@ class NucleusManager:
                     break
                     
                 self.logger.debug("Creating state snapshot")
-                snapshot_id = await self.state_tree_manager.save_snapshot(self.state_tree)
+                snapshot_id = None
+                if self.state_tree_manager and self.state_tree:
+                    snapshot_id = await self.state_tree_manager.save_snapshot(self.state_tree)
                 
                 # Update snapshot statistics
                 self.stats.last_snapshot_time = datetime.now()
@@ -368,8 +386,11 @@ class NucleusManager:
     async def _prune_old_snapshots(self) -> None:
         """Remove old snapshots if we have more than the configured maximum."""
         try:
-            snapshots = await self.state_tree_manager.list_snapshots()
-            
+            if self.state_tree_manager:
+                snapshots = await self.state_tree_manager.list_snapshots()
+            else:
+                snapshots = []
+
             if len(snapshots) > self.config.max_snapshots:
                 # Sort by creation time (oldest first)
                 snapshots.sort(key=lambda s: s.created_at)
@@ -379,7 +400,8 @@ class NucleusManager:
                 
                 for snapshot in to_remove:
                     self.logger.debug(f"Removing old snapshot {snapshot.id}")
-                    await self.state_tree_manager.delete_snapshot(snapshot.id)
+                    if self.state_tree_manager:
+                        await self.state_tree_manager.delete_snapshot(snapshot.id)
                     
         except Exception as e:
             self.logger.error(f"Error pruning old snapshots: {e}", exc_info=True)
@@ -395,7 +417,9 @@ class NucleusManager:
             network_usage = 0.05  # 5% network usage
             
             # Update the state tree
-            resource_node = self.state_tree.get_node("/runtime_state/resource_usage")
+            resource_node = None
+            if self.state_tree:
+                resource_node = self.state_tree.get_node("/runtime_state/resource_usage")
             if resource_node:
                 resource_node.data.update({
                     "cpu": cpu_usage,
@@ -417,7 +441,9 @@ class NucleusManager:
     def _update_performance_metrics(self, metric_name: str, value: float) -> None:
         """Update performance metrics in the state tree."""
         try:
-            metrics_node = self.state_tree.get_node("/runtime_state/performance_metrics")
+            metrics_node = None
+            if self.state_tree:
+                metrics_node = self.state_tree.get_node("/runtime_state/performance_metrics")
             if metrics_node and metric_name in metrics_node.data:
                 metrics_node.data[metric_name] = value
                 metrics_node.data["updated_at"] = datetime.now().isoformat()
@@ -456,7 +482,8 @@ class NucleusManager:
         # Save final state snapshot
         try:
             self.logger.info("Saving final state snapshot")
-            await self.state_tree_manager.save_snapshot(self.state_tree)
+            if self.state_tree_manager and self.state_tree:
+                await self.state_tree_manager.save_snapshot(self.state_tree)
         except Exception as e:
             self.logger.error(f"Error saving final state snapshot: {e}", exc_info=True)
         
@@ -496,7 +523,9 @@ class NucleusManager:
         subsystems = []
         
         try:
-            subsystems_node = self.state_tree.get_node("/runtime_state/active_subsystems")
+            subsystems_node = None
+            if self.state_tree:
+                subsystems_node = self.state_tree.get_node("/runtime_state/active_subsystems")
             if subsystems_node:
                 for child in subsystems_node.children:
                     subsystems.append({

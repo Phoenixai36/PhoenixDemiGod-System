@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Dict, Any, Optional, List, Union, Pattern, Callable
+from abc import ABC, abstractmethod
 
 
 class DeliveryMode(Enum):
@@ -110,8 +111,8 @@ class Event:
     def create(cls, 
               event_type: str, 
               source: str, 
-              payload: Dict[str, Any] = None, 
-              metadata: Dict[str, Any] = None,
+              payload: Optional[Dict[str, Any]] = None, 
+              metadata: Optional[Dict[str, Any]] = None,
               correlation_id: Optional[str] = None,
               causation_id: Optional[str] = None) -> 'Event':
         """
@@ -234,25 +235,8 @@ class EventPattern:
         Returns:
             True if the pattern matches the event type, False otherwise
         """
-        # Direct match
-        if self.event_type == event_type:
-            return True
-        
-        # Wildcard match
-        if self.event_type == "*":
-            return True
-        
-        # Hierarchical wildcard match (e.g., "system.*" matches "system.alert")
-        if self.event_type.endswith(".*"):
-            prefix = self.event_type[:-1]  # Remove the "*"
-            return event_type.startswith(prefix)
-        
-        # Double wildcard match (e.g., "system.**" matches "system.alert.critical")
-        if self.event_type.endswith(".**"):
-            prefix = self.event_type[:-2]  # Remove the "**"
-            return event_type.startswith(prefix)
-        
-        return False
+        matcher = WildcardPatternMatcher()
+        return matcher.matches_event_type(event_type, self.event_type)
     
     def matches_attributes(self, event_attributes: Dict[str, Any]) -> bool:
         """
@@ -362,7 +346,7 @@ class Subscription:
     """
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
     pattern: EventPattern = field(default_factory=lambda: EventPattern("*"))
-    handler: Callable[['Event'], None] = None
+    handler: Optional[Callable[['Event'], None]] = None
     active: bool = True
     max_events: Optional[int] = None
     expiration: Optional[float] = None
@@ -427,7 +411,8 @@ class Subscription:
         if not self.active:
             return
         
-        self.handler(event)
+        if self.handler:
+            self.handler(event)
         self.events_processed += 1
         self.last_event_time = datetime.now().timestamp()
     
@@ -449,3 +434,516 @@ class Subscription:
             "created_at": self.created_at,
             "last_event_time": self.last_event_time
         }
+
+class PatternMatcher(ABC):
+    """
+    Abstract base class for pattern matching implementations.
+    
+    This interface defines the contract for pattern matching components
+    that evaluate events against subscription patterns.
+    """
+    
+    @abstractmethod
+    def matches(self, event: Event, pattern: EventPattern) -> bool:
+        """
+        Check if an event matches a pattern.
+        
+        Args:
+            event: The event to match
+            pattern: The pattern to match against
+            
+        Returns:
+            True if the event matches the pattern, False otherwise
+        """
+        pass
+    
+    @abstractmethod
+    def find_matching_subscriptions(self, event: Event, subscriptions: List[Subscription]) -> List[Subscription]:
+        """
+        Find all subscriptions that match an event.
+        
+        Args:
+            event: The event to match
+            subscriptions: List of subscriptions to check
+            
+        Returns:
+            List of matching subscriptions
+        """
+        pass
+
+
+class DefaultPatternMatcher(PatternMatcher):
+    """
+    Default implementation of the PatternMatcher interface.
+    
+    This implementation uses the built-in pattern matching logic
+    from EventPattern and Subscription classes.
+    """
+    
+    def matches(self, event: Event, pattern: EventPattern) -> bool:
+        """
+        Check if an event matches a pattern using the pattern's built-in matching logic.
+        
+        Args:
+            event: The event to match
+            pattern: The pattern to match against
+            
+        Returns:
+            True if the event matches the pattern, False otherwise
+        """
+        return pattern.matches(event)
+    
+    def find_matching_subscriptions(self, event: Event, subscriptions: List[Subscription]) -> List[Subscription]:
+        """
+        Find all subscriptions that match an event.
+        
+        Args:
+            event: The event to match
+            subscriptions: List of subscriptions to check
+            
+        Returns:
+            List of matching subscriptions sorted by priority (highest first)
+        """
+        matching_subscriptions = []
+        
+        for subscription in subscriptions:
+            if subscription.matches(event) and not subscription.is_expired():
+                matching_subscriptions.append(subscription)
+        
+        # Sort by priority (highest first), then by creation time (oldest first)
+        matching_subscriptions.sort(
+            key=lambda s: (-s.priority, s.created_at)
+        )
+        
+        return matching_subscriptions
+
+
+class CachedPatternMatcher(PatternMatcher):
+    """
+    Pattern matcher with caching for improved performance.
+    
+    This implementation caches pattern matching results to avoid
+    repeated computation for the same event-pattern combinations.
+    """
+    
+    def __init__(self, cache_size: int = 1000):
+        """
+        Initialize the cached pattern matcher.
+        
+        Args:
+            cache_size: Maximum number of cache entries to maintain
+        """
+        self.cache_size = cache_size
+        self._cache: Dict[str, bool] = {}
+        self._cache_order: List[str] = []
+    
+    def _get_cache_key(self, event: Event, pattern: EventPattern) -> str:
+        """
+        Generate a cache key for an event-pattern combination.
+        
+        Args:
+            event: The event
+            pattern: The pattern
+            
+        Returns:
+            A string cache key
+        """
+        return f"{event.type}:{event.source}:{hash(str(pattern))}:{hash(str(event.payload))}"
+    
+    def _update_cache(self, key: str, result: bool) -> None:
+        """
+        Update the cache with a new result.
+        
+        Args:
+            key: The cache key
+            result: The matching result
+        """
+        # Remove oldest entries if cache is full
+        if len(self._cache) >= self.cache_size:
+            oldest_key = self._cache_order.pop(0)
+            del self._cache[oldest_key]
+        
+        self._cache[key] = result
+        self._cache_order.append(key)
+    
+    def matches(self, event: Event, pattern: EventPattern) -> bool:
+        """
+        Check if an event matches a pattern with caching.
+        
+        Args:
+            event: The event to match
+            pattern: The pattern to match against
+            
+        Returns:
+            True if the event matches the pattern, False otherwise
+        """
+        cache_key = self._get_cache_key(event, pattern)
+        
+        # Check cache first
+        if cache_key in self._cache:
+            return self._cache[cache_key]
+        
+        # Compute result and cache it
+        result = pattern.matches(event)
+        self._update_cache(cache_key, result)
+        
+        return result
+    
+    def find_matching_subscriptions(self, event: Event, subscriptions: List[Subscription]) -> List[Subscription]:
+        """
+        Find all subscriptions that match an event with caching.
+        
+        Args:
+            event: The event to match
+            subscriptions: List of subscriptions to check
+            
+        Returns:
+            List of matching subscriptions sorted by priority (highest first)
+        """
+        matching_subscriptions = []
+        
+        for subscription in subscriptions:
+            if not subscription.active or subscription.is_expired():
+                continue
+                
+            if self.matches(event, subscription.pattern):
+                matching_subscriptions.append(subscription)
+        
+        # Sort by priority (highest first), then by creation time (oldest first)
+        matching_subscriptions.sort(
+            key=lambda s: (-s.priority, s.created_at)
+        )
+        
+        return matching_subscriptions
+    
+    def clear_cache(self) -> None:
+        """Clear the pattern matching cache."""
+        self._cache.clear()
+        self._cache_order.clear()
+    
+    def get_cache_stats(self) -> Dict[str, Any]:
+        """
+        Get cache statistics.
+        
+        Returns:
+            Dictionary with cache statistics
+        """
+        return {
+            "cache_size": len(self._cache),
+            "max_cache_size": self.cache_size,
+            "cache_utilization": len(self._cache) / self.cache_size if self.cache_size > 0 else 0
+        }
+class WildcardPatternMatcher(PatternMatcher):
+    """
+    Pattern matcher specialized in wildcard pattern matching.
+    
+    This implementation provides optimized matching for wildcard patterns
+    and caches compiled regular expressions for improved performance.
+    """
+    
+    def __init__(self):
+        """Initialize the wildcard pattern matcher."""
+        self._regex_cache: Dict[str, Pattern] = {}
+    
+    def _compile_pattern(self, pattern_str: str) -> Pattern:
+        """
+        Compile a wildcard pattern into a regular expression.
+        
+        Args:
+            pattern_str: The wildcard pattern string
+            
+        Returns:
+            A compiled regular expression pattern
+        """
+        if pattern_str in self._regex_cache:
+            return self._regex_cache[pattern_str]
+
+        if pattern_str.startswith("regex:"):
+            regex_str = pattern_str[6:]
+        elif pattern_str == "*":
+            regex_str = ".*"
+        else:
+            regex_str = re.escape(pattern_str).replace('\\*\\*', '.*').replace('\\*', '[^.]*')
+            regex_str = f"^{regex_str}$"
+
+        try:
+            regex_pattern = re.compile(regex_str)
+            self._regex_cache[pattern_str] = regex_pattern
+            return regex_pattern
+        except re.error:
+            return re.compile(r"^$")
+    
+    def matches_event_type(self, event_type: str, pattern_str: str) -> bool:
+        """
+        Check if an event type matches a pattern string.
+        
+        Args:
+            event_type: The event type to match
+            pattern_str: The pattern string to match against
+            
+        Returns:
+            True if the event type matches the pattern, False otherwise
+        """
+        if pattern_str.startswith("!"):
+            return not self.matches_event_type(event_type, pattern_str[1:])
+
+        regex_pattern = self._compile_pattern(pattern_str)
+        return bool(regex_pattern.match(event_type))
+    
+    def matches(self, event: Event, pattern: EventPattern) -> bool:
+        """
+        Check if an event matches a pattern.
+        
+        Args:
+            event: The event to match
+            pattern: The pattern to match against
+            
+        Returns:
+            True if the event matches the pattern, False otherwise
+        """
+        # Check event type match
+        if not self.matches_event_type(event.type, pattern.event_type):
+            return False
+        
+        # Check payload attributes match
+        if not pattern.matches_attributes(event.payload):
+            return False
+        
+        return True
+    
+    def find_matching_subscriptions(self, event: Event, subscriptions: List[Subscription]) -> List[Subscription]:
+        """
+        Find all subscriptions that match an event.
+        
+        Args:
+            event: The event to match
+            subscriptions: List of subscriptions to check
+            
+        Returns:
+            List of matching subscriptions sorted by priority (highest first)
+        """
+        matching_subscriptions = []
+        
+        for subscription in subscriptions:
+            if not subscription.active or subscription.is_expired():
+                continue
+                
+            if self.matches(event, subscription.pattern):
+                matching_subscriptions.append(subscription)
+        
+        # Sort by priority (highest first), then by creation time (oldest first)
+        matching_subscriptions.sort(
+            key=lambda s: (-s.priority, s.created_at)
+        )
+        
+        return matching_subscriptions
+    
+    def clear_cache(self) -> None:
+        """Clear the regex pattern cache."""
+        self._regex_cache.clear()
+
+
+class EventQueue(ABC):
+    """
+    Abstract base class for event queue implementations.
+    
+    This interface defines the contract for event queues that store and
+    manage events for asynchronous processing.
+    """
+    
+    @abstractmethod
+    def enqueue(self, event: Event) -> None:
+        """
+        Add an event to the queue.
+        
+        Args:
+            event: The event to add to the queue
+        """
+        pass
+    
+    @abstractmethod
+    def dequeue(self) -> Optional[Event]:
+        """
+        Remove and return the next event from the queue.
+        
+        Returns:
+            The next event in the queue, or None if the queue is empty
+        """
+        pass
+    
+    @abstractmethod
+    def is_empty(self) -> bool:
+        """
+        Check if the queue is empty.
+        
+        Returns:
+            True if the queue is empty, False otherwise
+        """
+        pass
+    
+    @abstractmethod
+    def size(self) -> int:
+        """
+        Get the number of events in the queue.
+        
+        Returns:
+            The number of events in the queue
+        """
+        pass
+
+
+class InMemoryEventQueue(EventQueue):
+    """
+    In-memory implementation of the EventQueue interface.
+    
+    This implementation uses a simple list to store events in memory.
+    """
+    
+    def __init__(self):
+        """Initialize the in-memory event queue."""
+        self._queue: List[Event] = []
+    
+    def enqueue(self, event: Event) -> None:
+        """
+        Add an event to the queue.
+        
+        Args:
+            event: The event to add to the queue
+        """
+        self._queue.append(event)
+    
+    def dequeue(self) -> Optional[Event]:
+        """
+        Remove and return the next event from the queue.
+        
+        Returns:
+            The next event in the queue, or None if the queue is empty
+        """
+        if not self.is_empty():
+            return self._queue.pop(0)
+        return None
+    
+    def is_empty(self) -> bool:
+        """
+        Check if the queue is empty.
+        
+        Returns:
+            True if the queue is empty, False otherwise
+        """
+        return len(self._queue) == 0
+    
+    def size(self) -> int:
+        """
+        Get the number of events in the queue.
+        
+        Returns:
+            The number of events in the queue
+        """
+        return len(self._queue)
+
+
+class EventRouter:
+    """
+    Central event router for the Event Routing System.
+    
+    This class manages subscriptions and routes events to the appropriate
+    subscribers based on event patterns and delivery modes.
+    """
+    
+    def __init__(self, 
+                 pattern_matcher: PatternMatcher, 
+                 event_queue: Optional[EventQueue] = None):
+        """
+        Initialize the event router.
+        
+        Args:
+            pattern_matcher: The pattern matcher to use for matching events
+            event_queue: The event queue to use for queued delivery
+        """
+        self.subscriptions: List[Subscription] = []
+        self.pattern_matcher = pattern_matcher
+        self.event_queue = event_queue
+    
+    def subscribe(self, 
+                  pattern: EventPattern, 
+                  handler: Callable[[Event], None], 
+                  delivery_mode: DeliveryMode = DeliveryMode.SYNC,
+                  priority: int = 0) -> Subscription:
+        """
+        Create a new subscription.
+        
+        Args:
+            pattern: The event pattern to subscribe to
+            handler: The event handler to call for matching events
+            delivery_mode: The delivery mode for the subscription
+            priority: The priority of the subscription
+            
+        Returns:
+            The new subscription
+        """
+        subscription = Subscription(
+            pattern=pattern,
+            handler=handler,
+            priority=priority
+        )
+        self.subscriptions.append(subscription)
+        return subscription
+    
+    def unsubscribe(self, subscription: Subscription) -> None:
+        """
+        Remove a subscription.
+        
+        Args:
+            subscription: The subscription to remove
+        """
+        self.subscriptions.remove(subscription)
+    
+    def publish(self, event: Event, delivery_mode: DeliveryMode = DeliveryMode.SYNC) -> None:
+        """
+        Publish an event to all matching subscribers.
+        
+        Args:
+            event: The event to publish
+            delivery_mode: The delivery mode for the event
+        """
+        matching_subscriptions = self.pattern_matcher.find_matching_subscriptions(
+            event, self.subscriptions
+        )
+        
+        for subscription in matching_subscriptions:
+            if delivery_mode == DeliveryMode.SYNC:
+                subscription.process_event(event)
+            elif delivery_mode == DeliveryMode.ASYNC:
+                # In a real implementation, this would use a thread pool or async framework
+                subscription.process_event(event)
+            elif delivery_mode == DeliveryMode.QUEUED:
+                if self.event_queue:
+                    self.event_queue.enqueue(event)
+
+
+class EventPublisher:
+    """
+    Event publisher for the Event Routing System.
+    
+    This class provides a simple interface for publishing events to an
+    event router.
+    """
+    
+    def __init__(self, router: EventRouter):
+        """
+        Initialize the event publisher.
+        
+        Args:
+            router: The event router to use for publishing events
+        """
+        self.router = router
+    
+    def publish(self, event: Event, delivery_mode: DeliveryMode = DeliveryMode.SYNC) -> None:
+        """
+        Publish an event.
+        
+        Args:
+            event: The event to publish
+            delivery_mode: The delivery mode for the event
+        """
+        self.router.publish(event, delivery_mode)

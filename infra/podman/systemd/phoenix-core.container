@@ -1,0 +1,11 @@
+[Container]
+Image=phoenixhydra/core:v8.7
+Name=phoenix-core
+Pod=phoenix-hydra
+Environment="MONETIZATION_MODE=enterprise" "AFFILIATE_TRACKING=enabled" "MARKETPLACE_INTEGRATION=aws,cloudflare,huggingface"
+Volume=e:/PHOENIXSYSTEM/PhoenixSeed/configs:/app/configs:Z
+PublishPort=8080:8080
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

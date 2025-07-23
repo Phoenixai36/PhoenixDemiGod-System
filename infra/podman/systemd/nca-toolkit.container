@@ -1,0 +1,10 @@
+[Container]
+Image=sea-turtle-app-nlak2:latest
+Name=nca-toolkit
+Pod=phoenix-hydra
+Environment="API_BASE_URL=https://sea-turtle-app-nlak2.ondigitalocean.app/v1/" "PHOENIX_INTEGRATION=true"
+PublishPort=8081:8080
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

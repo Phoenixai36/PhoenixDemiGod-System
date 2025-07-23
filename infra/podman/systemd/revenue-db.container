@@ -1,0 +1,13 @@
+[Container]
+Image=postgres:15
+Name=revenue-db
+Pod=phoenix-hydra
+# Load secrets from a .env file located in the same directory
+EnvironmentFile=.env
+Environment="POSTGRES_DB=phoenix_revenue" "POSTGRES_USER=phoenix"
+# The POSTGRES_PASSWORD will be sourced from the .env file
+Volume=revenue_data:/var/lib/postgresql/data:z
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
