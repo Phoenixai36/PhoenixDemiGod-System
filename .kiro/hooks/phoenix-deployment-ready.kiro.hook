@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "Phoenix Deployment Ready",
+  "description": "Prepare deployment packages when release-related files change",
+  "version": "1.0.0",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "pyproject.toml",
+      "scripts/aws-marketplace-deploy.sh",
+      "infra/podman/compose.yaml",
+      "PROJECT-COMPLETION-STATUS.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Phoenix Hydra deployment configuration has been updated. Please:\n1. Validate all deployment scripts and configurations\n2. Check AWS Marketplace deployment readiness\n3. Update version numbers and changelog if needed\n4. Test container builds and health checks\n5. Verify all monetization endpoints are included\n\nEnsure deployment supports our €400k revenue target with proper marketplace listings."
+  }
+}

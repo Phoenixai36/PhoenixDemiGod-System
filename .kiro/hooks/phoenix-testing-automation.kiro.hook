@@ -1,0 +1,20 @@
+{
+  "enabled": true,
+  "name": "Phoenix Testing Automation",
+  "description": "Run comprehensive test suites when critical components change",
+  "version": "1.0.0",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "tests/**/*.py",
+      "src/core/**/*.py",
+      "src/hooks/**/*.py",
+      "pytest.ini",
+      "pyproject.toml"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Phoenix Hydra testing configuration or core components have been updated. Please:\n1. Run the full test suite with coverage reporting\n2. Execute chaos engineering tests if available\n3. Test consciousness and behavior validation\n4. Run integration tests for all services\n5. Validate container health and metrics collection\n\nMaintain 95% completion status for enterprise readiness and revenue goals."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "enabled": true,
+  "name": "Phoenix Revenue Automation",
+  "description": "Automatically update revenue tracking and deploy affiliate badges when monetization configs change",
+  "version": "1.0.0",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "configs/phoenix-monetization.json",
+      "configs/n8n-workflows/n8n-phoenix-monetization.json",
+      "windmill-scripts/windmill-phoenix-grants.json",
+      "scripts/revenue-tracking.js",
+      "scripts/deploy-badges.js"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "The Phoenix Hydra monetization configuration has been updated. Please:\n1. Run the revenue tracking script to update metrics\n2. Deploy updated affiliate badges to README\n3. Check if any grant applications need updating\n4. Verify all monetization endpoints are working\n\nTarget: €400k+ revenue for 2025. Current focus: DigitalOcean, CustomGPT, Cloudflare partnerships."
+  }
+}

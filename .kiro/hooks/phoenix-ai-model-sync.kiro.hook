@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "Phoenix AI Model Sync",
+  "description": "Sync AI model configurations and test integrations when model files change",
+  "version": "1.0.0",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "models/**/*",
+      "src/agents/*/config.py",
+      "autogen/**/*.py",
+      "training/**/*"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Phoenix Hydra AI model configuration has been updated. Please:\n1. Validate model compatibility with SSM/Mamba architecture\n2. Test AutoGen multi-agent integrations\n3. Verify energy efficiency improvements (60-70% target)\n4. Update model documentation and API specs\n5. Check if Ollama local inference is working\n\nAI efficiency is our core competitive advantage for the €400k revenue goal."
+  }
+}

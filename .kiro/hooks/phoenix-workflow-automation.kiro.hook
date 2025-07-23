@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "Phoenix Workflow Automation",
+  "description": "Sync n8n workflows and Windmill scripts when automation configs change",
+  "version": "1.0.0",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "configs/n8n-workflows/*.json",
+      "windmill-scripts/*.json",
+      "windmill-scripts/*.js",
+      "windmill-scripts/*.ts"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Phoenix Hydra workflow configuration has been updated. Please:\n1. Validate the workflow syntax and structure\n2. Sync changes between n8n and Windmill if needed\n3. Test the workflow endpoints\n4. Update any dependent automation scripts\n5. Check if revenue tracking workflows need updates\n\nFocus on maintaining the €400k revenue target automation."
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "name": "Phoenix Master Orchestrator",
+  "description": "Coordinate all Phoenix Hydra automation and provide status updates",
+  "version": "1.0.0",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      ".kiro/hooks/*.kiro.hook",
+      ".vscode/tasks.json",
+      "scripts/complete-phoenix-deployment.*"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Phoenix Hydra automation configuration has been updated. Please:\n1. Validate all hook configurations are working\n2. Check VS Code task integration\n3. Test the complete deployment pipeline\n4. Verify all revenue tracking automation is active\n5. Ensure all services are properly monitored\n\n🎯 Phoenix Hydra Status:\n- Target: €400k revenue in 2025\n- Completion: 95% production ready\n- Focus: Energy-efficient AI with 60-70% savings\n- Channels: DigitalOcean, AWS, CustomGPT, Grants\n\nProvide a comprehensive status update on all automation systems."
+  }
+}

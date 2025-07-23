@@ -1,0 +1,91 @@
+{
+  "name": "phoenix-revenue-tracking",
+  "description": "Automatically update revenue metrics and affiliate badges when monetization configs change",
+  "version": "1.0.0",
+  "author": "Phoenix Hydra Team",
+  "triggers": [
+    {
+      "type": "file_save",
+      "pattern": "configs/phoenix-monetization.json"
+    },
+    {
+      "type": "file_save",
+      "pattern": "configs/n8n-workflows/n8n-phoenix-monetization.json"
+    },
+    {
+      "type": "file_save",
+      "pattern": "scripts/revenue-tracking.js"
+    },
+    {
+      "type": "file_save",
+      "pattern": "scripts/deploy-badges.js"
+    }
+  ],
+  "conditions": [
+    {
+      "type": "file_exists",
+      "path": "scripts/package.json"
+    }
+  ],
+  "actions": [
+    {
+      "type": "run_command",
+      "name": "Install Node Dependencies",
+      "command": "npm install",
+      "cwd": "${workspaceRoot}/scripts",
+      "show_output": false,
+      "condition": {
+        "type": "file_modified_since",
+        "path": "scripts/package.json",
+        "minutes": 5
+      }
+    },
+    {
+      "type": "run_command",
+      "name": "Update Revenue Metrics",
+      "command": "node scripts/revenue-tracking.js",
+      "cwd": "${workspaceRoot}",
+      "show_output": true,
+      "continue_on_error": true
+    },
+    {
+      "type": "run_command",
+      "name": "Deploy Affiliate Badges",
+      "command": "node scripts/deploy-badges.js",
+      "cwd": "${workspaceRoot}",
+      "show_output": true,
+      "continue_on_error": true
+    },
+    {
+      "type": "conditional",
+      "condition": {
+        "type": "date_before",
+        "date": "2025-06-12",
+        "days": 30
+      },
+      "actions": [
+        {
+          "type": "run_command",
+          "name": "Generate NEOTEC Application",
+          "command": "python scripts/neotec-generator.py",
+          "cwd": "${workspaceRoot}",
+          "show_output": true,
+          "environment": {
+            "DEADLINE": "2025-06-12",
+            "AMOUNT": "€325k",
+            "TRL": "6-9"
+          }
+        }
+      ]
+    }
+  ],
+  "notifications": {
+    "on_success": "💰 Revenue tracking updated - Target 2025: €400k+",
+    "on_error": "❌ Revenue tracking update failed"
+  },
+  "settings": {
+    "debounce_ms": 3000,
+    "max_concurrent": 1,
+    "timeout": 60000
+  }
+}

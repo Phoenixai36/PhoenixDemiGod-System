@@ -1,0 +1,86 @@
+{
+  "name": "phoenix-infrastructure-deploy",
+  "description": "Automatically validate and deploy infrastructure changes when Terraform or Podman files are modified",
+  "version": "1.0.0",
+  "author": "PHOENIXxHYDRA Team",
+  "triggers": [
+    {
+      "type": "file_save",
+      "pattern": "infra/**/*.tf"
+    },
+    {
+      "type": "file_save",
+      "pattern": "infra/**/*.yaml"
+    },
+    {
+      "type": "file_save",
+      "pattern": "infra/podman/compose.yaml"
+    },
+    {
+      "type": "file_save",
+      "pattern": "infra/podman/systemd/*.container"
+    }
+  ],
+  "conditions": [
+    {
+      "type": "file_exists",
+      "path": "infra/podman/compose.yaml"
+    }
+  ],
+  "actions": [
+    {
+      "type": "run_command",
+      "name": "Validate Podman Compose",
+      "command": "podman-compose -f ${file} config",
+      "cwd": "${workspaceRoot}",
+      "show_output": true,
+      "condition": {
+        "type": "path_contains",
+        "path": "${file}",
+        "contains": "podman"
+      }
+    },
+    {
+      "type": "run_command",
+      "name": "Terraform Format",
+      "command": "terraform fmt ${file}",
+      "cwd": "${fileDir}",
+      "show_output": false,
+      "condition": {
+        "type": "path_contains",
+        "path": "${file}",
+        "contains": ".tf"
+      }
+    },
+    {
+      "type": "run_command",
+      "name": "Terraform Validate",
+      "command": "terraform validate",
+      "cwd": "${fileDir}",
+      "show_output": true,
+      "condition": {
+        "type": "path_contains",
+        "path": "${file}",
+        "contains": ".tf"
+      }
+    },
+    {
+      "type": "run_command",
+      "name": "Health Check After Deploy",
+      "command": "curl -f http://localhost:8080/health",
+      "cwd": "${workspaceRoot}",
+      "show_output": true,
+      "continue_on_error": true,
+      "delay": 10000
+    }
+  ],
+  "notifications": {
+    "on_success": "🚀 Infrastructure deployment completed for ${fileName}",
+    "on_error": "⚠️ Infrastructure deployment failed for ${fileName}"
+  },
+  "settings": {
+    "debounce_ms": 2000,
+    "max_concurrent": 1,
+    "timeout": 120000
+  }
+}

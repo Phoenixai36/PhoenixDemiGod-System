@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "Phoenix Performance Monitor",
+  "description": "Monitor and optimize performance when core components change",
+  "version": "1.0.0",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "src/phoenix_demigod/*.py",
+      "src/agents/*.py",
+      "src/metrics/*.py",
+      "infra/podman/observability.compose.yaml"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Phoenix Hydra performance-critical components have been modified. Please:\n1. Run performance benchmarks if available\n2. Check memory usage and optimization opportunities\n3. Verify SSM/Mamba model efficiency (60-70% energy savings target)\n4. Update monitoring configurations if needed\n5. Test container resource limits\n\nPerformance is a key differentiator for our energy-efficient AI positioning."
+  }
+}

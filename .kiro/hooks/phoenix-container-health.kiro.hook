@@ -1,0 +1,111 @@
+{
+  "name": "phoenix-container-health",
+  "description": "Monitor Phoenix Hydra container health and automatically restart unhealthy services",
+  "version": "1.0.0",
+  "author": "Phoenix Hydra Team",
+  "triggers": [
+    {
+      "type": "schedule",
+      "cron": "*/2 * * * *"
+    },
+    {
+      "type": "manual",
+      "label": "Check Phoenix Health"
+    }
+  ],
+  "conditions": [
+    {
+      "type": "file_exists",
+      "path": "infra/podman/compose.yaml"
+    }
+  ],
+  "actions": [
+    {
+      "type": "run_command",
+      "name": "Check Phoenix Core Health",
+      "command": "curl -f -s --max-time 5 http://localhost:8080/health",
+      "cwd": "${workspaceRoot}",
+      "show_output": false,
+      "continue_on_error": true,
+      "on_error": [
+        {
+          "type": "notification",
+          "message": "🚨 Phoenix Core is unhealthy - attempting restart",
+          "severity": "warning"
+        },
+        {
+          "type": "run_command",
+          "name": "Restart Phoenix Core",
+          "command": "podman restart phoenix-hydra_phoenix-core_1",
+          "cwd": "${workspaceRoot}",
+          "show_output": true,
+          "continue_on_error": true
+        }
+      ]
+    },
+    {
+      "type": "run_command",
+      "name": "Check n8n Health",
+      "command": "curl -f -s --max-time 5 http://localhost:5678",
+      "cwd": "${workspaceRoot}",
+      "show_output": false,
+      "continue_on_error": true,
+      "on_error": [
+        {
+          "type": "notification",
+          "message": "🚨 n8n service is unhealthy - attempting restart",
+          "severity": "warning"
+        },
+        {
+          "type": "run_command",
+          "name": "Restart n8n",
+          "command": "podman restart phoenix-hydra_n8n-phoenix_1",
+          "cwd": "${workspaceRoot}",
+          "show_output": true,
+          "continue_on_error": true
+        }
+      ]
+    },
+    {
+      "type": "run_command",
+      "name": "Check Windmill Health",
+      "command": "curl -f -s --max-time 5 http://localhost:8000/api/version",
+      "cwd": "${workspaceRoot}",
+      "show_output": false,
+      "continue_on_error": true,
+      "on_error": [
+        {
+          "type": "notification",
+          "message": "🚨 Windmill service is unhealthy - attempting restart",
+          "severity": "warning"
+        },
+        {
+          "type": "run_command",
+          "name": "Restart Windmill",
+          "command": "podman restart phoenix-hydra_windmill-phoenix_1",
+          "cwd": "${workspaceRoot}",
+          "show_output": true,
+          "continue_on_error": true
+        }
+      ]
+    },
+    {
+      "type": "run_command",
+      "name": "Check Container Resource Usage",
+      "command": "podman stats --no-stream --format \"table {{.Name}}\\t{{.CPUPerc}}\\t{{.MemUsage}}\"",
+      "cwd": "${workspaceRoot}",
+      "show_output": true,
+      "continue_on_error": true
+    }
+  ],
+  "notifications": {
+    "on_success": "✅ Phoenix Hydra health check completed - all services healthy",
+    "on_error": "🚨 Phoenix Hydra health check detected issues"
+  },
+  "settings": {
+    "max_concurrent": 1,
+    "timeout": 60000,
+    "retry_count": 2,
+    "retry_delay": 5000
+  }
+}

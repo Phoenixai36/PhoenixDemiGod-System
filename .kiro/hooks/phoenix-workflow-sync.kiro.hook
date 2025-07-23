@@ -1,0 +1,144 @@
+{
+  "name": "phoenix-workflow-sync",
+  "description": "Sync n8n workflows and Windmill scripts when automation files change",
+  "version": "1.0.0",
+  "author": "Phoenix Hydra Team",
+  "triggers": [
+    {
+      "type": "file_save",
+      "pattern": "configs/n8n-workflows/*.json"
+    },
+    {
+      "type": "file_save",
+      "pattern": "windmill-scripts/*.json"
+    },
+    {
+      "type": "file_save",
+      "pattern": "windmill-scripts/*.js"
+    },
+    {
+      "type": "file_save",
+      "pattern": "windmill-scripts/*.ts"
+    }
+  ],
+  "conditions": [
+    {
+      "type": "or",
+      "conditions": [
+        {
+          "type": "file_exists",
+          "path": "configs/n8n-workflows"
+        },
+        {
+          "type": "file_exists",
+          "path": "windmill-scripts"
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "type": "conditional",
+      "condition": {
+        "type": "path_contains",
+        "path": "${file}",
+        "contains": "n8n-workflows"
+      },
+      "actions": [
+        {
+          "type": "run_command",
+          "name": "Validate n8n Workflow",
+          "command": "node -e \"JSON.parse(require('fs').readFileSync('${file}', 'utf8')); console.log('✅ Valid n8n workflow JSON')\"",
+          "cwd": "${workspaceRoot}",
+          "show_output": true
+        },
+        {
+          "type": "notification",
+          "message": "📋 n8n workflow updated: ${fileName}",
+          "actions": [
+            {
+              "label": "Open n8n Editor",
+              "type": "open_url",
+              "url": "http://localhost:5678"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "conditional",
+      "condition": {
+        "type": "path_contains",
+        "path": "${file}",
+        "contains": "windmill-scripts"
+      },
+      "actions": [
+        {
+          "type": "conditional",
+          "condition": {
+            "type": "file_extension",
+            "path": "${file}",
+            "extension": ".json"
+          },
+          "actions": [
+            {
+              "type": "run_command",
+              "name": "Validate Windmill Config",
+              "command": "node -e \"JSON.parse(require('fs').readFileSync('${file}', 'utf8')); console.log('✅ Valid Windmill config JSON')\"",
+              "cwd": "${workspaceRoot}",
+              "show_output": true
+            }
+          ]
+        },
+        {
+          "type": "conditional",
+          "condition": {
+            "type": "or",
+            "conditions": [
+              {
+                "type": "file_extension",
+                "path": "${file}",
+                "extension": ".js"
+              },
+              {
+                "type": "file_extension",
+                "path": "${file}",
+                "extension": ".ts"
+              }
+            ]
+          },
+          "actions": [
+            {
+              "type": "run_command",
+              "name": "Check Windmill Script Syntax",
+              "command": "node --check ${file}",
+              "cwd": "${workspaceRoot}",
+              "show_output": true,
+              "continue_on_error": true
+            }
+          ]
+        },
+        {
+          "type": "notification",
+          "message": "⚡ Windmill script updated: ${fileName}",
+          "actions": [
+            {
+              "label": "Open Windmill Dashboard",
+              "type": "open_url",
+              "url": "http://localhost:8000"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "notifications": {
+    "on_success": "🔄 Workflow synchronization completed for ${fileName}",
+    "on_error": "⚠️ Workflow synchronization failed for ${fileName}"
+  },
+  "settings": {
+    "debounce_ms": 1500,
+    "max_concurrent": 2,
+    "timeout": 30000
+  }
+}

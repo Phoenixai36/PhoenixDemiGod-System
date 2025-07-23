@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Hello Greeting",
+  "description": "A simple hook that says hello when any file in the project is modified",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "*"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Say hello to the user in a friendly way and mention that a file has been changed in the Phoenix Hydra project"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "name": "Phoenix Security Audit",
+  "description": "Run security checks when sensitive files are modified",
+  "version": "1.0.0",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      ".env*",
+      "configs/*.json",
+      "infra/podman/systemd/*.container",
+      "src/core/config.py",
+      "scripts/*.sh",
+      "scripts/*.ps1"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Phoenix Hydra security-sensitive files have been modified. Please:\n1. Scan for hardcoded secrets or credentials\n2. Verify proper environment variable usage\n3. Check container security configurations\n4. Validate script permissions and execution safety\n5. Ensure compliance with enterprise security standards\n\nSecurity is critical for enterprise customers and our €400k revenue target."
+  }
+}

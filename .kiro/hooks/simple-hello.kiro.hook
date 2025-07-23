@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Simple Hello",
+  "description": "A simple hook that says hello",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "*"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Say hello!"
+  }
+}

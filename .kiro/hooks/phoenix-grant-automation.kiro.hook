@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "Phoenix Grant Automation",
+  "description": "Update grant applications when project milestones or tech specs change",
+  "version": "1.0.0",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "NEOTEC_application_*.json",
+      "docs/implementation-roadmap.md",
+      "docs/monetization-plan.md",
+      "PROJECT-COMPLETION-STATUS.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Phoenix Hydra grant-related documentation has been updated. Please:\n1. Run the NEOTEC grant generator script\n2. Update project completion percentages\n3. Verify technical specifications match current capabilities\n4. Check if new milestones qualify for additional grants\n5. Update revenue projections and market analysis\n\nGrant funding is crucial for reaching our €400k revenue target."
+  }
+}

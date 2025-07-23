@@ -1,0 +1,58 @@
+{
+  "name": "phoenix-code-quality",
+  "description": "Automatically run tests, formatting, and linting when Python files are saved",
+  "version": "0.1.0",
+  "author": "PHOENIXxHYDRA Team",
+  "triggers": [
+    {
+      "type": "file_save",
+      "pattern": "**/*.py",
+      "exclude": ["**/__pycache__/**", "**/venv/**", "**/build/**"]
+    }
+  ],
+  "conditions": [
+    {
+      "type": "file_exists",
+      "path": "pyproject.toml"
+    }
+  ],
+  "actions": [
+    {
+      "type": "run_command",
+      "name": "Format Python Code",
+      "command": "black ${file}",
+      "cwd": "${workspaceRoot}",
+      "show_output": false
+    },
+    {
+      "type": "run_command",
+      "name": "Check Code Quality",
+      "command": "ruff check ${file}",
+      "cwd": "${workspaceRoot}",
+      "show_output": true,
+      "continue_on_error": true
+    },
+    {
+      "type": "run_command",
+      "name": "Run Related Tests",
+      "command": "pytest tests/ -v --tb=short -x",
+      "cwd": "${workspaceRoot}",
+      "show_output": true,
+      "continue_on_error": true,
+      "condition": {
+        "type": "path_contains",
+        "path": "${file}",
+        "contains": "src/"
+      }
+    }
+  ],
+  "notifications": {
+    "on_success": "✅ Code quality checks passed for ${fileName}",
+    "on_error": "❌ Code quality issues found in ${fileName}"
+  },
+  "settings": {
+    "debounce_ms": 1000,
+    "max_concurrent": 3,
+    "timeout": 30000
+  }
+}

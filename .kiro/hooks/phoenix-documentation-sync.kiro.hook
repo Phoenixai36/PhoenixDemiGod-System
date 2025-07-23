@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "name": "Phoenix Documentation Sync",
+  "description": "Update documentation when code or architecture changes",
+  "version": "1.0.0",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "src/core/*.py",
+      "src/agents/*.py",
+      "src/hooks/*.py",
+      "infra/podman/compose.yaml",
+      "pyproject.toml",
+      "README.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Phoenix Hydra core files have been modified. Please:\n1. Update relevant documentation in docs/ folder\n2. Check if API documentation needs updates\n3. Update architecture diagrams if needed\n4. Verify README.md reflects current capabilities\n5. Update deployment guides if infrastructure changed\n\nEnsure documentation supports the €400k revenue goal with clear value propositions."
+  }
+}

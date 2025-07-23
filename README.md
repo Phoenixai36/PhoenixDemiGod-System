@@ -93,3 +93,21 @@ Available tasks (Ctrl+Shift+P → "Tasks: Run Task"):
 [![Deploy Phoenix Hydra on DigitalOcean](https://do.co/referral-badge)](https://m.do.co/c/phoenix-hydra-2025)
 [![Phoenix Hydra + CustomGPT](https://customgpt.ai/affiliate-badge)](https://customgpt.ai/?ref=phoenix-hydra)
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://workers.cloudflare.com/deploy/phoenix-hydra)
+
+## Our Partners
+
+[![Deploy Phoenix Hydra on DigitalOcean](https://do.co/referral-badge)](https://m.do.co/c/phoenix-hydra-2025)
+[![Phoenix Hydra + CustomGPT](https://customgpt.ai/affiliate-badge)](https://customgpt.ai/?ref=phoenix-hydra)
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://workers.cloudflare.com/deploy/phoenix-hydra)
+
+## Our Partners
+
+[![Deploy Phoenix Hydra on DigitalOcean](https://do.co/referral-badge)](https://m.do.co/c/phoenix-hydra-2025)
+[![Phoenix Hydra + CustomGPT](https://customgpt.ai/affiliate-badge)](https://customgpt.ai/?ref=phoenix-hydra)
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://workers.cloudflare.com/deploy/phoenix-hydra)
+
+## Our Partners
+
+[![Deploy Phoenix Hydra on DigitalOcean](https://do.co/referral-badge)](https://m.do.co/c/phoenix-hydra-2025)
+[![Phoenix Hydra + CustomGPT](https://customgpt.ai/affiliate-badge)](https://customgpt.ai/?ref=phoenix-hydra)
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://workers.cloudflare.com/deploy/phoenix-hydra)
