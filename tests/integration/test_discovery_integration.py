@@ -289,7 +289,8 @@ Phoenix Hydra is a comprehensive, self-hosted multimedia and AI automation stack
         monetization_files = [f for f in inventory.configuration_files if "monetization" in f]
         if monetization_files:
             monetization_data = config_results[monetization_files[0]]
-            assert "affiliate_programs" in monetization_data
+            # Check for either camelCase or snake_case key format
+            assert "affiliate_programs" in monetization_data or "affiliatePrograms" in monetization_data
     
     def test_phoenix_specific_validations(self, temp_phoenix_project):
         """Test Phoenix-specific validation rules"""

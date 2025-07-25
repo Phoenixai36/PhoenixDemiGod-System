@@ -47,8 +47,11 @@
 
 
 
-- [ ] 3. Create Phoenix Hydra specific component criteria
-  - [ ] 3.1 Define Infrastructure evaluation criteria
+- [x] 3. Create Phoenix Hydra specific component criteria
+
+
+  - [x] 3.1 Define Infrastructure evaluation criteria
+
     - Create criteria for NCA Toolkit API endpoints and health checks
     - Define Podman stack evaluation including compose files and service definitions
 
@@ -56,16 +59,27 @@
     - Add Minio S3 storage configuration and access policy criteria
     - _Requirements: 1.1, 1.2, 5.1_
 
-  - [ ] 3.2 Implement Monetization component criteria
+  - [x] 3.2 Implement Monetization component criteria
+
+
     - Define affiliate program evaluation including badge deployment and tracking
     - Create grant application assessment criteria for NEOTEC, ENISA, and EIC
     - Implement marketplace readiness criteria for AWS, Cloudflare, and Hugging Face
     - Add revenue tracking and metrics collection evaluation criteria
+
     - _Requirements: 4.1, 4.2, 4.3_
+
+
+
+
+
+
+
 
   - [ ] 3.3 Build Automation system criteria
     - Create VS Code task and settings validation criteria
     - Define deployment script functionality assessment criteria
+
     - Implement Kiro agent hooks evaluation criteria
     - Add CI/CD pipeline readiness assessment criteria
     - _Requirements: 1.4, 2.4, 5.1_
@@ -78,7 +92,8 @@
     - Create unit tests for component evaluation
     - _Requirements: 2.2, 3.2_
 
-  - [ ] 4.2 Build Dependency Analyzer
+  - [-] 4.2 Build Dependency Analyzer
+
     - Implement dependency mapping and validation logic
     - Create inter-component relationship analysis
     - Add dependency conflict detection
