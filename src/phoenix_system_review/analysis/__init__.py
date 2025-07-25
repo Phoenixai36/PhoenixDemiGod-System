@@ -15,10 +15,19 @@ from .dependency_analyzer import (
     DependencyAnalyzer,
     DependencyAnalysisResult,
     Dependency,
-    DependencyConflict,
     DependencyGraph,
     DependencyType,
-    ConflictSeverity
+    DependencyStatus
+)
+from .quality_assessor import (
+    QualityAssessor,
+    QualityAssessmentResult,
+    CodeQualityResult,
+    DocumentationResult,
+    TestCoverageResult,
+    QualityMetric,
+    QualityLevel,
+    QualityIssue
 )
 
 __all__ = [
@@ -29,8 +38,15 @@ __all__ = [
     "DependencyAnalyzer",
     "DependencyAnalysisResult",
     "Dependency",
-    "DependencyConflict",
     "DependencyGraph",
     "DependencyType",
-    "ConflictSeverity"
+    "DependencyStatus",
+    "QualityAssessor",
+    "QualityAssessmentResult",
+    "CodeQualityResult",
+    "DocumentationResult",
+    "TestCoverageResult",
+    "QualityMetric",
+    "QualityLevel",
+    "QualityIssue"
 ]

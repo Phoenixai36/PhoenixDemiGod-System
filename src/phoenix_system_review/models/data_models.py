@@ -49,6 +49,30 @@ class ImpactLevel(Enum):
     LOW = "low"
 
 
+class CriterionType(Enum):
+    """Types of evaluation criteria"""
+    EXISTENCE = "existence"
+    CONFIGURATION = "configuration"
+    FUNCTIONALITY = "functionality"
+    QUALITY = "quality"
+    INTEGRATION = "integration"
+    DEPLOYMENT = "deployment"
+    AUTOMATION = "automation"
+
+
+@dataclass
+class EvaluationCriterion:
+    """Represents a criterion for evaluating components"""
+    id: str
+    name: str
+    description: str
+    criterion_type: CriterionType
+    weight: float = 1.0
+    is_critical: bool = False
+    evaluation_method: str = "manual"
+    parameters: Dict[str, Any] = field(default_factory=dict)
+
+
 @dataclass
 class Component:
     """Represents a Phoenix Hydra system component"""
@@ -61,6 +85,7 @@ class Component:
     description: Optional[str] = None
     version: Optional[str] = None
     last_updated: Optional[datetime] = None
+    criteria: List[EvaluationCriterion] = field(default_factory=list)
 
 
 @dataclass

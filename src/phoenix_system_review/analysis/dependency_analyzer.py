@@ -1,65 +1,57 @@
 """
 Dependency Analyzer for Phoenix Hydra System Review Tool
 
-Analyzes component dependencies, maps inter-component relationships,
+Analyzes inter-component relationships, validates dependencies,
 and detects dependency conflicts in the Phoenix Hydra system.
 """
 
-from typing import Dict, List, Set, Optional, Tuple, Any
+from typing import Dict, List, Set, Tuple, Optional, Any
 from dataclasses import dataclass, field
 from enum import Enum
 import logging
 from collections import defaultdict, deque
 
 from ..models.data_models import Component, ComponentCategory, ComponentStatus
+from ..criteria.infrastructure_criteria import InfrastructureComponent
+from ..criteria.monetization_criteria import MonetizationComponent
+from ..criteria.automation_criteria import AutomationComponentType
 
 
 class DependencyType(Enum):
     """Types of dependencies between components"""
-    DIRECT = "direct"
-    TRANSITIVE = "transitive"
-    CIRCULAR = "circular"
-    OPTIONAL = "optional"
-    RUNTIME = "runtime"
-    BUILD = "build"
+    REQUIRED = "required"  # Hard dependency - component cannot function without it
+    OPTIONAL = "optional"  # Soft dependency - component has reduced functionality without it
+    CIRCULAR = "circular"  # Circular dependency - mutual dependency
+    CONFLICTING = "conflicting"  # Conflicting dependency - components cannot coexist
 
 
-class ConflictSeverity(Enum):
-    """Severity levels for dependency conflicts"""
-    CRITICAL = "critical"
-    HIGH = "high"
-    MEDIUM = "medium"
-    LOW = "low"
+class DependencyStatus(Enum):
+    """Status of a dependency relationship"""
+    SATISFIED = "satisfied"  # Dependency is met
+    MISSING = "missing"  # Required dependency is not available
+    DEGRADED = "degraded"  # Dependency is available but not fully functional
+    CONFLICTED = "conflicted"  # Dependency creates a conflict
 
 
 @dataclass
 class Dependency:
     """Represents a dependency relationship between components"""
-    source: str  # Component that depends on target
-    target: str  # Component being depended upon
+    source: str  # Component that has the dependency
+    target: str  # Component that is depended upon
     dependency_type: DependencyType
-    required: bool = True
-    version_constraint: Optional[str] = None
-    description: Optional[str] = None
-
-
-@dataclass
-class DependencyConflict:
-    """Represents a conflict in dependency relationships"""
-    conflict_type: str
-    severity: ConflictSeverity
-    components: List[str]
+    status: DependencyStatus
     description: str
-    resolution_suggestions: List[str] = field(default_factory=list)
+    version_requirement: Optional[str] = None
+    configuration_requirements: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
 class DependencyGraph:
-    """Represents the complete dependency graph"""
-    nodes: Set[str] = field(default_factory=set)
-    edges: List[Dependency] = field(default_factory=list)
-    adjacency_list: Dict[str, List[str]] = field(default_factory=dict)
-    reverse_adjacency_list: Dict[str, List[str]] = field(default_factory=dict)
+    """Represents the complete dependency graph of the system"""
+    components: Dict[str, Component] = field(default_factory=dict)
+    dependencies: List[Dependency] = field(default_factory=list)
+    adjacency_list: Dict[str, List[str]] = field(default_factory=lambda: defaultdict(list))
+    reverse_adjacency_list: Dict[str, List[str]] = field(default_factory=lambda: defaultdict(list))
 
 
 @dataclass
@@ -67,25 +59,25 @@ class DependencyAnalysisResult:
     """Results from dependency analysis"""
     dependency_graph: DependencyGraph
     circular_dependencies: List[List[str]] = field(default_factory=list)
-    missing_dependencies: List[str] = field(default_factory=list)
-    conflicts: List[DependencyConflict] = field(default_factory=list)
-    dependency_depth: Dict[str, int] = field(default_factory=dict)
-    critical_path: List[str] = field(default_factory=list)
-    orphaned_components: List[str] = field(default_factory=list)
+    missing_dependencies: List[Dependency] = field(default_factory=list)
+    conflicting_dependencies: List[Tuple[Dependency, Dependency]] = field(default_factory=list)
+    dependency_violations: List[str] = field(default_factory=list)
+    component_dependency_scores: Dict[str, float] = field(default_factory=dict)
+    overall_dependency_health: float = 0.0
 
 
 class DependencyAnalyzer:
     """
     Analyzes dependencies between Phoenix Hydra components.
     
-    Provides functionality to map dependencies, detect conflicts,
-    analyze relationships, and generate dependency insights.
+    Provides functionality to map dependencies, validate relationships,
+    detect conflicts, and analyze the overall dependency health of the system.
     """
     
     def __init__(self):
         """Initialize dependency analyzer"""
         self.logger = logging.getLogger(__name__)
-        self.known_phoenix_dependencies = self._build_phoenix_dependency_map()
+        self.known_dependencies = self._build_known_dependencies()
     
     def analyze_dependencies(self, components: List[Component]) -> DependencyAnalysisResult:
         """
@@ -105,177 +97,184 @@ class DependencyAnalyzer:
             circular_deps = self._detect_circular_dependencies(dependency_graph)
             
             # Find missing dependencies
-            missing_deps = self._find_missing_dependencies(components, dependency_graph)
+            missing_deps = self._find_missing_dependencies(dependency_graph)
             
-            # Detect conflicts
-            conflicts = self._detect_dependency_conflicts(components, dependency_graph)
+            # Detect conflicting dependencies
+            conflicting_deps = self._detect_conflicting_dependencies(dependency_graph)
             
-            # Calculate dependency depth
-            dependency_depth = self._calculate_dependency_depth(dependency_graph)
+            # Identify dependency violations
+            violations = self._identify_dependency_violations(dependency_graph)
             
-            # Find critical path
-            critical_path = self._find_critical_path(dependency_graph, dependency_depth)
+            # Calculate dependency scores
+            component_scores = self._calculate_dependency_scores(dependency_graph, missing_deps, conflicting_deps)
             
-            # Find orphaned components
-            orphaned = self._find_orphaned_components(dependency_graph)
+            # Calculate overall dependency health
+            overall_health = self._calculate_overall_dependency_health(component_scores, circular_deps, missing_deps, conflicting_deps)
             
             return DependencyAnalysisResult(
                 dependency_graph=dependency_graph,
                 circular_dependencies=circular_deps,
                 missing_dependencies=missing_deps,
-                conflicts=conflicts,
-                dependency_depth=dependency_depth,
-                critical_path=critical_path,
-                orphaned_components=orphaned
+                conflicting_dependencies=conflicting_deps,
+                dependency_violations=violations,
+                component_dependency_scores=component_scores,
+                overall_dependency_health=overall_health
             )
             
         except Exception as e:
             self.logger.error(f"Error analyzing dependencies: {e}")
-            return DependencyAnalysisResult(dependency_graph=DependencyGraph())
-    
-    def get_component_dependencies(self, component_name: str, dependency_graph: DependencyGraph) -> List[str]:
-        """Get direct dependencies for a component"""
-        return dependency_graph.adjacency_list.get(component_name, [])
-    
-    def get_component_dependents(self, component_name: str, dependency_graph: DependencyGraph) -> List[str]:
-        """Get components that depend on this component"""
-        return dependency_graph.reverse_adjacency_list.get(component_name, [])
-    
-    def get_transitive_dependencies(self, component_name: str, dependency_graph: DependencyGraph) -> Set[str]:
-        """Get all transitive dependencies for a component"""
-        visited = set()
-        queue = deque([component_name])
-        
-        while queue:
-            current = queue.popleft()
-            if current in visited:
-                continue
-            visited.add(current)
-            
-            dependencies = dependency_graph.adjacency_list.get(current, [])
-            for dep in dependencies:
-                if dep not in visited:
-                    queue.append(dep)
-        
-        visited.discard(component_name)  # Remove self
-        return visited
-    
-    def calculate_impact_score(self, component_name: str, dependency_graph: DependencyGraph) -> float:
-        """Calculate impact score based on dependency relationships"""
-        # Components with more dependents have higher impact
-        dependents = len(self.get_component_dependents(component_name, dependency_graph))
-        dependencies = len(self.get_component_dependencies(component_name, dependency_graph))
-        
-        # Weight dependents more heavily than dependencies
-        impact_score = (dependents * 2.0) + (dependencies * 0.5)
-        
-        # Normalize to 0-1 scale based on total components
-        total_components = len(dependency_graph.nodes)
-        if total_components > 1:
-            max_possible_score = (total_components - 1) * 2.0 + (total_components - 1) * 0.5
-            impact_score = min(impact_score / max_possible_score, 1.0)
-        
-        return impact_score
+            return DependencyAnalysisResult(
+                dependency_graph=DependencyGraph(),
+                overall_dependency_health=0.0
+            )
     
     def _build_dependency_graph(self, components: List[Component]) -> DependencyGraph:
-        """Build dependency graph from components"""
+        """Build a dependency graph from components"""
         graph = DependencyGraph()
         
-        # Add all components as nodes
+        # Add components to graph
         for component in components:
-            graph.nodes.add(component.name)
-            graph.adjacency_list[component.name] = []
-            graph.reverse_adjacency_list[component.name] = []
+            graph.components[component.name] = component
         
-        # Add dependencies from component definitions
+        # Build dependencies based on known relationships and component analysis
         for component in components:
-            for dep_name in component.dependencies:
-                if dep_name in graph.nodes:
-                    dependency = Dependency(
-                        source=component.name,
-                        target=dep_name,
-                        dependency_type=DependencyType.DIRECT,
-                        required=True
-                    )
-                    graph.edges.append(dependency)
-                    graph.adjacency_list[component.name].append(dep_name)
-                    graph.reverse_adjacency_list[dep_name].append(component.name)
-        
-        # Add Phoenix Hydra specific dependencies
-        self._add_phoenix_specific_dependencies(components, graph)
+            dependencies = self._extract_component_dependencies(component, graph.components)
+            
+            for dep in dependencies:
+                graph.dependencies.append(dep)
+                graph.adjacency_list[dep.source].append(dep.target)
+                graph.reverse_adjacency_list[dep.target].append(dep.source)
         
         return graph
     
-    def _add_phoenix_specific_dependencies(self, components: List[Component], graph: DependencyGraph):
-        """Add Phoenix Hydra specific dependency relationships"""
-        component_map = {comp.name: comp for comp in components}
+    def _extract_component_dependencies(self, component: Component, all_components: Dict[str, Component]) -> List[Dependency]:
+        """Extract dependencies for a specific component"""
+        dependencies = []
         
-        for component in components:
-            # Infer dependencies based on Phoenix Hydra architecture
-            inferred_deps = self._infer_phoenix_dependencies(component, component_map)
-            
-            for dep_name in inferred_deps:
-                if dep_name in graph.nodes and dep_name not in graph.adjacency_list[component.name]:
-                    dependency = Dependency(
+        # Check explicit dependencies from component configuration
+        if hasattr(component, 'dependencies') and component.dependencies:
+            for dep_name in component.dependencies:
+                if dep_name in all_components:
+                    dependencies.append(Dependency(
                         source=component.name,
                         target=dep_name,
-                        dependency_type=DependencyType.RUNTIME,
-                        required=True,
-                        description="Inferred Phoenix Hydra dependency"
-                    )
-                    graph.edges.append(dependency)
-                    graph.adjacency_list[component.name].append(dep_name)
-                    graph.reverse_adjacency_list[dep_name].append(component.name)
-    
-    def _infer_phoenix_dependencies(self, component: Component, component_map: Dict[str, Component]) -> List[str]:
-        """Infer dependencies based on Phoenix Hydra architecture patterns"""
-        dependencies = []
-        component_name_lower = component.name.lower()
+                        dependency_type=DependencyType.REQUIRED,
+                        status=self._determine_dependency_status(component, all_components[dep_name]),
+                        description=f"Explicit dependency from {component.name} to {dep_name}"
+                    ))
+                else:
+                    # Missing explicit dependency
+                    dependencies.append(Dependency(
+                        source=component.name,
+                        target=dep_name,
+                        dependency_type=DependencyType.REQUIRED,
+                        status=DependencyStatus.MISSING,
+                        description=f"Missing explicit dependency from {component.name} to {dep_name}"
+                    ))
         
-        # Infrastructure dependencies
-        if component.category == ComponentCategory.INFRASTRUCTURE:
-            if "nca" in component_name_lower or "toolkit" in component_name_lower:
-                # NCA Toolkit depends on database and storage
-                dependencies.extend(self._find_components_by_pattern(component_map, ["database", "postgres"]))
-                dependencies.extend(self._find_components_by_pattern(component_map, ["minio", "storage"]))
-            
-            elif "podman" in component_name_lower or "container" in component_name_lower:
-                # Podman stack is foundational - other services depend on it
-                pass
-            
-            elif "grafana" in component_name_lower:
-                # Grafana depends on Prometheus
-                dependencies.extend(self._find_components_by_pattern(component_map, ["prometheus"]))
-        
-        # Monetization dependencies
-        elif component.category == ComponentCategory.MONETIZATION:
-            # Monetization components typically depend on database and analytics
-            dependencies.extend(self._find_components_by_pattern(component_map, ["database", "postgres"]))
-            dependencies.extend(self._find_components_by_pattern(component_map, ["analytics"]))
-        
-        # Automation dependencies
-        elif component.category == ComponentCategory.AUTOMATION:
-            if "deployment" in component_name_lower:
-                # Deployment scripts depend on container infrastructure
-                dependencies.extend(self._find_components_by_pattern(component_map, ["podman", "container"]))
-            
-            elif "monitoring" in component_name_lower:
-                # Monitoring depends on Prometheus/Grafana
-                dependencies.extend(self._find_components_by_pattern(component_map, ["prometheus", "grafana"]))
-        
-        # Remove self-dependencies
-        dependencies = [dep for dep in dependencies if dep != component.name]
+        # Infer dependencies based on component type and known patterns
+        inferred_deps = self._infer_component_dependencies(component, all_components)
+        dependencies.extend(inferred_deps)
         
         return dependencies
     
-    def _find_components_by_pattern(self, component_map: Dict[str, Component], patterns: List[str]) -> List[str]:
-        """Find components matching name patterns"""
-        matches = []
-        for comp_name, component in component_map.items():
-            comp_name_lower = comp_name.lower()
-            if any(pattern in comp_name_lower for pattern in patterns):
-                matches.append(comp_name)
-        return matches
+    def _infer_component_dependencies(self, component: Component, all_components: Dict[str, Component]) -> List[Dependency]:
+        """Infer dependencies based on component type and Phoenix Hydra patterns"""
+        dependencies = []
+        component_type = self._get_component_type(component)
+        
+        if component_type in self.known_dependencies:
+            for dep_pattern in self.known_dependencies[component_type]:
+                # Find matching components
+                matching_components = self._find_matching_components(dep_pattern["target_pattern"], all_components)
+                
+                for target_component in matching_components:
+                    dependencies.append(Dependency(
+                        source=component.name,
+                        target=target_component.name,
+                        dependency_type=DependencyType(dep_pattern["type"]),
+                        status=self._determine_dependency_status(component, target_component),
+                        description=dep_pattern["description"],
+                        configuration_requirements=dep_pattern.get("config_requirements", {})
+                    ))
+        
+        return dependencies
+    
+    def _get_component_type(self, component: Component) -> str:
+        """Get the component type for dependency analysis"""
+        name_lower = component.name.lower()
+        
+        # Infrastructure components
+        if "nca" in name_lower or "toolkit" in name_lower:
+            return "nca_toolkit"
+        elif "podman" in name_lower or "container" in name_lower:
+            return "podman_stack"
+        elif "database" in name_lower or "postgres" in name_lower:
+            return "database"
+        elif "minio" in name_lower or "s3" in name_lower:
+            return "minio_storage"
+        elif "prometheus" in name_lower:
+            return "prometheus"
+        elif "grafana" in name_lower:
+            return "grafana"
+        
+        # Monetization components
+        elif "affiliate" in name_lower:
+            return "affiliate_marketing"
+        elif "grant" in name_lower:
+            return "grant_tracking"
+        elif "revenue" in name_lower:
+            return "revenue_streams"
+        
+        # Automation components
+        elif "vscode" in name_lower or "ide" in name_lower or "vs code" in name_lower:
+            return "vscode_integration"
+        elif "deployment" in name_lower and "script" in name_lower:
+            return "deployment_scripts"
+        elif "hook" in name_lower or "kiro" in name_lower:
+            return "kiro_agent_hooks"
+        
+        return "unknown"
+    
+    def _find_matching_components(self, pattern: str, all_components: Dict[str, Component]) -> List[Component]:
+        """Find components matching a dependency pattern"""
+        matching = []
+        
+        for component in all_components.values():
+            if self._component_matches_pattern(component, pattern):
+                matching.append(component)
+        
+        return matching
+    
+    def _component_matches_pattern(self, component: Component, pattern: str) -> bool:
+        """Check if a component matches a dependency pattern"""
+        name_lower = component.name.lower()
+        pattern_lower = pattern.lower()
+        
+        # Direct name match
+        if pattern_lower in name_lower:
+            return True
+        
+        # Category match
+        if pattern_lower == component.category.value:
+            return True
+        
+        # Path-based match
+        if hasattr(component, 'path') and pattern_lower in component.path.lower():
+            return True
+        
+        return False
+    
+    def _determine_dependency_status(self, source: Component, target: Component) -> DependencyStatus:
+        """Determine the status of a dependency relationship"""
+        if target.status == ComponentStatus.OPERATIONAL:
+            return DependencyStatus.SATISFIED
+        elif target.status == ComponentStatus.DEGRADED:
+            return DependencyStatus.DEGRADED
+        elif target.status == ComponentStatus.FAILED:
+            return DependencyStatus.MISSING
+        else:
+            return DependencyStatus.MISSING
     
     def _detect_circular_dependencies(self, graph: DependencyGraph) -> List[List[str]]:
         """Detect circular dependencies using DFS"""
@@ -299,242 +298,276 @@ class DependencyAnalyzer:
             path.append(node)
             
             for neighbor in graph.adjacency_list.get(node, []):
-                if dfs(neighbor, path):
-                    # Continue to find all cycles
-                    pass
+                dfs(neighbor, path.copy())
             
             rec_stack.remove(node)
-            path.pop()
             return False
         
-        for node in graph.nodes:
-            if node not in visited:
-                dfs(node, [])
+        for component in graph.components:
+            if component not in visited:
+                dfs(component, [])
         
         return cycles
     
-    def _find_missing_dependencies(self, components: List[Component], graph: DependencyGraph) -> List[str]:
-        """Find dependencies that are referenced but not available"""
+    def _find_missing_dependencies(self, graph: DependencyGraph) -> List[Dependency]:
+        """Find dependencies that are missing or not satisfied"""
         missing = []
-        available_components = {comp.name for comp in components}
         
-        for component in components:
-            for dep_name in component.dependencies:
-                if dep_name not in available_components:
-                    missing.append(f"{component.name} -> {dep_name}")
+        for dependency in graph.dependencies:
+            if dependency.status in [DependencyStatus.MISSING, DependencyStatus.CONFLICTED]:
+                missing.append(dependency)
+            elif dependency.dependency_type == DependencyType.REQUIRED and dependency.target not in graph.components:
+                # Required dependency component doesn't exist
+                missing.append(Dependency(
+                    source=dependency.source,
+                    target=dependency.target,
+                    dependency_type=DependencyType.REQUIRED,
+                    status=DependencyStatus.MISSING,
+                    description=f"Required component {dependency.target} is missing"
+                ))
         
         return missing
     
-    def _detect_dependency_conflicts(self, components: List[Component], graph: DependencyGraph) -> List[DependencyConflict]:
-        """Detect various types of dependency conflicts"""
+    def _detect_conflicting_dependencies(self, graph: DependencyGraph) -> List[Tuple[Dependency, Dependency]]:
+        """Detect conflicting dependencies"""
         conflicts = []
         
-        # Detect circular dependency conflicts
-        circular_deps = self._detect_circular_dependencies(graph)
-        for cycle in circular_deps:
-            conflict = DependencyConflict(
-                conflict_type="circular_dependency",
-                severity=ConflictSeverity.HIGH,
-                components=cycle,
-                description=f"Circular dependency detected: {' -> '.join(cycle)}",
-                resolution_suggestions=[
-                    "Break the circular dependency by introducing an interface or abstraction",
-                    "Refactor components to remove direct circular references",
-                    "Use dependency injection to decouple components"
-                ]
-            )
-            conflicts.append(conflict)
-        
-        # Detect version conflicts (simplified - would need version info)
-        conflicts.extend(self._detect_version_conflicts(components))
-        
-        # Detect architectural conflicts
-        conflicts.extend(self._detect_architectural_conflicts(components, graph))
+        # Check for components that have conflicting requirements
+        for component_name, component in graph.components.items():
+            component_deps = [dep for dep in graph.dependencies if dep.source == component_name]
+            
+            # Check for version conflicts
+            target_versions = defaultdict(list)
+            for dep in component_deps:
+                if dep.version_requirement:
+                    target_versions[dep.target].append(dep)
+            
+            for target, deps in target_versions.items():
+                if len(deps) > 1:
+                    # Multiple version requirements for the same target
+                    for i in range(len(deps)):
+                        for j in range(i + 1, len(deps)):
+                            if deps[i].version_requirement != deps[j].version_requirement:
+                                conflicts.append((deps[i], deps[j]))
         
         return conflicts
     
-    def _detect_version_conflicts(self, components: List[Component]) -> List[DependencyConflict]:
-        """Detect version conflicts between components"""
-        conflicts = []
+    def _identify_dependency_violations(self, graph: DependencyGraph) -> List[str]:
+        """Identify dependency architecture violations"""
+        violations = []
         
-        # Group components by type for version checking
-        component_types = defaultdict(list)
-        for component in components:
-            if component.version:
-                component_types[component.category].append(component)
+        # Check for violations of Phoenix Hydra architecture principles
+        for dependency in graph.dependencies:
+            source_component = graph.components.get(dependency.source)
+            target_component = graph.components.get(dependency.target)
+            
+            if source_component and target_component:
+                # Check layer violations (e.g., infrastructure depending on monetization)
+                if self._is_layer_violation(source_component, target_component):
+                    violations.append(
+                        f"Layer violation: {source_component.category.value} component "
+                        f"'{source_component.name}' depends on {target_component.category.value} "
+                        f"component '{target_component.name}'"
+                    )
         
-        # Check for version mismatches within categories
-        for category, comps in component_types.items():
-            versions = {comp.version for comp in comps if comp.version}
-            if len(versions) > 1:
-                conflict = DependencyConflict(
-                    conflict_type="version_mismatch",
-                    severity=ConflictSeverity.MEDIUM,
-                    components=[comp.name for comp in comps],
-                    description=f"Multiple versions detected in {category.value}: {', '.join(versions)}",
-                    resolution_suggestions=[
-                        "Standardize on a single version across all components",
-                        "Update components to use compatible versions",
-                        "Document version compatibility requirements"
-                    ]
-                )
-                conflicts.append(conflict)
-        
-        return conflicts
+        return violations
     
-    def _detect_architectural_conflicts(self, components: List[Component], graph: DependencyGraph) -> List[DependencyConflict]:
-        """Detect architectural conflicts in Phoenix Hydra"""
-        conflicts = []
-        
-        # Check for missing critical infrastructure dependencies
-        infrastructure_components = [c for c in components if c.category == ComponentCategory.INFRASTRUCTURE]
-        monetization_components = [c for c in components if c.category == ComponentCategory.MONETIZATION]
-        
-        # Monetization components should have database dependencies
-        database_components = [c.name for c in infrastructure_components if "database" in c.name.lower() or "postgres" in c.name.lower()]
-        
-        if monetization_components and not database_components:
-            conflict = DependencyConflict(
-                conflict_type="missing_infrastructure",
-                severity=ConflictSeverity.CRITICAL,
-                components=[c.name for c in monetization_components],
-                description="Monetization components require database infrastructure",
-                resolution_suggestions=[
-                    "Add PostgreSQL database component",
-                    "Configure database connections for monetization components",
-                    "Ensure database schema supports monetization features"
-                ]
-            )
-            conflicts.append(conflict)
-        
-        return conflicts
-    
-    def _calculate_dependency_depth(self, graph: DependencyGraph) -> Dict[str, int]:
-        """Calculate dependency depth for each component"""
-        depth = {}
-        
-        def calculate_depth(node: str, visited: Set[str]) -> int:
-            if node in visited:
-                return 0  # Circular dependency - return 0 to avoid infinite recursion
-            if node in depth:
-                return depth[node]
-            
-            visited.add(node)
-            dependencies = graph.adjacency_list.get(node, [])
-            
-            if not dependencies:
-                depth[node] = 0
-            else:
-                max_dep_depth = max(calculate_depth(dep, visited.copy()) for dep in dependencies)
-                depth[node] = max_dep_depth + 1
-            
-            return depth[node]
-        
-        for node in graph.nodes:
-            if node not in depth:
-                calculate_depth(node, set())
-        
-        return depth
-    
-    def _find_critical_path(self, graph: DependencyGraph, dependency_depth: Dict[str, int]) -> List[str]:
-        """Find the critical path (longest dependency chain)"""
-        if not dependency_depth:
-            return []
-        
-        # Find the component with maximum depth
-        max_depth_component = max(dependency_depth.items(), key=lambda x: x[1])
-        
-        # Trace back the critical path
-        critical_path = []
-        current = max_depth_component[0]
-        
-        while current:
-            critical_path.append(current)
-            dependencies = graph.adjacency_list.get(current, [])
-            
-            if not dependencies:
-                break
-            
-            # Find dependency with maximum depth
-            next_component = max(dependencies, key=lambda x: dependency_depth.get(x, 0))
-            if dependency_depth.get(next_component, 0) < dependency_depth.get(current, 0):
-                current = next_component
-            else:
-                break
-        
-        return critical_path
-    
-    def _find_orphaned_components(self, graph: DependencyGraph) -> List[str]:
-        """Find components with no dependencies and no dependents"""
-        orphaned = []
-        
-        for node in graph.nodes:
-            has_dependencies = len(graph.adjacency_list.get(node, [])) > 0
-            has_dependents = len(graph.reverse_adjacency_list.get(node, [])) > 0
-            
-            if not has_dependencies and not has_dependents:
-                orphaned.append(node)
-        
-        return orphaned
-    
-    def _build_phoenix_dependency_map(self) -> Dict[str, List[str]]:
-        """Build known Phoenix Hydra dependency patterns"""
-        return {
-            "nca_toolkit": ["database", "minio_storage"],
-            "grafana": ["prometheus"],
-            "monetization": ["database", "analytics"],
-            "deployment_scripts": ["podman_stack"],
-            "monitoring": ["prometheus", "grafana"]
+    def _is_layer_violation(self, source: Component, target: Component) -> bool:
+        """Check if dependency represents a layer violation"""
+        # Define allowed dependency directions in Phoenix Hydra architecture
+        allowed_dependencies = {
+            ComponentCategory.MONETIZATION: [ComponentCategory.INFRASTRUCTURE, ComponentCategory.AUTOMATION],
+            ComponentCategory.AUTOMATION: [ComponentCategory.INFRASTRUCTURE],
+            ComponentCategory.INFRASTRUCTURE: []  # Infrastructure should not depend on higher layers
         }
+        
+        if source.category in allowed_dependencies:
+            return target.category not in allowed_dependencies[source.category]
+        
+        return False
+    
+    def _calculate_dependency_scores(self, graph: DependencyGraph, missing_deps: List[Dependency], 
+                                   conflicting_deps: List[Tuple[Dependency, Dependency]]) -> Dict[str, float]:
+        """Calculate dependency health scores for each component"""
+        scores = {}
+        
+        for component_name in graph.components:
+            # Get all dependencies for this component
+            component_deps = [dep for dep in graph.dependencies if dep.source == component_name]
+            
+            if not component_deps:
+                scores[component_name] = 1.0  # No dependencies = perfect score
+                continue
+            
+            satisfied_count = 0
+            total_weight = 0
+            
+            for dep in component_deps:
+                weight = 1.0 if dep.dependency_type == DependencyType.REQUIRED else 0.5
+                total_weight += weight
+                
+                if dep.status == DependencyStatus.SATISFIED:
+                    satisfied_count += weight
+                elif dep.status == DependencyStatus.DEGRADED:
+                    satisfied_count += weight * 0.5
+                # Missing or conflicted dependencies contribute 0
+            
+            # Calculate base score
+            base_score = satisfied_count / total_weight if total_weight > 0 else 1.0
+            
+            # Apply penalties for missing or conflicting dependencies
+            missing_penalty = len([dep for dep in missing_deps if dep.source == component_name]) * 0.1
+            conflict_penalty = len([conf for conf in conflicting_deps 
+                                  if conf[0].source == component_name or conf[1].source == component_name]) * 0.15
+            
+            final_score = max(0.0, base_score - missing_penalty - conflict_penalty)
+            scores[component_name] = final_score
+        
+        return scores
+    
+    def _calculate_overall_dependency_health(self, component_scores: Dict[str, float], 
+                                           circular_deps: List[List[str]], 
+                                           missing_deps: List[Dependency],
+                                           conflicting_deps: List[Tuple[Dependency, Dependency]]) -> float:
+        """Calculate overall system dependency health"""
+        if not component_scores:
+            return 0.0
+        
+        # Base score is average of component scores
+        base_score = sum(component_scores.values()) / len(component_scores)
+        
+        # Apply penalties for system-level issues
+        circular_penalty = len(circular_deps) * 0.1
+        missing_penalty = len(missing_deps) * 0.05
+        conflict_penalty = len(conflicting_deps) * 0.1
+        
+        final_score = max(0.0, base_score - circular_penalty - missing_penalty - conflict_penalty)
+        return min(1.0, final_score)
+    
+    def _build_known_dependencies(self) -> Dict[str, List[Dict[str, Any]]]:
+        """Build known dependency patterns for Phoenix Hydra components"""
+        return {
+            "nca_toolkit": [
+                {
+                    "target_pattern": "database",
+                    "type": "required",
+                    "description": "NCA Toolkit requires database for storing processing results",
+                    "config_requirements": {"connection_string": "required"}
+                },
+                {
+                    "target_pattern": "minio",
+                    "type": "required", 
+                    "description": "NCA Toolkit requires S3 storage for multimedia files",
+                    "config_requirements": {"s3_endpoint": "required", "access_key": "required"}
+                }
+            ],
+            "grafana": [
+                {
+                    "target_pattern": "prometheus",
+                    "type": "required",
+                    "description": "Grafana requires Prometheus as data source",
+                    "config_requirements": {"prometheus_url": "required"}
+                }
+            ],
+            "affiliate_marketing": [
+                {
+                    "target_pattern": "database",
+                    "type": "required",
+                    "description": "Affiliate marketing requires database for tracking",
+                    "config_requirements": {"connection_string": "required"}
+                },
+                {
+                    "target_pattern": "nca_toolkit",
+                    "type": "optional",
+                    "description": "Affiliate marketing may integrate with NCA Toolkit APIs"
+                }
+            ],
+            "revenue_streams": [
+                {
+                    "target_pattern": "database",
+                    "type": "required",
+                    "description": "Revenue tracking requires database for metrics storage"
+                },
+                {
+                    "target_pattern": "affiliate_marketing",
+                    "type": "optional",
+                    "description": "Revenue streams may include affiliate marketing data"
+                }
+            ],
+            "deployment_scripts": [
+                {
+                    "target_pattern": "podman",
+                    "type": "required",
+                    "description": "Deployment scripts require container orchestration"
+                }
+            ],
+            "kiro_agent_hooks": [
+                {
+                    "target_pattern": "vscode",
+                    "type": "optional",
+                    "description": "Agent hooks integrate with VS Code for automation"
+                }
+            ]
+        }
+    
+    def get_dependency_recommendations(self, analysis_result: DependencyAnalysisResult) -> List[str]:
+        """Generate recommendations based on dependency analysis"""
+        recommendations = []
+        
+        # Recommendations for circular dependencies
+        if analysis_result.circular_dependencies:
+            recommendations.append(
+                f"Resolve {len(analysis_result.circular_dependencies)} circular dependencies "
+                "by introducing interfaces or breaking dependency cycles"
+            )
+        
+        # Recommendations for missing dependencies
+        if analysis_result.missing_dependencies:
+            for dep in analysis_result.missing_dependencies[:5]:  # Top 5
+                recommendations.append(
+                    f"Implement missing dependency: {dep.target} required by {dep.source}"
+                )
+        
+        # Recommendations for conflicting dependencies
+        if analysis_result.conflicting_dependencies:
+            recommendations.append(
+                f"Resolve {len(analysis_result.conflicting_dependencies)} dependency conflicts "
+                "by standardizing versions or using dependency injection"
+            )
+        
+        # Recommendations for low-scoring components
+        low_score_components = [
+            name for name, score in analysis_result.component_dependency_scores.items() 
+            if score < 0.7
+        ]
+        if low_score_components:
+            recommendations.append(
+                f"Improve dependency health for components: {', '.join(low_score_components[:3])}"
+            )
+        
+        return recommendations
     
     def generate_dependency_report(self, analysis_result: DependencyAnalysisResult) -> Dict[str, Any]:
         """Generate comprehensive dependency analysis report"""
-        graph = analysis_result.dependency_graph
-        
-        # Calculate statistics
-        total_components = len(graph.nodes)
-        total_dependencies = len(graph.edges)
-        avg_dependencies = total_dependencies / total_components if total_components > 0 else 0
-        
-        # Find most connected components
-        component_connections = {}
-        for node in graph.nodes:
-            in_degree = len(graph.reverse_adjacency_list.get(node, []))
-            out_degree = len(graph.adjacency_list.get(node, []))
-            component_connections[node] = in_degree + out_degree
-        
-        most_connected = sorted(component_connections.items(), key=lambda x: x[1], reverse=True)[:5]
-        
         return {
-            "summary": {
-                "total_components": total_components,
-                "total_dependencies": total_dependencies,
-                "average_dependencies_per_component": round(avg_dependencies, 2),
-                "circular_dependencies_count": len(analysis_result.circular_dependencies),
-                "missing_dependencies_count": len(analysis_result.missing_dependencies),
-                "conflicts_count": len(analysis_result.conflicts),
-                "orphaned_components_count": len(analysis_result.orphaned_components)
-            },
+            "overall_health": analysis_result.overall_dependency_health,
+            "total_components": len(analysis_result.dependency_graph.components),
+            "total_dependencies": len(analysis_result.dependency_graph.dependencies),
+            "circular_dependencies_count": len(analysis_result.circular_dependencies),
+            "missing_dependencies_count": len(analysis_result.missing_dependencies),
+            "conflicting_dependencies_count": len(analysis_result.conflicting_dependencies),
+            "dependency_violations_count": len(analysis_result.dependency_violations),
+            "component_scores": analysis_result.component_dependency_scores,
+            "recommendations": self.get_dependency_recommendations(analysis_result),
             "circular_dependencies": analysis_result.circular_dependencies,
-            "missing_dependencies": analysis_result.missing_dependencies,
-            "conflicts": [
+            "missing_dependencies": [
                 {
-                    "type": conflict.conflict_type,
-                    "severity": conflict.severity.value,
-                    "components": conflict.components,
-                    "description": conflict.description,
-                    "suggestions": conflict.resolution_suggestions
+                    "source": dep.source,
+                    "target": dep.target,
+                    "type": dep.dependency_type.value,
+                    "description": dep.description
                 }
-                for conflict in analysis_result.conflicts
+                for dep in analysis_result.missing_dependencies
             ],
-            "dependency_depth": analysis_result.dependency_depth,
-            "critical_path": analysis_result.critical_path,
-            "orphaned_components": analysis_result.orphaned_components,
-            "most_connected_components": [{"name": name, "connections": count} for name, count in most_connected],
-            "analysis_timestamp": self._get_timestamp()
+            "dependency_violations": analysis_result.dependency_violations
         }
-    
-    def _get_timestamp(self) -> str:
-        """Get current timestamp for reporting"""
-        from datetime import datetime
-        return datetime.now().isoformat()
