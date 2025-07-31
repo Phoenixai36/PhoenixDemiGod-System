@@ -29,6 +29,34 @@ from .quality_assessor import (
     QualityLevel,
     QualityIssue
 )
+from .windmill_analyzer import (
+    WindmillAnalyzer,
+    WindmillAnalysis,
+    WindmillWorkspace,
+    WindmillScript,
+    WindmillFlow,
+    ScriptLanguage,
+    ScriptQualityMetrics,
+    WorkflowType
+)
+from .podman_analyzer import (
+    PodmanAnalyzer,
+    ComposeAnalysis,
+    ContainerInfo,
+    SystemdServiceInfo,
+    ContainerStatus
+)
+from .n8n_analyzer import (
+    N8nAnalyzer,
+    N8nAnalysis,
+    WorkflowInfo,
+    WorkflowNode,
+    WorkflowStatus
+)
+from .phoenix_hydra_integrator import (
+    PhoenixHydraIntegrator,
+    PhoenixHydraIntegrationResult
+)
 
 __all__ = [
     "ComponentEvaluator",
@@ -48,5 +76,25 @@ __all__ = [
     "TestCoverageResult",
     "QualityMetric",
     "QualityLevel",
-    "QualityIssue"
+    "QualityIssue",
+    "WindmillAnalyzer",
+    "WindmillAnalysis",
+    "WindmillWorkspace",
+    "WindmillScript",
+    "WindmillFlow",
+    "ScriptLanguage",
+    "ScriptQualityMetrics",
+    "WorkflowType",
+    "PodmanAnalyzer",
+    "ComposeAnalysis",
+    "ContainerInfo",
+    "SystemdServiceInfo",
+    "ContainerStatus",
+    "N8nAnalyzer",
+    "N8nAnalysis",
+    "WorkflowInfo",
+    "WorkflowNode",
+    "WorkflowStatus",
+    "PhoenixHydraIntegrator",
+    "PhoenixHydraIntegrationResult"
 ]

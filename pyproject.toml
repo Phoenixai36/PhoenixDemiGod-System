@@ -29,6 +29,8 @@ dependencies = [
 dev = [
     "pytest==8.3.3",
     "pytest-asyncio",
+    "pytest-cov",
+    "pytest-mock",
     "anyio",
     "black",
     "flake8",
@@ -49,7 +51,7 @@ where = ["src"]
 [tool.pytest.ini_options]
 python_files = ["test_*.py", "*_test.py"]
 testpaths = ["autogen/tests", "tests"]
-addopts = "-ra -q"
+addopts = "-ra -q --cov=src/phoenix_system_review --cov-report=term-missing --cov-report=html --cov-fail-under=90"
 
 [tool.pyright]
 include = ["src", "scripts", "tests"]

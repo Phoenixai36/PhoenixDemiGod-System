@@ -56,12 +56,20 @@ htmlcov/
 .manager_token
 .worker_token
 *.env
+.env.*
 BooPhoenix369/.env.*
 secrets.yml
 secrets.json
 *.pem
 *.key
 credentials.json
+
+# Phoenix Hydra Secrets
+.secrets/
+*.enc
+.env.secrets
+phoenix_secrets.*
+master_key.txt
 
 # Ollama data directory
 BooPhoenix369/ollama-data/
