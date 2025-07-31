@@ -1,0 +1,34 @@
+<error_handling>
+  <error_categories>
+    <category name="file_access_errors">
+      <description>Errores al acceder a los archivos del proyecto.</description>
+      <mitigation>Verificar que el archivo exista y que el modo tenga permisos de lectura.</mitigation>
+    </category>
+    <category name="configuration_parsing_errors">
+      <description>Errores al analizar los archivos de configuración.</description>
+      <mitigation>Verificar que el archivo de configuración sea válido y que siga el formato correcto.</mitigation>
+    </category>
+    <category name="dependency_resolution_errors">
+      <description>Errores al resolver las dependencias entre los componentes.</description>
+      <mitigation>Verificar que todas las dependencias estén instaladas y que sean compatibles.</mitigation>
+    </category>
+  </error_categories>
+
+  <error_handling_strategy>
+    <principle>Manejar los errores de forma elegante.</principle>
+    <description>El modo debe manejar los errores de forma elegante y proporcionar información útil al usuario.</description>
+    <steps>
+      <step>Detectar el error.</step>
+      <step>Registrar el error.</step>
+      <step>Proporcionar un mensaje de error claro y conciso al usuario.</step>
+      <step>Intentar mitigar el error.</step>
+      <step>Continuar con el análisis si es posible.</step>
+    </steps>
+  </error_handling_strategy>
+
+  <graceful_degradation>
+    <principle>Degradar con gracia en caso de errores.</principle>
+    <description>El modo debe degradar con gracia en caso de errores y proporcionar resultados parciales si es posible.</description>
+    <example>Si no se puede acceder a un archivo de configuración, el modo debe continuar con el análisis de los demás componentes.</example>
+  </graceful_degradation>
+</error_handling>
