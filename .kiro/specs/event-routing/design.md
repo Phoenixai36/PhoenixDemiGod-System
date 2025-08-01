@@ -52,12 +52,17 @@ class Event:
 
 ### Event Router
 
-The Event Router is the central component responsible for routing events from publishers to subscribers.
+The Event Router is the central component responsible for routing events from publishers to subscribers. It ensures that events are delivered to all matching subscribers, handling both synchronous and asynchronous delivery modes.
 
 ```python
 class EventRouter:
     def publish(self, event: Event, mode: DeliveryMode = DeliveryMode.ASYNC) -> None:
-        """Publish an event to all matching subscribers."""
+        """Publish an event to all matching subscribers.
+        
+        For multiple subscribers:
+        - ASYNC mode: Delivers to all subscribers concurrently
+        - SYNC mode: Delivers to subscribers sequentially, stopping on first failure
+        """
         
     def subscribe(self, pattern: EventPattern, handler: EventHandler) -> Subscription:
         """Subscribe to events matching the given pattern."""
@@ -70,20 +75,32 @@ class EventRouter:
         
     def unregister_hook(self, hook: AgentHook) -> None:
         """Unregister an agent hook from the event router."""
-```
+        
+    def get_active_subscriptions(self) -> List[Subscription]:
+        """Get all active subscriptions for monitoring and debugging."""
 
 ### Pattern Matcher
 
-The Pattern Matcher evaluates events against subscription patterns.
+The Pattern Matcher evaluates events against subscription patterns, supporting wildcard matching and attribute filtering.
 
 ```python
 class EventPattern:
-    event_type: str  # Can include wildcards (e.g., "system.*")
-    attributes: Dict[str, Any]  # Attribute filters
+    event_type: str  # Can include wildcards (e.g., "system.*", "code.**")
+    attributes: Dict[str, Any]  # Attribute filters with comparison operators
     
 class PatternMatcher:
     def matches(self, event: Event, pattern: EventPattern) -> bool:
-        """Check if an event matches a pattern."""
+        """Check if an event matches a pattern.
+        
+        Wildcard support:
+        - "*" matches any single level (e.g., "system.*" matches "system.startup")
+        - "**" matches multiple levels (e.g., "code.**" matches "code.file.modified")
+        
+        Attribute filtering supports:
+        - Exact matches: {"source": "file_watcher"}
+        - Comparison operators: {"priority": {"$gte": 5}}
+        - Nested paths: {"metadata.category": "python"}
+        """
 ```
 
 ### Event Correlator
@@ -112,10 +129,17 @@ class EventStore:
                   filter_criteria: Optional[Dict[str, Any]] = None, 
                   start_time: Optional[datetime] = None,
                   end_time: Optional[datetime] = None) -> List[Event]:
-        """Get events matching the filter criteria within the time range."""
+        """Get events matching the filter criteria within the time range.
+        
+        Events are returned in chronological order (by timestamp) to ensure
+        proper replay ordering.
+        """
         
     def get_event_by_id(self, event_id: str) -> Optional[Event]:
         """Get an event by its ID."""
+        
+    def cleanup_expired_events(self, retention_policy: RetentionPolicy) -> int:
+        """Remove events based on retention policy, returns count of removed events."""
 ```
 
 ### Event Replayer
@@ -133,18 +157,29 @@ class EventReplayer:
 
 ### Agent Hook Integration
 
-Integration with the agent hooks framework.
+Integration with the Phoenix Hydra agent hooks framework, building upon the existing event bus architecture in `src/hooks/core/events.py`.
 
 ```python
 class EventHookTrigger:
     def register_hook(self, hook: AgentHook) -> None:
-        """Register an agent hook for event triggering."""
+        """Register an agent hook for event triggering.
+        
+        Creates appropriate event subscriptions based on the hook's event criteria
+        and integrates with the existing Phoenix Hydra event bus system.
+        """
         
     def unregister_hook(self, hook: AgentHook) -> None:
-        """Unregister an agent hook."""
+        """Unregister an agent hook and remove all its event subscriptions."""
         
     def trigger_hook(self, hook: AgentHook, event: Event) -> None:
-        """Trigger an agent hook with an event."""
+        """Trigger an agent hook with an event.
+        
+        Handles both successful execution and failure scenarios, publishing
+        response events back to the event router as needed.
+        """
+        
+    def get_hook_subscriptions(self, hook: AgentHook) -> List[Subscription]:
+        """Get all active subscriptions for a specific hook."""
 ```
 
 ## Data Models
@@ -199,6 +234,18 @@ Enum defining event delivery modes.
 class DeliveryMode(Enum):
     SYNC = "sync"  # Synchronous delivery
     ASYNC = "async"  # Asynchronous delivery
+```
+
+### RetentionPolicy
+
+Configuration for event retention and cleanup.
+
+```python
+@dataclass
+class RetentionPolicy:
+    max_age_days: Optional[int] = None  # Remove events older than this
+    max_count: Optional[int] = None     # Keep only the most recent N events
+    event_type_policies: Dict[str, 'RetentionPolicy'] = field(default_factory=dict)
 ```
 
 ## Error Handling
@@ -270,7 +317,13 @@ The testing strategy for the Event Routing System includes:
    - Configurable event store backends
    - Extensible correlation strategies
 
-5. **Monitoring and Observability**:
+5. **Phoenix Hydra Integration**:
+   - Seamless integration with existing event bus in `src/hooks/core/events.py`
+   - Support for Phoenix Hydra event types (code.file.modified, container.health.unhealthy, etc.)
+   - Compatible with Python 3.10+ and asyncio-based architecture
+   - Integration with Podman container events and file system watchers
+
+6. **Monitoring and Observability**:
    - Event throughput metrics
    - Subscription statistics
    - Pattern matching performance

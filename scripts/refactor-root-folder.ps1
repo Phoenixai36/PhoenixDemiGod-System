@@ -95,8 +95,9 @@ The following operations may be performed:
 • Clean up build outputs and temporary files
 • Remove legacy directories
 
-💡 Windows Note: Some files may be locked by processes (like virtual environments).
-   This is normal and the script will continue with other operations.
+💡 Windows Note: The system now gracefully handles locked files (like virtual environments).
+   Files locked by processes will be automatically skipped with detailed logging.
+   This is normal behavior and the script will continue with other operations.
 
 "@ $Yellow
 
@@ -186,6 +187,7 @@ Next steps:
 ⚠️ Refactoring completed with some warnings (exit code: $LASTEXITCODE)
 
 This is often normal on Windows due to locked files in virtual environments.
+The system now gracefully handles these situations by skipping locked files.
 Check the execution report for details: logs/refactor_execution_report.json
 
 Most operations likely completed successfully. Review the output above.

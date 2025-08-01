@@ -108,6 +108,7 @@ PhoenixSeed/
 - **Command**: `python src/hooks/refactor_root_folder.py --dry-run` (preview)
 - **Command**: `python src/hooks/refactor_root_folder.py` (execution)
 - **Environment**: Windows PowerShell with Python virtual environment
+- **Windows Compatibility**: Enhanced error handling for locked files and virtual environments
 
 ### Error Analysis
 **Single Failure**: Deletion of `.venv` directory failed due to Windows file lock

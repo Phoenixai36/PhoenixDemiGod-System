@@ -56,6 +56,7 @@ The system is organized into distinct modules following the Phoenix Hydra projec
 **Purpose**: Central orchestrator that manages the entire validation process
 
 **Interface**:
+
 ```python
 class DeploymentManager:
     async def deploy_and_validate(self, config: DeploymentConfig) -> ValidationResult
@@ -64,16 +65,19 @@ class DeploymentManager:
 ```
 
 **Key Responsibilities**:
+
 - Coordinate deployment phases
 - Manage deployment lifecycle
-- Handle error recovery and rollback
+- Handle error recovery and rollback with up to 3 retry attempts
 - Generate deployment IDs for tracking
+- Implement automatic cleanup on deployment failure
 
 ### 2. Container Service
 
 **Purpose**: Manages Podman container operations and monitoring
 
 **Interface**:
+
 ```python
 class ContainerService:
     async def deploy_stack(self, compose_file: str) -> DeploymentResult
@@ -83,6 +87,7 @@ class ContainerService:
 ```
 
 **Key Responsibilities**:
+
 - Execute podman-compose commands
 - Monitor container lifecycle
 - Collect container metrics
@@ -93,6 +98,7 @@ class ContainerService:
 **Purpose**: Performs comprehensive health checks on all services
 
 **Interface**:
+
 ```python
 class HealthValidator:
     async def validate_all_services(self) -> HealthReport
@@ -101,17 +107,25 @@ class HealthValidator:
 ```
 
 **Service Configurations**:
+
 - **Phoenix Core**: HTTP GET to `http://localhost:8080/health`
 - **NCA Toolkit**: HTTP GET to `http://localhost:8081/`
 - **n8n Phoenix**: HTTP GET to `http://localhost:5678/healthz`
 - **Windmill Phoenix**: HTTP GET to `http://localhost:8000/api/version`
 - **Revenue DB**: PostgreSQL connection test
 
+**Retry Strategy**:
+
+- Up to 5 retry attempts with exponential backoff for failed health checks
+- Initial retry delay: 1 second, maximum delay: 30 seconds
+- Health check timeout: 30 seconds per attempt
+
 ### 4. Functional Tester
 
 **Purpose**: Executes end-to-end functional tests to validate system capabilities
 
 **Interface**:
+
 ```python
 class FunctionalTester:
     async def run_all_tests(self) -> FunctionalTestReport
@@ -121,17 +135,42 @@ class FunctionalTester:
 ```
 
 **Test Scenarios**:
+
 - **n8n Workflow Test**: Create and execute a simple workflow
 - **Windmill Script Test**: Execute a basic GitOps operation
 - **Revenue Tracking Test**: Run `node scripts/revenue-tracking.js`
 - **Badge Deployment Test**: Run `node scripts/deploy-badges.js`
 - **NEOTEC Generation Test**: Run `python scripts/neotec-generator.py`
 
-### 5. Report Generator
+### 5. Security Validator
+
+**Purpose**: Validates security configurations and compliance with security best practices
+
+**Interface**:
+
+```python
+class SecurityValidator:
+    async def validate_all_security(self) -> SecurityReport
+    async def validate_container_security(self) -> ContainerSecurityResult
+    async def validate_network_security(self) -> NetworkSecurityResult
+    async def validate_ssl_configurations(self) -> SSLValidationResult
+```
+
+**Security Validations**:
+
+- **Rootless Container Check**: Verify all containers run without root privileges
+- **User Permission Validation**: Ensure containers use appropriate user permissions
+- **Network Isolation**: Validate service communication through defined networks only
+- **Port Exposure Check**: Identify and validate exposed sensitive ports
+- **SSL/TLS Configuration**: Verify SSL/TLS configurations where applicable
+- **Resource Limits**: Ensure CPU and memory constraints prevent resource exhaustion
+
+### 6. Report Generator
 
 **Purpose**: Creates comprehensive deployment and validation reports
 
 **Interface**:
+
 ```python
 class ReportGenerator:
     async def generate_report(self, results: ValidationResults) -> DeploymentReport
@@ -140,6 +179,7 @@ class ReportGenerator:
 ```
 
 **Report Structure**:
+
 ```json
 {
   "deployment_id": "deploy_20250123_143022",
@@ -222,6 +262,7 @@ The system uses a hierarchical configuration approach:
 3. **Runtime Configuration**: Command-line and runtime parameters
 
 Configuration files are stored in `configs/deployment-validation/`:
+
 - `services.yaml`: Service definitions and health check configurations
 - `tests.yaml`: Functional test definitions and parameters
 - `security.yaml`: Security validation rules and thresholds
@@ -245,21 +286,33 @@ class ErrorRecoveryStrategy:
 ```
 
 **Recovery Actions**:
+
 - **Retry**: Exponential backoff retry with configurable limits
 - **Restart**: Container restart for transient issues
 - **Rollback**: Full deployment rollback for critical failures
 - **Continue**: Skip non-critical failures and continue validation
 - **Abort**: Stop validation and cleanup for fatal errors
 
+**Cleanup and Rollback Behaviors**:
+
+- **Automatic Cleanup**: When deployment fails, automatically stop all started containers
+- **Network Cleanup**: Remove any created networks and volumes during cleanup
+- **Log Preservation**: Preserve logs and error information for debugging during cleanup
+- **Configuration Restoration**: Restore previous working configuration during rollback
+- **Manual Cleanup Instructions**: Provide manual cleanup instructions if automatic cleanup fails
+- **State Reporting**: Report final system state after cleanup completion
+
 ### Logging and Monitoring
 
 All components use structured logging with the following levels:
+
 - **DEBUG**: Detailed execution flow and variable states
 - **INFO**: Major operation status and progress updates
 - **WARN**: Non-critical issues and recovery actions
 - **ERROR**: Failures requiring attention or intervention
 
 Log format:
+
 ```json
 {
   "timestamp": "2025-01-23T14:30:22Z",
@@ -280,12 +333,14 @@ Log format:
 ### Unit Testing
 
 Each component has comprehensive unit tests covering:
+
 - Normal operation scenarios
 - Error conditions and edge cases
 - Configuration validation
 - Mock external dependencies
 
 Test structure:
+
 ```
 tests/unit/deployment_validation/
 ├── test_deployment_manager.py
@@ -298,6 +353,7 @@ tests/unit/deployment_validation/
 ### Integration Testing
 
 Integration tests validate component interactions:
+
 - Container service with actual Podman commands
 - Health validator with running services
 - Functional tester with live workflows
@@ -306,6 +362,7 @@ Integration tests validate component interactions:
 ### Chaos Testing
 
 Chaos tests simulate failure scenarios:
+
 - Container crashes during deployment
 - Network connectivity issues
 - Resource exhaustion conditions
@@ -314,6 +371,7 @@ Chaos tests simulate failure scenarios:
 ### Performance Testing
 
 Performance tests ensure scalability:
+
 - Deployment time under various loads
 - Health check response times
 - Memory and CPU usage patterns
@@ -381,6 +439,7 @@ python -m deployment_validation report --deployment-id deploy_20250123_143022
 ### VS Code Integration
 
 New VS Code tasks added to `.vscode/tasks.json`:
+
 - **Phoenix: Full Deployment Validation**
 - **Phoenix: Health Check All Services**
 - **Phoenix: Run Functional Tests**
@@ -389,6 +448,7 @@ New VS Code tasks added to `.vscode/tasks.json`:
 ### Monitoring Integration
 
 The system integrates with existing Phoenix Hydra monitoring:
+
 - Metrics exported to Prometheus
 - Grafana dashboards for deployment tracking
 - Alert rules for deployment failures
@@ -397,6 +457,7 @@ The system integrates with existing Phoenix Hydra monitoring:
 ### Continuous Integration
 
 GitHub Actions workflow for automated validation:
+
 - Triggered on pull requests to main branch
 - Runs full deployment validation in CI environment
 - Reports results as PR status checks

@@ -39,6 +39,12 @@ The refactoring system analyzes the current directory structure and creates a co
 - **Python Direct**: Direct Python execution
 - **Event-Driven**: Automatic triggering based on file system events
 
+### 🪟 Windows Compatibility
+- **Graceful Error Handling**: Automatically handles Windows file locking issues
+- **Virtual Environment Safety**: Skips locked .pyd files and venv directories in use
+- **Process-Safe Operations**: Continues refactoring even when some files are locked by running processes
+- **Detailed Logging**: Provides clear warnings for skipped files with explanations
+
 ## Quick Start
 
 ### Using VS Code Tasks (Recommended)
@@ -191,6 +197,33 @@ cp -r .refactor_backup/20250108_143022/* .
 - Preserves Git repository integrity
 - Recommends committing changes after refactoring
 
+## Windows-Specific Improvements
+
+### Enhanced Error Handling
+The refactoring system includes specialized handling for Windows-specific challenges:
+
+**File Locking Issues**
+- **Virtual Environments**: Automatically detects and skips locked .pyd files and active virtual environment directories
+- **Process-Locked Files**: Gracefully handles files locked by running processes (IDEs, Python interpreters, etc.)
+- **Detailed Logging**: Provides clear warnings explaining why files were skipped
+
+**Example Log Output**
+```
+WARNING - Skipping locked file/directory (common on Windows): .venv\Lib\site-packages\numpy\core\_multiarray_umath.pyd
+WARNING - Reason: [Errno 13] Permission denied: '.venv\\Lib\\site-packages\\numpy\\core\\_multiarray_umath.pyd'
+```
+
+**Behavior Changes**
+- **Before**: Refactoring would fail completely when encountering locked files
+- **After**: System continues operation, skipping only the locked files with detailed logging
+- **Result**: More reliable execution on Windows development environments
+
+### Best Practices for Windows
+1. **Close IDEs**: Close VS Code, PyCharm, or other IDEs that might lock files
+2. **Deactivate Virtual Environments**: Exit any active Python virtual environments
+3. **Review Warnings**: Check logs for skipped files - this is normal and expected
+4. **Multiple Runs**: Run refactoring multiple times if needed after closing processes
+
 ## Integration with Phoenix Hydra
 
 ### Event System Integration
@@ -245,6 +278,7 @@ await event_bus.emit({
 2. **Update Scripts**: Fix any hardcoded paths that changed
 3. **Commit Changes**: Add refactored structure to version control
 4. **Update Documentation**: Reflect any structural changes
+5. **Review Warnings**: Check logs for any skipped files (normal on Windows)
 
 ### Regular Maintenance
 - Run monthly to prevent accumulation of clutter
@@ -266,6 +300,12 @@ chmod +x scripts/refactor-root-folder.ps1
 # Set PYTHONPATH correctly
 export PYTHONPATH="$(pwd)/src"
 ```
+
+**Windows File Locking (Handled Gracefully)**
+- **Virtual Environment Files**: System automatically skips locked .pyd files and active venv directories
+- **Process-Locked Files**: Continues operation and logs warnings for files in use by other processes
+- **Expected Behavior**: Warnings about skipped files are normal on Windows and don't indicate failure
+- **Log Messages**: Look for "Skipping locked file/directory (common on Windows)" messages
 
 **Configuration Errors**
 - Validate JSON syntax in configuration file

@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict
 
 import click
 from rich.console import Console
@@ -216,76 +216,65 @@ OLLAMA_MODELS_MEGA = [
     "wizard-coder:15b",
 ]
 
-PARALLEL_WORKERS = int(os.environ.get("PHX_HYDRA_WORKERS", 6))  # More workers for MEGA
-DEFAULT_OUT_DIR = Path(os.environ.get("PHX_HYDRA_MODELDIR", "models")).expanduser()
-
-# Use the same HFDownloader and other classes from the original script
-# ... (rest of the implementation would be identical)
+PARALLEL_WORKERS = int(os.environ.get("PHX_HYDRA_WORKERS", 6))
+DEFAULT_OUT_DIR = Path(
+    os.environ.get("PHX_HYDRA_MODELDIR", "models")
+).expanduser()
 
 
 @click.command()
 @click.option(
-    "--out", default=str(DEFAULT_OUT_DIR), show_default=True, help="Carpeta destino"
+    "--category", help="Solo descargar una categoría específica"
 )
-@click.option(
-    "--workers", default=PARALLEL_WORKERS, show_default=True, help="Hilos paralelos"
-)
-@click.option("--serial", is_flag=True, help="Descarga secuencial")
-@click.option("--hf-token", envvar="HF_TOKEN", help="Token HF para modelos privados")
-@click.option("--skip-ollama", is_flag=True, help="No ejecutar pulls de Ollama")
-@click.option("--skip-hf", is_flag=True, help="No descargar modelos de Hugging Face")
-@click.option("--ollama-host", default="localhost:11434", help="Host de Ollama")
-@click.option(
-    "--test-mode",
-    is_flag=True,
-    help="Modo test - solo primeros 2 modelos por categoría",
-)
-@click.option("--category", help="Solo descargar una categoría específica")
-def cli(
-    out: str,
-    workers: int,
-    serial: bool,
-    hf_token: Optional[str],
-    skip_ollama: bool,
-    skip_hf: bool,
-    ollama_host: str,
-    test_mode: bool,
-    category: str,
-):
+def cli(category: str):
+    """Phoenix Hydra 2025 MEGA Model Fetcher CLI."""
+    run_cli(category, MODEL_STACK)
+
+
+def run_cli(category: str, model_stack: Dict[str, list[str]]):
     """Phoenix Hydra 2025 MEGA Model Fetcher CLI."""
 
-    console.rule("[bold blue]🔥 Phoenix Hydra MEGA Model Fetcher 2025")
+    console.rule(
+        "[bold blue]🔥 Phoenix Hydra MEGA Model Fetcher 2025"
+    )
 
     # Show available categories
     if category:
-        if category not in MODEL_STACK:
-            console.print(f"❌ Categoría '{category}' no encontrada", style="red")
+        if category not in model_stack:
+            console.print(
+                f"❌ Categoría '{category}' no encontrada", style="red")
             console.print("Categorías disponibles:", style="yellow")
-            for cat in MODEL_STACK.keys():
+            for cat in model_stack.keys():
                 console.print(f"  • {cat}", style="cyan")
             return
 
         # Filter to only selected category
-        global MODEL_STACK
-        MODEL_STACK = {category: MODEL_STACK[category]}
-        console.print(f"🎯 Solo descargando categoría: {category}", style="green")
+        model_stack = {category: model_stack[category]}
+        console.print(
+            f"🎯 Solo descargando categoría: {category}", style="green"
+        )
 
     # Show MEGA stats
-    total_hf_models = sum(len(models) for models in MODEL_STACK.values())
+    total_hf_models = sum(len(models) for models in model_stack.values())
     total_ollama_models = len(OLLAMA_MODELS_MEGA)
 
-    mega_table = Table(title="🔥 PHOENIX HYDRA MEGA STATS", header_style="bold red")
+    mega_table = Table(
+        title="🔥 PHOENIX HYDRA MEGA STATS", header_style="bold red"
+    )
     mega_table.add_column("Métrica", style="cyan")
     mega_table.add_column("Valor", style="green")
 
-    mega_table.add_row("Categorías HF", str(len(MODEL_STACK)))
+    mega_table.add_row("Categorías HF", str(len(model_stack)))
     mega_table.add_row("Modelos HF Total", str(total_hf_models))
     mega_table.add_row("Modelos Ollama", str(total_ollama_models))
-    mega_table.add_row("Total MEGA", str(total_hf_models + total_ollama_models))
+    total_models = total_hf_models + total_ollama_models
+    mega_table.add_row("Total MEGA", str(total_models))
 
     console.print(mega_table)
 
-    console.print("\n🚀 ¡Preparado para la descarga MEGA!", style="bold green")
+    console.print(
+        "\n🚀 ¡Preparado para la descarga MEGA!", style="bold green"
+    )
     console.print(
         "Incluye: Falcon, Mamba, Zamba, DeepSeek, Phi, Gemma, Llama, y más!",
         style="cyan",
@@ -294,5 +283,9 @@ def cli(
 
 if __name__ == "__main__":
     console.print(
-        "Para usar: python scripts/phoenix_hugger_mega.py --help", style="yellow"
+        "🔥 Phoenix Hugger MEGA - Todos los modelos top!", style="bold red"
+    )
+    console.print(
+        "Para usar: python scripts/phoenix_hugger_mega.py --help",
+        style="yellow",
     )

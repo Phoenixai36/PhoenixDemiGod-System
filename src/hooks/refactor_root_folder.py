@@ -16,16 +16,23 @@ Version: 1.0.0
 import asyncio
 import json
 import logging
-import os
 import shutil
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+# Constants
+MOVE_ACTION = "move"
+DELETE_ACTION = "delete"
+CONSOLIDATE_ACTION = "consolidate"
+CREATE_ACTION = "create"
+
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s"
+    " - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
@@ -36,7 +43,7 @@ class RefactorAction:
 
     action_type: str  # 'move', 'delete', 'consolidate', 'create'
     source_path: str
-    target_path: Optional[str] = None
+    target_path: Optional[Path] = None
     reason: str = ""
     size_mb: float = 0.0
     file_count: int = 0
@@ -54,6 +61,76 @@ class RefactorPlan:
     created_at: str
 
 
+@dataclass
+class VirtualEnvironmentsConfig:
+    """Configuration for virtual environment consolidation"""
+
+    consolidate: bool = True
+    target_name: str = ".venv"
+    remove_duplicates: bool = True
+
+
+@dataclass
+class BuildOutputsConfig:
+    """Configuration for build output consolidation"""
+
+    consolidate: bool = True
+    target_directory: str = "build"
+    subdirectories: Optional[List[str]] = None
+
+
+@dataclass
+class LegacyCleanupConfig:
+    """Configuration for legacy directory cleanup"""
+
+    enabled: bool = True
+    directories_to_remove: Optional[List[str]] = None
+    empty_directories: bool = True
+
+
+@dataclass
+class ConfigurationConsolidationConfig:
+    """Configuration for configuration file consolidation"""
+
+    enabled: bool = True
+    target_directory: str = "configs"
+    file_patterns: Optional[List[str]] = None
+
+
+@dataclass
+class LogConsolidationConfig:
+    """Configuration for log file consolidation"""
+
+    enabled: bool = True
+    target_directory: str = "logs"
+    max_age_days: int = 30
+
+
+@dataclass
+class SafetyConfig:
+    """Configuration for safety measures"""
+
+    create_backup: bool = True
+    dry_run: bool = False
+    require_confirmation: bool = True
+
+
+@dataclass
+class RefactorConfig:
+    """Complete refactoring configuration"""
+
+    virtual_environments: VirtualEnvironmentsConfig = \
+        VirtualEnvironmentsConfig()
+    build_outputs: BuildOutputsConfig = BuildOutputsConfig()
+    legacy_cleanup: LegacyCleanupConfig = LegacyCleanupConfig()
+    configuration_consolidation: \
+        ConfigurationConsolidationConfig = \
+        ConfigurationConsolidationConfig()
+    log_consolidation: LogConsolidationConfig = \
+        LogConsolidationConfig()
+    safety: SafetyConfig = SafetyConfig()
+
+
 class RootFolderRefactor:
     """Main class for root folder refactoring operations"""
 
@@ -66,57 +143,78 @@ class RootFolderRefactor:
         )
         self.config = self._load_config()
 
-    def _load_config(self) -> Dict:
+    def _load_config(self) -> RefactorConfig:
         """Load refactoring configuration"""
-        config_path = self.root_path / ".kiro" / "hooks" / "refactor_config.json"
+        config_path = self.root_path / ".kiro" / "hooks" / \
+            "refactor_config.json"
 
-        default_config = {
-            "virtual_environments": {
-                "consolidate": True,
-                "target_name": ".venv",
-                "remove_duplicates": True,
-            },
-            "build_outputs": {
-                "consolidate": True,
-                "target_directory": "build",
-                "subdirectories": ["output", "dist", "artifacts"],
-            },
-            "legacy_cleanup": {
-                "enabled": True,
-                "directories_to_remove": [
+        default_config = RefactorConfig(
+            virtual_environments=VirtualEnvironmentsConfig(
+                consolidate=True, target_name=".venv",
+                remove_duplicates=True),
+            build_outputs=BuildOutputsConfig(
+                consolidate=True,
+                target_directory="build",
+                subdirectories=["output", "dist", "artifacts"],
+            ),
+            legacy_cleanup=LegacyCleanupConfig(
+                enabled=True,
+                directories_to_remove=[
                     "Nueva carpeta",
                     "BooPhoenix369",
                     "awesome-n8n-templates-main",
                 ],
-                "empty_directories": True,
-            },
-            "configuration_consolidation": {
-                "enabled": True,
-                "target_directory": "configs",
-                "file_patterns": ["*.config.js", "*.conf", "*.ini"],
-            },
-            "log_consolidation": {
-                "enabled": True,
-                "target_directory": "logs",
-                "max_age_days": 30,
-            },
-            "safety": {
-                "create_backup": True,
-                "dry_run": False,
-                "require_confirmation": True,
-            },
-        }
+                empty_directories=True,
+            ),
+            configuration_consolidation= \
+                ConfigurationConsolidationConfig(
+                    enabled=True,
+                    target_directory="configs",
+                    file_patterns=["*.config.js", "*.conf", "*.ini"],
+            ),
+            log_consolidation=LogConsolidationConfig(
+                enabled=True, target_directory="logs",
+                max_age_days=30
+            ),
+            safety=SafetyConfig(
+                create_backup=True, dry_run=False,
+                require_confirmation=True),
+        )
 
         if config_path.exists():
             try:
                 with open(config_path, "r") as f:
                     user_config = json.load(f)
                     # Merge with defaults
-                    default_config.update(user_config)
-            except Exception as e:
+                    default_config = self._merge_configs(
+                        default_config, user_config
+                    )
+            except (FileNotFoundError, json.JSONDecodeError) as e:
                 logger.warning(f"Could not load config: {e}, using defaults")
 
         return default_config
+
+    def _merge_configs(
+        self, default_config: RefactorConfig, user_config: Dict
+    ) -> RefactorConfig:
+        """Merge user configuration with default configuration"""
+        # Convert the default config to a dictionary
+        default_config_dict = asdict(default_config)
+
+        # Update the default config with the user config
+        for key, value in user_config.items():
+            if key in default_config_dict:
+                if isinstance(value, dict) and isinstance(
+                    default_config_dict[key], dict
+                ):
+                    # Recursively merge nested dictionaries
+                    default_config_dict[key].update(value)
+                else:
+                    # Otherwise, just update the value
+                    default_config_dict[key] = value
+
+        # Convert the merged dictionary back to a RefactorConfig object
+        return RefactorConfig(**default_config_dict)
 
     def _get_directory_size(self, path: Path) -> Tuple[float, int]:
         """Get directory size in MB and file count"""
@@ -139,23 +237,23 @@ class RootFolderRefactor:
         actions = []
 
         # Analyze virtual environments
-        if self.config["virtual_environments"]["consolidate"]:
+        if self.config.virtual_environments.consolidate:
             actions.extend(self._analyze_virtual_environments())
 
         # Analyze build outputs
-        if self.config["build_outputs"]["consolidate"]:
+        if self.config.build_outputs.consolidate:
             actions.extend(self._analyze_build_outputs())
 
         # Analyze legacy directories
-        if self.config["legacy_cleanup"]["enabled"]:
+        if self.config.legacy_cleanup.enabled:
             actions.extend(self._analyze_legacy_directories())
 
         # Analyze configuration files
-        if self.config["configuration_consolidation"]["enabled"]:
+        if self.config.configuration_consolidation.enabled:
             actions.extend(self._analyze_configuration_files())
 
         # Analyze log files
-        if self.config["log_consolidation"]["enabled"]:
+        if self.config.log_consolidation.enabled:
             actions.extend(self._analyze_log_files())
 
         # Calculate totals
@@ -171,7 +269,8 @@ class RootFolderRefactor:
         )
 
         logger.info(
-            f"📊 Analysis complete: {len(actions)} actions, {total_size:.1f}MB, {total_files} files"
+            f"📊 Analysis complete: {len(actions)} actions, "
+            f"{total_size:.1f}MB, {total_files} files"
         )
         return plan
 
@@ -194,7 +293,7 @@ class RootFolderRefactor:
         if len(venv_dirs) <= 1:
             return actions
 
-        target_name = self.config["virtual_environments"]["target_name"]
+        target_name = self.config.virtual_environments.target_name
         target_path = self.root_path / target_name
 
         # Keep the most recent or largest venv as primary
@@ -207,10 +306,11 @@ class RootFolderRefactor:
                 # Rename primary to target name
                 actions.append(
                     RefactorAction(
-                        action_type="move",
+                        action_type=MOVE_ACTION,
                         source_path=str(venv_dir),
-                        target_path=str(target_path),
-                        reason=f"Rename primary virtual environment to {target_name}",
+                        target_path=target_path,
+                        reason=f"Rename primary virtual environment to "
+                        f"{target_name}",
                         size_mb=size_mb,
                         file_count=file_count,
                     )
@@ -219,7 +319,7 @@ class RootFolderRefactor:
                 # Remove duplicate virtual environments
                 actions.append(
                     RefactorAction(
-                        action_type="delete",
+                        action_type=DELETE_ACTION,
                         source_path=str(venv_dir),
                         reason="Remove duplicate virtual environment",
                         size_mb=size_mb,
@@ -234,7 +334,8 @@ class RootFolderRefactor:
         actions = []
         build_dirs = ["build", "build_output", "dist", "__pycache__"]
 
-        target_dir = self.root_path / self.config["build_outputs"]["target_directory"]
+        target_dir = self.root_path / \
+            self.config.build_outputs.target_directory
 
         for dir_name in build_dirs:
             dir_path = self.root_path / dir_name
@@ -248,7 +349,7 @@ class RootFolderRefactor:
                     # Delete __pycache__ directories
                     actions.append(
                         RefactorAction(
-                            action_type="delete",
+                            action_type=DELETE_ACTION,
                             source_path=str(dir_path),
                             reason="Remove Python cache directory",
                             size_mb=size_mb,
@@ -260,10 +361,11 @@ class RootFolderRefactor:
                     target_subdir = target_dir / dir_name
                     actions.append(
                         RefactorAction(
-                            action_type="move",
+                            action_type=MOVE_ACTION,
                             source_path=str(dir_path),
-                            target_path=str(target_subdir),
-                            reason=f"Consolidate build output into {target_dir.name}",
+                            target_path=target_subdir,
+                            reason=f"Consolidate build output into "
+                            f"{target_dir.name}",
                             size_mb=size_mb,
                             file_count=file_count,
                         )
@@ -275,30 +377,33 @@ class RootFolderRefactor:
         """Analyze legacy and unused directories"""
         actions = []
 
-        legacy_dirs = self.config["legacy_cleanup"]["directories_to_remove"]
-
-        for dir_name in legacy_dirs:
-            dir_path = self.root_path / dir_name
-            if dir_path.exists() and dir_path.is_dir():
-                size_mb, file_count = self._get_directory_size(dir_path)
-
-                actions.append(
-                    RefactorAction(
-                        action_type="delete",
-                        source_path=str(dir_path),
-                        reason=f"Remove legacy/unused directory: {dir_name}",
-                        size_mb=size_mb,
-                        file_count=file_count,
+        legacy_dirs = self.config.legacy_cleanup.directories_to_remove
+        if legacy_dirs:
+            for dir_name in legacy_dirs:
+                dir_path = self.root_path / dir_name
+                if dir_path.exists() and dir_path.is_dir():
+                    size_mb, file_count = self._get_directory_size(
+                        dir_path
                     )
-                )
+
+                    actions.append(
+                        RefactorAction(
+                            action_type=DELETE_ACTION,
+                            source_path=str(dir_path),
+                            reason=f"Remove legacy/unused directory: "
+                            f"{dir_name}",
+                            size_mb=size_mb,
+                            file_count=file_count,
+                        )
+                    )
 
         # Find empty directories
-        if self.config["legacy_cleanup"]["empty_directories"]:
+        if self.config.legacy_cleanup.empty_directories:
             for item in self.root_path.iterdir():
                 if item.is_dir() and self._is_empty_directory(item):
                     actions.append(
                         RefactorAction(
-                            action_type="delete",
+                            action_type=DELETE_ACTION,
                             source_path=str(item),
                             reason="Remove empty directory",
                             size_mb=0.0,
@@ -313,27 +418,30 @@ class RootFolderRefactor:
         actions = []
 
         config_files = []
-        patterns = self.config["configuration_consolidation"]["file_patterns"]
-
-        # Find configuration files in root
-        for pattern in patterns:
-            config_files.extend(self.root_path.glob(pattern))
+        patterns = self.config.configuration_consolidation.\
+            file_patterns
+        if patterns:
+            # Find configuration files in root
+            for pattern in patterns:
+                config_files.extend(self.root_path.glob(pattern))
 
         target_dir = (
             self.root_path
-            / self.config["configuration_consolidation"]["target_directory"]
+            / self.config.configuration_consolidation.
+            target_directory
         )
 
         for config_file in config_files:
-            if config_file.parent == self.root_path:  # Only move files from root
+            if config_file.parent == self.root_path:
+                # Only move files from root
                 size_mb = config_file.stat().st_size / (1024 * 1024)
                 target_path = target_dir / config_file.name
 
                 actions.append(
                     RefactorAction(
-                        action_type="move",
+                        action_type=MOVE_ACTION,
                         source_path=str(config_file),
-                        target_path=str(target_path),
+                        target_path=target_path,
                         reason="Consolidate configuration files",
                         size_mb=size_mb,
                         file_count=1,
@@ -349,7 +457,8 @@ class RootFolderRefactor:
         # Find log files in root
         log_files = list(self.root_path.glob("*.log"))
         target_dir = (
-            self.root_path / self.config["log_consolidation"]["target_directory"]
+            self.root_path / self.config.log_consolidation.
+            target_directory
         )
 
         for log_file in log_files:
@@ -358,9 +467,9 @@ class RootFolderRefactor:
 
             actions.append(
                 RefactorAction(
-                    action_type="move",
+                    action_type=MOVE_ACTION,
                     source_path=str(log_file),
-                    target_path=str(target_path),
+                    target_path=target_path,
                     reason="Consolidate log files",
                     size_mb=size_mb,
                     file_count=1,
@@ -373,13 +482,15 @@ class RootFolderRefactor:
         """Check if directory is empty or contains only hidden files"""
         try:
             items = list(path.iterdir())
-            return len(items) == 0 or all(item.name.startswith(".") for item in items)
+            return len(items) == 0 or all(
+                item.name.startswith(".") for item in items
+            )
         except (PermissionError, OSError):
             return False
 
     def create_backup(self, plan: RefactorPlan) -> bool:
         """Create backup of files that will be modified"""
-        if not self.config["safety"]["create_backup"]:
+        if not self.config.safety.create_backup:
             return True
 
         logger.info(f"📦 Creating backup at {self.backup_dir}")
@@ -407,7 +518,9 @@ class RootFolderRefactor:
                     backup_path.parent.mkdir(parents=True, exist_ok=True)
 
                     if source_path.is_dir():
-                        shutil.copytree(source_path, backup_path, dirs_exist_ok=True)
+                        shutil.copytree(
+                            source_path, backup_path, dirs_exist_ok=True
+                        )
                     else:
                         shutil.copy2(source_path, backup_path)
 
@@ -422,7 +535,7 @@ class RootFolderRefactor:
 
     def execute_plan(self, plan: RefactorPlan) -> bool:
         """Execute the refactoring plan"""
-        if self.config["safety"]["dry_run"]:
+        if self.config.safety.dry_run:
             logger.info("🔍 DRY RUN MODE - No changes will be made")
             self._print_plan_summary(plan)
             return True
@@ -434,15 +547,16 @@ class RootFolderRefactor:
 
         for i, action in enumerate(plan.actions, 1):
             logger.info(
-                f"[{i}/{len(plan.actions)}] {action.action_type.upper()}: {action.source_path}"
+                f"[{i}/{len(plan.actions)}] {action.action_type.upper()}: "
+                f"{action.source_path}"
             )
 
             try:
-                if action.action_type == "move":
+                if action.action_type == MOVE_ACTION:
                     self._execute_move(action)
-                elif action.action_type == "delete":
+                elif action.action_type == DELETE_ACTION:
                     self._execute_delete(action)
-                elif action.action_type == "create":
+                elif action.action_type == CREATE_ACTION:
                     self._execute_create(action)
 
                 success_count += 1
@@ -453,7 +567,8 @@ class RootFolderRefactor:
                 logger.error(f"❌ Failed: {action.reason} - {e}")
 
         logger.info(
-            f"📊 Execution complete: {success_count} successful, {error_count} failed"
+            f"📊 Execution complete: {success_count} successful, "
+            f"{error_count} failed"
         )
 
         # Save execution report
@@ -464,16 +579,17 @@ class RootFolderRefactor:
     def _execute_move(self, action: RefactorAction):
         """Execute a move action"""
         source = Path(action.source_path)
-        target = Path(action.target_path)
+        target = action.target_path
 
         if not source.exists():
             raise FileNotFoundError(f"Source path does not exist: {source}")
 
         # Create target directory if needed
-        target.parent.mkdir(parents=True, exist_ok=True)
+        if target:
+            target.parent.mkdir(parents=True, exist_ok=True)
 
-        # Move the file/directory
-        shutil.move(str(source), str(target))
+            # Move the file/directory
+            shutil.move(str(source), str(target))
 
     def _execute_delete(self, action: RefactorAction):
         """Execute a delete action"""
@@ -492,7 +608,8 @@ class RootFolderRefactor:
             # On Windows, some files may be locked by processes
             if "venv" in str(path).lower() or ".pyd" in str(e):
                 logger.warning(
-                    f"Skipping locked file/directory (common on Windows): {path}"
+                    f"Skipping locked file/directory (common on Windows): "
+                    f"{path}"
                 )
                 logger.warning(f"Reason: {e}")
             else:
@@ -500,8 +617,10 @@ class RootFolderRefactor:
 
     def _execute_create(self, action: RefactorAction):
         """Execute a create action"""
-        path = Path(action.target_path)
-        path.mkdir(parents=True, exist_ok=True)
+        path = action.target_path
+        if path:
+            path = Path(path)
+            path.mkdir(parents=True, exist_ok=True)
 
     def _print_plan_summary(self, plan: RefactorPlan):
         """Print a summary of the refactoring plan"""
@@ -514,7 +633,7 @@ class RootFolderRefactor:
         print(f"📄 Total Files: {plan.total_files}")
         print(f"🗓️ Created: {plan.created_at}")
 
-        if self.config["safety"]["create_backup"]:
+        if self.config.safety.create_backup:
             print(f"📦 Backup Location: {plan.backup_location}")
 
         print("\n📋 ACTIONS:")
@@ -556,7 +675,8 @@ class RootFolderRefactor:
             },
         }
 
-        report_path = self.root_path / "logs" / "refactor_execution_report.json"
+        report_path = self.root_path / "logs" / \
+            "refactor_execution_report.json"
         report_path.parent.mkdir(exist_ok=True)
 
         with open(report_path, "w") as f:
@@ -578,7 +698,8 @@ async def refactor_root_folder_hook(event=None):
 
         if not plan.actions:
             logger.info(
-                "✅ No refactoring needed - directory structure is already optimal"
+                "✅ No refactoring needed - directory structure is "
+                "already optimal"
             )
             return
 
@@ -586,9 +707,10 @@ async def refactor_root_folder_hook(event=None):
         refactor._print_plan_summary(plan)
 
         # Create backup if enabled
-        if refactor.config["safety"]["create_backup"]:
+        if refactor.config.safety.create_backup:
             if not refactor.create_backup(plan):
-                logger.error("❌ Backup creation failed - aborting refactoring")
+                logger.error("❌ Backup creation failed - aborting "
+                             "refactoring")
                 return
 
         # Execute plan
@@ -597,7 +719,8 @@ async def refactor_root_folder_hook(event=None):
         if success:
             logger.info("🎉 Root folder refactoring completed successfully!")
         else:
-            logger.error("⚠️ Refactoring completed with some errors - check logs")
+            logger.error("⚠️ Refactoring completed with some errors - "
+                         "check logs")
 
     except Exception as e:
         logger.error(f"💥 Refactoring failed: {e}")
@@ -616,7 +739,9 @@ if __name__ == "__main__":
         action="store_true",
         help="Show what would be done without making changes",
     )
-    parser.add_argument("--no-backup", action="store_true", help="Skip backup creation")
+    parser.add_argument(
+        "--no-backup", action="store_true", help="Skip backup creation"
+    )
     parser.add_argument("--config", help="Path to custom configuration file")
 
     args = parser.parse_args()

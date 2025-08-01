@@ -83,7 +83,7 @@ Available tasks (Ctrl+Shift+P → "Tasks: Run Task"):
 - `Deploy to AWS Marketplace` - Prepare marketplace listing
 - `Start Phoenix Hydra (Podman)` - Launch all services
 - `Phoenix Health Check` - Verify system status
-- `Refactor Root Folder` - Clean and organize project structure
+- `Refactor Root Folder` - Clean and organize project structure (Windows-compatible)
 - `Refactor Root Folder (Dry Run)` - Preview refactoring changes
 
 ---
