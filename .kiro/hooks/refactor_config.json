@@ -1,0 +1,97 @@
+{
+    "virtual_environments": {
+        "consolidate": true,
+        "target_name": ".venv",
+        "remove_duplicates": true,
+        "preserve_requirements": true
+    },
+    "build_outputs": {
+        "consolidate": true,
+        "target_directory": "build",
+        "subdirectories": [
+            "output",
+            "dist",
+            "artifacts",
+            "temp"
+        ],
+        "clean_pycache": true
+    },
+    "legacy_cleanup": {
+        "enabled": true,
+        "directories_to_remove": [
+            "Nueva carpeta",
+            "BooPhoenix369",
+            "awesome-n8n-templates-main",
+            "claude-code-ui",
+            "claudecodeui"
+        ],
+        "empty_directories": true,
+        "temp_files": [
+            "*.tmp",
+            "*.temp",
+            "*.bak",
+            "*.old"
+        ]
+    },
+    "configuration_consolidation": {
+        "enabled": true,
+        "target_directory": "configs",
+        "file_patterns": [
+            "*.config.js",
+            "*.conf",
+            "*.ini",
+            "*.cfg",
+            "terraform.tfstate*"
+        ],
+        "exclude_patterns": [
+            ".env*",
+            "pyproject.toml",
+            "setup.py",
+            "requirements*.txt"
+        ]
+    },
+    "log_consolidation": {
+        "enabled": true,
+        "target_directory": "logs",
+        "max_age_days": 30,
+        "file_patterns": [
+            "*.log",
+            "*.log.*"
+        ]
+    },
+    "model_organization": {
+        "enabled": true,
+        "consolidate_model_dirs": true,
+        "target_directory": "models",
+        "subdirectories": {
+            "huggingface": "models/huggingface",
+            "ollama": "models/ollama",
+            "2025-stack": "models/2025-stack"
+        }
+    },
+    "documentation_organization": {
+        "enabled": true,
+        "ensure_docs_structure": true,
+        "move_scattered_docs": true,
+        "markdown_files_to_docs": [
+            "*.md"
+        ],
+        "exclude_root_docs": [
+            "README.md",
+            "CHANGELOG.md",
+            "LICENSE.md"
+        ]
+    },
+    "safety": {
+        "create_backup": true,
+        "dry_run": false,
+        "require_confirmation": false,
+        "max_file_size_mb": 1000,
+        "preserve_git": true
+    },
+    "reporting": {
+        "detailed_logs": true,
+        "save_execution_report": true,
+        "notify_completion": true
+    }
+}

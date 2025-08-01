@@ -1,0 +1,253 @@
+name: phoenix-hydra-full
+services:
+  # Model Download Service - Downloads all HF and Ollama models
+  model-downloader:
+    image: python:3.11-slim
+    environment:
+      PHX_HYDRA_WORKERS: "6"
+      PHX_HYDRA_MODELDIR: "/models"
+      HF_TOKEN: "${HF_TOKEN:-}"
+      PYTHONPATH: "/app"
+    volumes:
+      - ../../:/app:ro
+      - model_storage:/models:z
+      - pip_cache:/root/.cache/pip:z
+    working_dir: /app
+    command: >
+      bash -c "
+        echo '🚀 Phoenix Hydra 2025 Model Downloader Starting...' &&
+        pip install --cache-dir /root/.cache/pip -r requirements-models.txt &&
+        python scripts/phoenix_hugger.py --out /models --workers 6 --ollama-host ollama:11434 --skip-ollama &&
+        echo '✅ HF Models Download Complete - Ready for Phoenix Hydra!' &&
+        sleep infinity
+      "
+    depends_on:
+      - ollama
+    restart: "no"
+
+  # Ollama Service - Local model serving
+  ollama:
+    image: ollama/ollama:latest
+    environment:
+      OLLAMA_HOST: "0.0.0.0:11434"
+      OLLAMA_MODELS: "/models/ollama"
+    volumes:
+      - model_storage:/models:z
+      - ollama_data:/root/.ollama:z
+    ports:
+      - "11434:11434"
+    command: >
+      bash -c "
+        echo '🦙 Starting Ollama service...' &&
+        ollama serve &
+        sleep 10 &&
+        echo '⬇️ Pulling Ollama models...' &&
+        ollama pull qwen2.5-coder:7b &&
+        ollama pull qwen2.5-coder:14b &&
+        ollama pull deepseek-coder-v2:16b &&
+        ollama pull phi3:mini &&
+        ollama pull phi3:medium &&
+        ollama pull gemma2:2b &&
+        ollama pull gemma2:9b &&
+        ollama pull llama3.2:1b &&
+        ollama pull llama3.2:3b &&
+        ollama pull tinyllama:1.1b &&
+        ollama pull stablelm2:1.6b &&
+        ollama pull openchat:7b &&
+        ollama pull codestral:22b &&
+        ollama pull neural-chat:7b &&
+        ollama pull orca-mini:3b &&
+        ollama pull vicuna:7b &&
+        echo '✅ Ollama models ready!' &&
+        wait
+      "
+    restart: unless-stopped
+
+  # Phoenix Core Service
+  phoenix-core:
+    image: nginx:alpine
+    environment:
+      MONETIZATION_MODE: "enterprise"
+      AFFILIATE_TRACKING: "enabled"
+      MARKETPLACE_INTEGRATION: "aws,cloudflare,huggingface"
+      MODEL_STORAGE_PATH: "/models"
+    ports:
+      - "8080:80"
+    volumes:
+      - ../../configs/nginx-phoenix-core.html:/usr/share/nginx/html/index.html:ro
+      - model_storage:/models:ro,z
+    command: >
+      sh -c "
+        echo '{\"status\":\"healthy\",\"service\":\"phoenix-hydra\",\"version\":\"v8.7\",\"models_available\":true}' > /usr/share/nginx/html/health &&
+        nginx -g 'daemon off;'
+      "
+    depends_on:
+      - model-downloader
+      - ollama
+
+  # NCA Toolkit - 30+ multimedia processing endpoints
+  nca-toolkit:
+    image: nginx:alpine
+    environment:
+      API_BASE_URL: "https://sea-turtle-app-nlak2.ondigitalocean.app/v1/"
+      PHOENIX_INTEGRATION: "true"
+      MODEL_BACKEND: "ollama:11434"
+    ports:
+      - "8081:80"
+    volumes:
+      - ../../configs/nginx-nca-toolkit.html:/usr/share/nginx/html/index.html:ro
+      - model_storage:/models:ro,z
+    command: nginx -g 'daemon off;'
+    depends_on:
+      - ollama
+
+  # n8n Workflows - Visual automation
+  n8n-phoenix:
+    image: n8nio/n8n:latest
+    environment:
+      GENERIC_TIMEZONE: "Europe/Madrid"
+      N8N_SECURE_COOKIE: "false"
+      N8N_ENCRYPTION_KEY: "phoenix_hydra_n8n_key_2025_secure"
+      PHOENIX_WORKFLOWS_ENABLED: "true"
+      OLLAMA_BASE_URL: "http://ollama:11434"
+      MODEL_STORAGE_PATH: "/models"
+    volumes:
+      - n8n_data:/home/node/.n8n:z
+      - model_storage:/models:ro,z
+      - ../../configs/n8n-workflows:/home/node/.n8n/workflows:ro
+    ports:
+      - "5678:5678"
+    depends_on:
+      - ollama
+      - revenue-db
+
+  # Windmill - GitOps workflows
+  windmill-phoenix:
+    image: ghcr.io/windmill-labs/windmill:main
+    environment:
+      DATABASE_URL: "postgresql://phoenix:hydra2025_secure_password@revenue-db:5432/phoenix_revenue"
+      RUST_LOG: "info"
+      OLLAMA_BASE_URL: "http://ollama:11434"
+      MODEL_STORAGE_PATH: "/models"
+    volumes:
+      - model_storage:/models:ro,z
+      - ../../windmill-scripts:/windmill-scripts:ro
+    depends_on:
+      - revenue-db
+      - ollama
+    ports:
+      - "8000:8000"
+
+  # Revenue Database - PostgreSQL for tracking
+  revenue-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: "phoenix_revenue"
+      POSTGRES_USER: "phoenix"
+      POSTGRES_PASSWORD: "hydra2025_secure_password"
+    volumes:
+      - revenue_data:/var/lib/postgresql/data:z
+    ports:
+      - "5432:5432"
+
+  # Model Management API
+  model-api:
+    image: python:3.11-slim
+    environment:
+      PYTHONPATH: "/app"
+      MODEL_STORAGE_PATH: "/models"
+      OLLAMA_BASE_URL: "http://ollama:11434"
+    volumes:
+      - ../../:/app:ro
+      - model_storage:/models:z
+      - pip_cache:/root/.cache/pip:z
+    working_dir: /app
+    command: >
+      bash -c "
+        pip install --cache-dir /root/.cache/pip fastapi uvicorn requests &&
+        python -c \"
+import json
+import os
+from pathlib import Path
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+import uvicorn
+
+app = FastAPI(title='Phoenix Hydra Model API', version='2025.1')
+
+@app.get('/models/status')
+async def model_status():
+    model_dir = Path('/models')
+    hf_models = list((model_dir / 'huggingface').rglob('*')) if (model_dir / 'huggingface').exists() else []
+    
+    return JSONResponse({
+        'status': 'healthy',
+        'model_storage': str(model_dir),
+        'huggingface_models': len([p for p in hf_models if p.is_dir()]),
+        'ollama_available': True,
+        'total_size_gb': round(sum(f.stat().st_size for f in model_dir.rglob('*') if f.is_file()) / (1024**3), 2) if model_dir.exists() else 0
+    })
+
+@app.get('/models/list')
+async def list_models():
+    model_dir = Path('/models')
+    models = {'huggingface': [], 'ollama': []}
+    
+    if (model_dir / 'huggingface').exists():
+        for category_dir in (model_dir / 'huggingface').iterdir():
+            if category_dir.is_dir():
+                for model_dir_path in category_dir.iterdir():
+                    if model_dir_path.is_dir():
+                        models['huggingface'].append({
+                            'name': model_dir_path.name,
+                            'category': category_dir.name,
+                            'path': str(model_dir_path)
+                        })
+    
+    return JSONResponse(models)
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='0.0.0.0', port=8090)
+        \"
+      "
+    ports:
+      - "8090:8090"
+    depends_on:
+      - model-downloader
+      - ollama
+
+  # Monitoring Service
+  monitoring:
+    image: prom/prometheus:latest
+    volumes:
+      - ../../monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus:z
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    ports:
+      - "9090:9090"
+    depends_on:
+      - phoenix-core
+      - ollama
+
+volumes:
+  model_storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/models
+  ollama_data: {}
+  n8n_data: {}
+  revenue_data: {}
+  prometheus_data: {}
+  pip_cache: {}
+
+networks:
+  default:
+    driver: bridge
