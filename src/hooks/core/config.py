@@ -6,8 +6,8 @@ of the Phoenix DemiGod Agent Hooks automation system.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -73,6 +73,15 @@ class ContainerMonitorConfig:
     memory_threshold_percent: float = 90.0
     disk_threshold_percent: float = 85.0
 
+@dataclass
+class ContainerLogAnalysisConfig:
+    """Configuration for container log analysis."""
+
+    # Log levels to analyze
+    log_levels: List[str] = field(default_factory=lambda: ["ERROR", "WARNING"])
+
+    # Patterns to search for in log messages
+    patterns: List[str] = field(default_factory=list)
 
 @dataclass
 class APIMonitorConfig:
@@ -188,10 +197,13 @@ class NotificationConfig:
 @dataclass
 class AgentHooksConfig:
     """Main configuration for the Agent Hooks system."""
-    
+
     # Component configurations
     file_watcher: FileWatcherConfig = field(default_factory=FileWatcherConfig)
-    container_monitor: ContainerMonitorConfig = field(default_factory=ContainerMonitorConfig)
+    container_monitor: ContainerMonitorConfig = field(
+        default_factory=ContainerMonitorConfig)
+    container_log_analysis: ContainerLogAnalysisConfig = field(
+        default_factory=ContainerLogAnalysisConfig)
     api_monitor: APIMonitorConfig = field(default_factory=APIMonitorConfig)
     data_pipeline: DataPipelineConfig = field(default_factory=DataPipelineConfig)
     hook_execution: HookExecutionConfig = field(default_factory=HookExecutionConfig)
@@ -220,8 +232,9 @@ class AgentHooksConfig:
 
 def load_config_from_file(config_path: str) -> AgentHooksConfig:
     """Load configuration from a YAML or TOML file."""
-    import yaml
     from pathlib import Path
+
+    import yaml
     
     config_file = Path(config_path)
     if not config_file.exists():
@@ -276,7 +289,7 @@ def create_default_config() -> AgentHooksConfig:
             "expected_status": 200
         },
         {
-            "name": "Chaos Agent API", 
+            "name": "Chaos Agent API",
             "url": "http://localhost:8001/health",
             "method": "GET",
             "expected_status": 200
@@ -288,7 +301,11 @@ def create_default_config() -> AgentHooksConfig:
             "expected_status": 200
         }
     ]
-    
+
+    # Configure container log analysis
+    config.container_log_analysis.log_levels = ["ERROR", "WARNING"]
+    config.container_log_analysis.patterns = ["Exception", "Error", "Warning"]
+
     # Configure notifications
     config.notifications.channels = {
         "console": {

@@ -14,7 +14,7 @@ import json
 from dataclasses import dataclass
 from enum import Enum
 
-from ..core.system_controller import SystemReviewController
+from ..core.system_controller import SystemController
 from ..models.data_models import ComponentCategory
 
 
@@ -57,8 +57,8 @@ class ReviewScheduler:
     - Error handling and retry logic
     """
 
-    def __init__(self, controller: SystemReviewController, config_dir: Path = None):
-        self.controller = controller
+    def __init__(self, controller: SystemController, config_dir: Path = None):
+            self.controller = controller
         self.config_dir = config_dir or Path.cwd() / ".phoenix_scheduler"
         self.config_dir.mkdir(exist_ok=True)
 

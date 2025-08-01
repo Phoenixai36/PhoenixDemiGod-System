@@ -14,7 +14,7 @@ import json
 from dataclasses import dataclass
 from enum import Enum
 
-from ..core.system_controller import SystemReviewController
+from ..core.system_controller import SystemController
 from ..models.data_models import ComponentCategory, Priority
 
 
@@ -67,9 +67,9 @@ class ContinuousMonitoring:
     - Integration with Prometheus metrics
     """
 
-    def __init__(self, controller: SystemReviewController = None, config_path: Path = None):
-        self.controller = controller or SystemReviewController()
-        self.config_path = config_path or Path.cwd() / ".phoenix_monitoring"
+    def __init__(self, controller: SystemController = None, config_path: Path = None):
+            self.controller = controller or SystemController()
+            self.config_path = config_path or Path.cwd() / ".phoenix_monitoring"
         self.config_path.mkdir(exist_ok=True)
 
         self.logger = logging.getLogger(__name__)

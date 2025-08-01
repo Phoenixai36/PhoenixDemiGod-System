@@ -2,18 +2,21 @@
 Tests for automation scheduler module
 """
 
-import pytest
 import asyncio
-from unittest.mock import Mock, AsyncMock, patch
-from datetime import datetime, timedelta
-from pathlib import Path
 import json
 import tempfile
+from datetime import datetime, timedelta
+from pathlib import Path
+from unittest.mock import AsyncMock, Mock, patch
+
+import pytest
 
 from phoenix_system_review.automation.scheduler import (
-    ReviewScheduler, ScheduledReview, ScheduleType
+    ReviewScheduler,
+    ScheduledReview,
+    ScheduleType,
 )
-from phoenix_system_review.core.system_controller import SystemReviewController
+from phoenix_system_review.core.system_controller import SystemController
 from phoenix_system_review.models.data_models import ComponentCategory
 
 
@@ -29,7 +32,7 @@ class TestReviewScheduler:
     @pytest.fixture
     def mock_controller(self):
         """Create mock system controller"""
-        controller = Mock(spec=SystemReviewController)
+        controller = Mock(spec=SystemController)
         controller.configure = AsyncMock()
         controller.discover_components = AsyncMock(return_value={})
         controller.analyze_components = AsyncMock(return_value={})
@@ -253,7 +256,7 @@ async def test_scheduler_integration():
     """Integration test for scheduler functionality"""
     with tempfile.TemporaryDirectory() as temp_dir:
         config_dir = Path(temp_dir)
-        mock_controller = Mock(spec=SystemReviewController)
+        mock_controller = Mock(spec=SystemController)
         mock_controller.configure = AsyncMock()
         mock_controller.discover_components = AsyncMock(return_value={})
         mock_controller.analyze_components = AsyncMock(return_value={})

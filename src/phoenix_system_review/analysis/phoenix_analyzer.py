@@ -7,14 +7,14 @@ comprehensive evaluation capabilities.
 """
 
 import asyncio
-import logging
-from pathlib import Path
-from typing import Dict, Any, List, Optional
-from datetime import datetime
 import json
+import logging
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
+from ..core.system_controller import SystemController
 from ..models.data_models import ComponentCategory
-from ..core.system_controller import SystemReviewController
 
 
 class PhoenixHydraAnalyzer:
@@ -29,7 +29,7 @@ class PhoenixHydraAnalyzer:
     def __init__(self, project_path: Path = None):
         self.project_path = project_path or Path.cwd()
         self.logger = logging.getLogger(__name__)
-        self.controller = SystemReviewController()
+        self.controller = SystemController()
 
         # Analysis results storage
         self.discovery_results: Optional[Dict[str, Any]] = None

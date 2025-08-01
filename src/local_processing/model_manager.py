@@ -12,11 +12,14 @@ import json
 import logging
 import shutil
 import sqlite3
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
+
+if TYPE_CHECKING:
+    from .engines.base import InferenceEngine
 
 logger = logging.getLogger(__name__)
 
@@ -65,6 +68,7 @@ class LocalModelManager:
         self.models_dir.mkdir(parents=True, exist_ok=True)
         self._init_database()
         self._active_models: Dict[str, Any] = {}
+        self._inference_engines: List["InferenceEngine"] = []
 
     def _init_database(self):
         """Initialize the SQLite database for model metadata."""
@@ -124,7 +128,7 @@ class LocalModelManager:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
-                    INSERT OR REPLACE INTO models 
+                    INSERT OR REPLACE INTO models
                     (name, version, model_type, file_path, checksum, size_bytes,
                      performance_profile, dependencies, created_at, status)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -177,7 +181,7 @@ class LocalModelManager:
             else:
                 cursor = conn.execute(
                     """
-                    SELECT * FROM models WHERE name = ? 
+                    SELECT * FROM models WHERE name = ?
                     ORDER BY created_at DESC LIMIT 1
                 """,
                     (name,),
@@ -214,6 +218,10 @@ class LocalModelManager:
 
             return [self._row_to_metadata(row) for row in cursor.fetchall()]
 
+    def register_inference_engine(self, engine: "InferenceEngine") -> None:
+        """Registers an inference engine."""
+        self._inference_engines.append(engine)
+
     async def load_model(
         self, name: str, version: Optional[str] = None
     ) -> Optional[Any]:
@@ -248,8 +256,18 @@ class LocalModelManager:
                 self._update_model_status(metadata, ModelStatus.CORRUPTED)
                 return None
 
-            # Load model (this would be model-specific implementation)
-            model = await self._load_model_file(metadata)
+            # Find appropriate inference engine
+            engine: Optional["InferenceEngine"] = next(
+                (e for e in self._inference_engines if e.can_load(metadata)), None
+            )
+            if engine is None:
+                logger.error(
+                    f"No inference engine found for model type: {metadata.model_type}"
+                )
+                return None
+
+            # Load model using the engine
+            model = await engine.load_model(metadata)
             if model:
                 self._active_models[model_key] = model
                 self._update_model_status(metadata, ModelStatus.ACTIVE)
@@ -302,7 +320,7 @@ class LocalModelManager:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
-                SELECT * FROM models 
+                SELECT * FROM models
                 WHERE model_type = ? AND status = 'available'
                 ORDER BY size_bytes ASC, usage_count DESC
                 LIMIT 1
@@ -328,8 +346,8 @@ class LocalModelManager:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
-                SELECT file_path FROM models 
-                WHERE (last_used IS NULL OR last_used < ?) 
+                SELECT file_path FROM models
+                WHERE (last_used IS NULL OR last_used < ?)
                 AND status != 'active'
             """,
                 (datetime.fromtimestamp(cutoff_date).isoformat(),),
@@ -346,8 +364,8 @@ class LocalModelManager:
             # Remove from database
             conn.execute(
                 """
-                DELETE FROM models 
-                WHERE (last_used IS NULL OR last_used < ?) 
+                DELETE FROM models
+                WHERE (last_used IS NULL OR last_used < ?)
                 AND status != 'active'
             """,
                 (datetime.fromtimestamp(cutoff_date).isoformat(),),
@@ -374,15 +392,15 @@ class LocalModelManager:
             logger.error(f"Integrity check failed for {metadata.name}: {e}")
             return False
 
-    async def _load_model_file(self, metadata: ModelMetadata) -> Optional[Any]:
-        """
-        Load the actual model file. This would be implemented based on
-        the specific model format (Mamba, SSM, etc.).
-        """
-        # Placeholder for actual model loading logic
-        # This would integrate with the specific AI framework being used
-        await asyncio.sleep(0.1)  # Simulate loading time
-        return {"model_path": metadata.file_path, "metadata": metadata}
+    # async def _load_model_file(self, metadata: ModelMetadata) -> Optional[Any]:
+    #     """
+    #     Load the actual model file. This would be implemented based on
+    #     the specific model format (Mamba, SSM, etc.).
+    #     """
+    #     # Placeholder for actual model loading logic
+    #     # This would integrate with the specific AI framework being used
+    #     await asyncio.sleep(0.1)  # Simulate loading time
+    #     return {"model_path": metadata.file_path, "metadata": metadata}
 
     def _update_model_status(self, metadata: ModelMetadata, status: ModelStatus):
         """Update model status in database."""
@@ -400,7 +418,7 @@ class LocalModelManager:
         with sqlite3.connect(self.db_path) as conn:
             conn.execute(
                 """
-                UPDATE models 
+                UPDATE models
                 SET last_used = ?, usage_count = usage_count + 1
                 WHERE name = ? AND version = ?
             """,

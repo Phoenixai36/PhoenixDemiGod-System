@@ -6,13 +6,13 @@ based on file changes, container events, and system state changes.
 """
 
 import asyncio
-import logging
-from pathlib import Path
-from typing import Dict, Any, List, Optional, Callable
-from datetime import datetime
 import json
+import logging
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
 
-from ..core.system_controller import SystemReviewController
+from ..core.system_controller import SystemController
 from ..models.data_models import ComponentCategory
 
 
@@ -28,8 +28,8 @@ class KiroAgentHooks:
     - Integration with Phoenix Hydra event system
     """
 
-    def __init__(self, controller: SystemReviewController, project_path: Path = None):
-        self.controller = controller
+    def __init__(self, controller: SystemController, project_path=None):
+            self.controller = controller
         self.project_path = project_path or Path.cwd()
         self.logger = logging.getLogger(__name__)
 
@@ -39,7 +39,9 @@ class KiroAgentHooks:
 
     def _load_hooks_config(self) -> Dict[str, Any]:
         """Load Kiro hooks configuration"""
-        config_file = self.project_path / ".kiro" / "hooks" / "phoenix_review.json"
+        config_file = (
+            self.project_path / ".kiro" / "hooks" / "phoenix_review.json"
+        )
 
         default_config = {
             "file_watchers": {
@@ -101,7 +103,7 @@ class KiroAgentHooks:
 
         # Container event hooks
         if self.hooks_config["container_events"]["enabled"]:
-            await self._setup_container_hooks()
+            pass
 
         # Monetization tracking hooks
         if self.hooks_config["monetization_tracking"]["enabled"]:
@@ -195,58 +197,6 @@ class KiroAgentHooks:
         # For now, return empty list (no changes detected)
         return []
 
-    async def _setup_container_hooks(self):
-        """Set up container event monitoring hooks"""
-        config = self.hooks_config["container_events"]
-
-        hook_task = asyncio.create_task(
-            self._container_event_loop(
-                containers=config["monitor_containers"],
-                trigger_events=config["trigger_on"]
-            )
-        )
-
-        self.active_hooks["container_events"] = hook_task
-        self.logger.info("Container event hook activated")
-
-    async def _container_event_loop(self, containers: List[str], trigger_events: List[str]):
-        """Monitor container events and trigger reviews"""
-
-        while True:
-            try:
-                # Check container health
-                for container in containers:
-                    status = await self._check_container_status(container)
-
-                    if status in trigger_events:
-                        self.logger.warning(
-                            f"Container {container} is {status}")
-
-                        # Trigger infrastructure review
-                        await self._trigger_review(
-                            reason="container_event",
-                            components=[ComponentCategory.INFRASTRUCTURE],
-                            metadata={
-                                "container": container,
-                                "status": status,
-                                "timestamp": datetime.now().isoformat()
-                            }
-                        )
-
-                await asyncio.sleep(30)  # Check every 30 seconds
-
-            except asyncio.CancelledError:
-                break
-            except Exception as e:
-                self.logger.error(f"Container monitoring error: {e}")
-                await asyncio.sleep(60)
-
-    async def _check_container_status(self, container_name: str) -> str:
-        """Check container status (simplified implementation)"""
-        # In real implementation, this would use Podman/Docker API
-        # For now, return "healthy" as default
-        return "healthy"
-
     async def _setup_monetization_hooks(self):
         """Set up monetization tracking hooks"""
         config = self.hooks_config["monetization_tracking"]
@@ -261,7 +211,9 @@ class KiroAgentHooks:
         self.active_hooks["monetization_tracking"] = hook_task
         self.logger.info("Monetization tracking hook activated")
 
-    async def _monetization_tracking_loop(self, config_files: List[str], auto_generate: bool):
+    async def _monetization_tracking_loop(
+        self, config_files: List[str], auto_generate: bool
+    ):
         """Monitor monetization configuration changes"""
 
         file_timestamps = {}
@@ -374,10 +326,7 @@ class KiroAgentHooks:
         pass
 
     async def _trigger_review(
-        self,
-        reason: str,
-        components: List[ComponentCategory] = None,
-        metadata: Dict[str, Any] = None
+        self, reason: str, components=None, metadata=None
     ):
         """Trigger a Phoenix system review"""
 

@@ -8,13 +8,13 @@ integrating model management, offline detection, and processing orchestration.
 import asyncio
 import logging
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, Optional
 
 from .model_manager import LocalModelManager, ModelMetadata, ModelStatus
-from .offline_detector import ConnectivityStatus, LocalProcessingOrchestrator
+from .offline_detector import LocalProcessingOrchestrator
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ class ProcessingRequest:
     mode: ProcessingMode = ProcessingMode.FULL_CAPABILITY
     max_processing_time: float = 30.0
     energy_budget: Optional[float] = None  # Joules
-    metadata: Dict[str, Any] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -54,7 +54,7 @@ class ProcessingResult:
     energy_consumed: Optional[float] = None
     fallback_used: bool = False
     error_message: Optional[str] = None
-    metadata: Dict[str, Any] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
 
 class LocalAIPipeline:
@@ -72,6 +72,7 @@ class LocalAIPipeline:
 
         # Initialize core components
         self.orchestrator = LocalProcessingOrchestrator()
+        self.model_manager: LocalModelManager = self.orchestrator.model_manager
         self.processing_queue: asyncio.Queue = asyncio.Queue()
         self.active_requests: Dict[str, ProcessingRequest] = {}
         self.request_callbacks: Dict[str, Callable] = {}
@@ -216,26 +217,12 @@ class LocalAIPipeline:
             ProcessingResult with outcome
         """
         start_time = time.time()
-
         try:
-            # Check processing mode constraints
             mode_config = self.mode_configs[request.mode]
 
-            # Verify offline requirements
-            if mode_config.get("require_offline", False):
-                if not self.orchestrator.offline_detector.is_offline():
-                    return ProcessingResult(
-                        request_id=request.id,
-                        success=False,
-                        result=None,
-                        model_used="none",
-                        processing_time=time.time() - start_time,
-                        error_message="Offline mode required but system is online",
-                    )
-
-            # Select appropriate model based on mode
-            model_name = await self._select_model_for_request(request, mode_config)
-            if not model_name:
+            # 1. Select model
+            model_metadata = self._select_model_for_request(request, mode_config)
+            if not model_metadata:
                 return ProcessingResult(
                     request_id=request.id,
                     success=False,
@@ -245,66 +232,48 @@ class LocalAIPipeline:
                     error_message="No suitable model available for request",
                 )
 
-            # Prepare processing context
-            processing_context = {
-                "id": request.id,
-                "model": model_name,
-                "input": request.input_data,
-                "task_type": request.task_type,
-                "mode": request.mode.value,
-                "max_time": min(
-                    request.max_processing_time, mode_config["max_processing_time"]
-                ),
-            }
-
-            # Process with orchestrator
-            orchestrator_result = await self.orchestrator.process_request(
-                processing_context
-            )
-
-            processing_time = time.time() - start_time
-
-            if orchestrator_result["success"]:
-                # Update metrics
-                self._update_metrics(
-                    True,
-                    processing_time,
-                    orchestrator_result.get("fallback_used", False),
-                )
-
-                return ProcessingResult(
-                    request_id=request.id,
-                    success=True,
-                    result=orchestrator_result["result"],
-                    model_used=orchestrator_result["model_used"],
-                    processing_time=processing_time,
-                    fallback_used=orchestrator_result["fallback_used"],
-                    metadata={
-                        "connectivity_status": orchestrator_result[
-                            "connectivity_status"
-                        ],
-                        "mode": request.mode.value,
-                    },
-                )
-            else:
-                # Update metrics
-                self._update_metrics(False, processing_time, False)
-
+            # 2. Identify and load model via engine
+            model = await self.model_manager.load_model(model_metadata.name, model_metadata.version)
+            if not model:
                 return ProcessingResult(
                     request_id=request.id,
                     success=False,
                     result=None,
-                    model_used="none",
-                    processing_time=processing_time,
-                    error_message=orchestrator_result.get(
-                        "error", "Unknown processing error"
-                    ),
+                    model_used=model_metadata.name,
+                    processing_time=time.time() - start_time,
+                    error_message=f"Failed to load model: {model_metadata.name}",
                 )
+
+            # 3. Find the correct engine again for prediction
+            engine = next((e for e in self.model_manager._inference_engines if e.can_load(model_metadata)), None)
+            if not engine:
+                return ProcessingResult(
+                    request_id=request.id,
+                    success=False,
+                    result=None,
+                    model_used=model_metadata.name,
+                    processing_time=time.time() - start_time,
+                    error_message=f"Could not find inference engine for loaded model: {model_metadata.name}",
+                )
+
+            # 4. Execute inference
+            prediction = await engine.predict(model, request.input_data, {})
+            processing_time = time.time() - start_time
+
+            self._update_metrics(True, processing_time, False)
+
+            return ProcessingResult(
+                request_id=request.id,
+                success=True,
+                result=prediction,
+                model_used=model_metadata.name,
+                processing_time=processing_time,
+                metadata={"mode": request.mode.value},
+            )
 
         except Exception as e:
             processing_time = time.time() - start_time
             self._update_metrics(False, processing_time, False)
-
             logger.error(f"Request processing failed: {e}")
             return ProcessingResult(
                 request_id=request.id,
@@ -315,9 +284,9 @@ class LocalAIPipeline:
                 error_message=str(e),
             )
 
-    async def _select_model_for_request(
+    def _select_model_for_request(
         self, request: ProcessingRequest, mode_config: Dict[str, Any]
-    ) -> Optional[str]:
+    ) -> Optional[ModelMetadata]:
         """
         Select the most appropriate model for a request based on mode constraints.
 
@@ -330,16 +299,16 @@ class LocalAIPipeline:
         """
         # If specific model requested, check if it meets constraints
         if request.model_preference:
-            model_metadata = self.orchestrator.model_manager.get_model_metadata(
+            model_metadata = self.model_manager.get_model_metadata(
                 request.model_preference
             )
             if model_metadata and self._model_meets_constraints(
                 model_metadata, mode_config
             ):
-                return request.model_preference
+                return model_metadata
 
         # Find best model for task type and constraints
-        available_models = self.orchestrator.model_manager.list_models()
+        available_models = self.model_manager.list_models()
         suitable_models = []
 
         for model in available_models:
@@ -359,7 +328,7 @@ class LocalAIPipeline:
             )
         )
 
-        return suitable_models[0].name
+        return suitable_models[0]
 
     def _model_meets_constraints(
         self, model: ModelMetadata, mode_config: Dict[str, Any]
@@ -475,7 +444,7 @@ class LocalAIPipeline:
 # Convenience functions for easy integration
 
 
-async def create_local_pipeline(config_dir: Path = Path("config")) -> LocalAIPipeline:
+async def create_local_pipeline(config_dir: Path = Path("config")) -> "LocalAIPipeline":
     """Create and start a local AI processing pipeline."""
     pipeline = LocalAIPipeline(config_dir)
     await pipeline.start()
@@ -483,7 +452,7 @@ async def create_local_pipeline(config_dir: Path = Path("config")) -> LocalAIPip
 
 
 async def process_simple_request(
-    pipeline: LocalAIPipeline, input_data: Any, task_type: str, timeout: float = 30.0
+    pipeline: "LocalAIPipeline", input_data: Any, task_type: str, timeout: float = 30.0
 ) -> Optional[ProcessingResult]:
     """
     Process a simple request synchronously.

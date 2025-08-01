@@ -20,21 +20,21 @@ Examples:
 import argparse
 import asyncio
 import json
+import logging
 import sys
 from pathlib import Path
-from typing import Dict, Any, Optional, List
-import logging
+from typing import Any, Dict, List, Optional
 
-from ..core.system_controller import SystemReviewController
+from ..core.system_controller import SystemController
 from ..models.data_models import ComponentCategory, Priority
-from .commands import ReviewCommand, ReportCommand, StatusCommand, ConfigCommand
+from .commands import ConfigCommand, ReportCommand, ReviewCommand, StatusCommand
 
 
 class PhoenixReviewCLI:
     """Main CLI application class for Phoenix Hydra System Review"""
 
     def __init__(self):
-        self.controller = SystemReviewController()
+        self.controller = SystemController()
         self.logger = self._setup_logging()
 
     def _setup_logging(self) -> logging.Logger:

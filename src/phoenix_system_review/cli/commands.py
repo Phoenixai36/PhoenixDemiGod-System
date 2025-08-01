@@ -8,20 +8,20 @@ review, report, status, and configuration management.
 import argparse
 import asyncio
 import json
-import sys
-from pathlib import Path
-from typing import Dict, Any, Optional, List
 import logging
+import sys
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
+from ..core.system_controller import SystemController
 from ..models.data_models import ComponentCategory, Priority, TaskStatus
-from ..core.system_controller import SystemReviewController
 
 
 class BaseCommand:
     """Base class for all CLI commands"""
 
-    def __init__(self, controller: SystemReviewController, logger: logging.Logger):
+    def __init__(self, controller: SystemController, logger: logging.Logger):
         self.controller = controller
         self.logger = logger
 

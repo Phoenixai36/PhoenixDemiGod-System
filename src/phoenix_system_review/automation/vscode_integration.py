@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
 
-from ..core.system_controller import SystemReviewController
+from ..core.system_controller import SystemController
 from ..models.data_models import ComponentCategory
 
 
@@ -51,8 +51,8 @@ class VSCodeTaskIntegration:
     - Integration with existing Phoenix tasks
     """
 
-    def __init__(self, controller: SystemReviewController, workspace_path: Path = None):
-        self.controller = controller
+    def __init__(self, controller: SystemController, workspace_path: Path = None):
+            self.controller = controller
         self.workspace_path = workspace_path or Path.cwd()
         self.vscode_dir = self.workspace_path / ".vscode"
         self.tasks_file = self.vscode_dir / "tasks.json"
