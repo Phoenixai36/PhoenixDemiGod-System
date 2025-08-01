@@ -51,6 +51,10 @@ MODEL_STACK: Dict[str, list[str]] = {
         "state-spaces/mamba-790m-hf",
         "state-spaces/mamba-1.4b-hf",
         "state-spaces/mamba-2.8b-hf",
+        # Zyphra Zamba models - Hybrid Mamba+Transformer
+        "Zyphra/Zamba2-2.7B",
+        "Zyphra/Zamba2-1.2B",
+        "Zyphra/Zamba-7B-v1",
     ],
     # 2025 Flagship Models - Latest and greatest
     "flagship_2025": [
