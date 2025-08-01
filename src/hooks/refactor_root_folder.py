@@ -483,10 +483,20 @@ class RootFolderRefactor:
             logger.warning(f"Path already deleted: {path}")
             return
 
-        if path.is_dir():
-            shutil.rmtree(path)
-        else:
-            path.unlink()
+        try:
+            if path.is_dir():
+                shutil.rmtree(path)
+            else:
+                path.unlink()
+        except (PermissionError, OSError) as e:
+            # On Windows, some files may be locked by processes
+            if "venv" in str(path).lower() or ".pyd" in str(e):
+                logger.warning(
+                    f"Skipping locked file/directory (common on Windows): {path}"
+                )
+                logger.warning(f"Reason: {e}")
+            else:
+                raise  # Re-raise if it's not a common Windows lock issue
 
     def _execute_create(self, action: RefactorAction):
         """Execute a create action"""

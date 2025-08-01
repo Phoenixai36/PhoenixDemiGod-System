@@ -1,0 +1,249 @@
+{
+  "created_at": "2025-08-01T04:35:44.028958",
+  "actions": [
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\.venv",
+      "target_path": null,
+      "reason": "Remove duplicate virtual environment",
+      "size_mb": 153.9905891418457,
+      "file_count": 8381,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\.venv2",
+      "target_path": null,
+      "reason": "Remove duplicate virtual environment",
+      "size_mb": 0.015033721923828125,
+      "file_count": 11,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\venv",
+      "target_path": null,
+      "reason": "Remove duplicate virtual environment",
+      "size_mb": 50.99435901641846,
+      "file_count": 2935,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\venv2",
+      "target_path": null,
+      "reason": "Remove duplicate virtual environment",
+      "size_mb": 6.771087646484375e-05,
+      "file_count": 1,
+      "backup_created": false
+    },
+    {
+      "action_type": "move",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\venv3",
+      "target_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\.venv",
+      "reason": "Rename primary virtual environment to .venv",
+      "size_mb": 133.2456569671631,
+      "file_count": 6747,
+      "backup_created": false
+    },
+    {
+      "action_type": "move",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\build_output",
+      "target_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\build\\build_output",
+      "reason": "Consolidate build output into build",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\__pycache__",
+      "target_path": null,
+      "reason": "Remove Python cache directory",
+      "size_mb": 0.0268707275390625,
+      "file_count": 1,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\Nueva carpeta",
+      "target_path": null,
+      "reason": "Remove legacy/unused directory: Nueva carpeta",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\BooPhoenix369",
+      "target_path": null,
+      "reason": "Remove legacy/unused directory: BooPhoenix369",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\awesome-n8n-templates-main",
+      "target_path": null,
+      "reason": "Remove legacy/unused directory: awesome-n8n-templates-main",
+      "size_mb": 0.009769439697265625,
+      "file_count": 1,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\claude-code-ui",
+      "target_path": null,
+      "reason": "Remove legacy/unused directory: claude-code-ui",
+      "size_mb": 1.3510551452636719,
+      "file_count": 269,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\claudecodeui",
+      "target_path": null,
+      "reason": "Remove legacy/unused directory: claudecodeui",
+      "size_mb": 154.07062149047852,
+      "file_count": 21023,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\BooPhoenix369",
+      "target_path": null,
+      "reason": "Remove empty directory",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\docker",
+      "target_path": null,
+      "reason": "Remove empty directory",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\empirical_data",
+      "target_path": null,
+      "reason": "Remove empty directory",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\evaluation",
+      "target_path": null,
+      "reason": "Remove empty directory",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\mnm",
+      "target_path": null,
+      "reason": "Remove empty directory",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\Nueva carpeta",
+      "target_path": null,
+      "reason": "Remove empty directory",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\phase-2-specialization",
+      "target_path": null,
+      "reason": "Remove empty directory",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\phase-3-scaling",
+      "target_path": null,
+      "reason": "Remove empty directory",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\phase-4-commercialization",
+      "target_path": null,
+      "reason": "Remove empty directory",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\PhoenixSeed",
+      "target_path": null,
+      "reason": "Remove empty directory",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\training",
+      "target_path": null,
+      "reason": "Remove empty directory",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\windsuf-config",
+      "target_path": null,
+      "reason": "Remove empty directory",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "delete",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\workspace",
+      "target_path": null,
+      "reason": "Remove empty directory",
+      "size_mb": 0.0,
+      "file_count": 0,
+      "backup_created": false
+    },
+    {
+      "action_type": "move",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\pytest.ini",
+      "target_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\configs\\pytest.ini",
+      "reason": "Consolidate configuration files",
+      "size_mb": 3.814697265625e-05,
+      "file_count": 1,
+      "backup_created": false
+    },
+    {
+      "action_type": "move",
+      "source_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\terraform.tfstate",
+      "target_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed\\configs\\terraform.tfstate",
+      "reason": "Consolidate configuration files",
+      "size_mb": 0.0012865066528320312,
+      "file_count": 1,
+      "backup_created": false
+    }
+  ],
+  "root_path": "E:\\PHOENIXSYSTEM\\PhoenixSeed"
+}
