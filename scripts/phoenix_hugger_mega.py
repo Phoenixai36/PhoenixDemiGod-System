@@ -12,27 +12,12 @@ MEGA VERSION con todos los modelos top: Falcon, Mamba Black, Zamba, y más!
 
 from __future__ import annotations
 
-import json
 import os
-import shutil
-import subprocess
-import sys
-import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Dict, List, Optional
 
 import click
-from huggingface_hub import login, snapshot_download
-from huggingface_hub.utils import HfHubHTTPError
 from rich.console import Console
-from rich.progress import (
-    BarColumn,
-    Progress,
-    SpinnerColumn,
-    TaskProgressColumn,
-    TextColumn,
-)
 from rich.table import Table
 
 console = Console()
@@ -308,7 +293,6 @@ def cli(
 
 
 if __name__ == "__main__":
-    console.print("🔥 Phoenix Hugger MEGA - Todos los modelos top!", style="bold red")
     console.print(
         "Para usar: python scripts/phoenix_hugger_mega.py --help", style="yellow"
     )
