@@ -1,0 +1,54 @@
+<tool_usage_guide>
+  <tool_priorities>
+    <priority level="1">
+      <tool>list_files</tool>
+      <when>Siempre usar primero para comprender la estructura del proyecto.</when>
+      <why>Proporciona una visión general de todos los archivos y directorios.</why>
+    </priority>
+    <priority level="2">
+      <tool>read_file</tool>
+      <when>Después de identificar archivos con list_files.</when>
+      <why>Obtener el contexto completo de las implementaciones.</why>
+    </priority>
+    <priority level="3">
+      <tool>search_files</tool>
+      <when>Para buscar patrones específicos en el código base.</when>
+      <why>Ayuda a encontrar dependencias y configuraciones.</why>
+    </priority>
+  </tool_priorities>
+
+  <tool_specific_guidance>
+    <tool name="list_files">
+      <best_practices>
+        <practice>Utilizar la ruta del directorio raíz del proyecto.</practice>
+        <practice>Analizar los nombres de los archivos y directorios para identificar los componentes.</practice>
+      </best_practices>
+      <example>
+        <command>list_files con la ruta del directorio raíz del proyecto.</command>
+        <output>Una lista de todos los archivos y directorios del proyecto.</output>
+      </example>
+    </tool>
+
+    <tool name="read_file">
+      <best_practices>
+        <practice>Utilizar la ruta de un archivo de configuración específico.</practice>
+        <practice>Analizar el contenido del archivo para determinar el estado de un componente.</practice>
+      </best_practices>
+      <example>
+        <command>read_file con la ruta de un archivo de configuración específico.</command>
+        <output>El contenido del archivo de configuración.</output>
+      </example>
+    </tool>
+
+    <tool name="search_files">
+      <best_practices>
+        <practice>Utilizar patrones de búsqueda específicos para encontrar dependencias y configuraciones.</practice>
+        <practice>Analizar los resultados de la búsqueda para determinar el estado de un componente.</practice>
+      </best_practices>
+      <example>
+        <command>search_files con un patrón de búsqueda específico.</command>
+        <output>Una lista de todos los archivos que coinciden con el patrón de búsqueda.</output>
+      </example>
+    </tool>
+  </tool_specific_guidance>
+</tool_usage_guide>

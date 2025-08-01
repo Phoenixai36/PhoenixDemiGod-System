@@ -1,0 +1,103 @@
+markdown extenso de modelos mamba, falcon, zyphra ollama huging flux1 etc etc etc
+markdown extenso de modelos mamba, falcon, zyphra ollama huging flux1 etc etc etc
+Modelos de IA: Mamba, Falcon, Zyphra, Ollama, Hugging Face y Flux1
+1. Mamba
+Definición y Arquitectura
+Mamba es una arquitectura de modelos de lenguaje basada en Modelos de Espacio de Estado Selectivos (SSM), diseñada para superar las limitaciones de los Transformers tradicionales, especialmente en el manejo de secuencias largas y eficiencia computacional.
+
+SSM (Selective State Space Models): Permiten procesar información relevante de manera eficiente, filtrando datos innecesarios y enfocándose en lo importante.
+
+Arquitectura simplificada: Elimina los bloques de atención y MLP, usando un único bloque SSM cohesionado.
+
+Escalabilidad lineal: El coste computacional crece linealmente con la longitud de la secuencia, a diferencia de los Transformers.
+
+Lógica Ideal y Herramientas
+Entrenamiento: Ideal para tareas de NLP, visión por computadora, análisis de audio y secuencias temporales.
+
+Inferencia: Rápida, eficiente y con baja latencia.
+
+Implementación: Compatible con hardware moderno, aprovechando paralelismo y memoria optimizada.
+
+Casos de uso: Chatbots, generación de texto, análisis científico, visión multimodal y medicina.
+
+2. Falcon
+Definición y Arquitectura
+Falcon es una familia de modelos de lenguaje desarrollados por el Technology Innovation Institute (TII) de Abu Dhabi, orientados a democratizar la IA de alto rendimiento con modelos de código abierto que funcionan en infraestructuras ligeras, incluso portátiles.
+
+Variantes: Falcon3-1B, Falcon3-3B, Falcon3-7B, Falcon3-10B y Falcon3-Mamba-7B.
+
+Optimización: Mejoras en razonamiento, eficiencia y capacidad de ajuste fino.
+
+Falcon-Mamba: Variante que integra la arquitectura Mamba para mantener un coste de inferencia constante y mayor rendimiento en secuencias largas.
+
+Lógica Ideal y Herramientas
+Entrenamiento: Grandes corpus multilingües y específicos por dominio.
+
+Implementación: Fácil integración en plataformas como Amazon SageMaker.
+
+Uso: Chatbots, asistentes virtuales, procesamiento multilingüe y aplicaciones móviles.
+
+3. Zyphra
+Definición y Arquitectura
+Zyphra es una empresa de IA que ofrece modelos de chat avanzados, destacando por su eficiencia y personalización. Su modelo más reciente, Zamba2-2.7B, está optimizado para dispositivos con recursos limitados y aplicaciones en tiempo real.
+
+Modelo Maia: Chatbot basado en PLN avanzado.
+
+Zamba2-2.7B: Entrenado con 3 billones de tokens, bajo consumo de memoria (-27%), latencia reducida y velocidad de respuesta inicial duplicada respecto a competidores de tamaño similar.
+
+Lógica Ideal y Herramientas
+Implementación: Ideal para asistentes virtuales, chatbots, robots de atención al cliente y herramientas educativas.
+
+Optimización: Uso eficiente de memoria, latencia baja y soporte para dispositivos móviles.
+
+4. Ollama
+Definición y Arquitectura
+Ollama es una plataforma de código abierto para ejecutar grandes modelos lingüísticos (LLM) de manera local, manteniendo control y privacidad total sobre los datos.
+
+Modelos soportados: Llama, Mistral, Phi-3, entre otros.
+
+Entorno aislado: Incluye pesos, configuraciones y dependencias necesarias.
+
+Compatibilidad: Funciona mejor con GPUs dedicadas (NVIDIA, AMD), pero también soporta CPUs.
+
+Lógica Ideal y Herramientas
+Despliegue local: Chatbots, análisis de datos, investigación offline y prototipado rápido.
+
+Ventajas: Baja latencia, privacidad, independencia de la nube y fácil integración con API OpenAI.
+
+Casos de uso: Empresas con requisitos de privacidad, entornos sin conexión, investigación académica.
+
+5. Hugging Face (FLUX.1)
+Definición y Arquitectura
+FLUX.1 es una familia de modelos desarrollada por Black Forest Labs y alojada en Hugging Face, orientada a la generación y manipulación de imágenes mediante IA.
+
+FLUX.1 Fill [dev]: Modelo de 12B parámetros para rellenar áreas en imágenes según descripciones de texto.
+
+Otras variantes: Text-to-image, edición, variación y condicionamiento estructural (Canny, Depth, Kontext, Redux).
+
+Integración: Compatible con la librería Diffusers de Python para pipelines de generación y edición de imágenes.
+
+Lógica Ideal y Herramientas
+Implementación: Proyectos creativos, generación de imágenes, edición asistida por IA.
+
+Uso: API propia y Hugging Face, integración en flujos de trabajo de diseño y desarrollo.
+
+6. Comparativa Técnica
+Modelo	Tipo/Enfoque	Ventajas Clave	Uso Ideal
+Mamba	SSM (Secuencia)	Eficiencia, escalabilidad, secuencias largas	NLP, visión, medicina, ciencia
+Falcon	LLM (Transformer/Mamba)	Código abierto, multilingüe, portable	Chatbots, asistentes, móviles
+Zyphra	LLM pequeño/chat	Bajo consumo, latencia reducida, móvil	Chatbots, asistentes, educación
+Ollama	Plataforma LLM local	Privacidad, control, baja latencia	Empresas, investigación, offline
+FLUX.1	Generación de imágenes	Edición avanzada, open weights, integración fácil	Diseño, arte, desarrollo creativo
+Glosario Técnico
+SSM (State Space Model): Modelo matemático para procesar secuencias, capaz de capturar dependencias a largo plazo con eficiencia lineal.
+
+Transformer: Arquitectura dominante en IA, basada en mecanismos de atención, pero menos eficiente en secuencias largas.
+
+MLP (Multi-Layer Perceptron): Red neuronal de varias capas, común en modelos tradicionales.
+
+LoRA (Low-Rank Adaptation): Técnica para adaptar modelos grandes con bajo coste computacional.
+
+Diffusers: Librería de Hugging Face para pipelines de modelos generativos de imágenes.
+
+API compatible OpenAI: Permite usar modelos locales como si fueran servicios de OpenAI, facilitando migración y desarrollo.

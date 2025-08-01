@@ -1,0 +1,55 @@
+<best_practices>
+  <general_principles>
+    <principle priority="high">
+      <name>Análisis exhaustivo</name>
+      <description>El modo debe analizar todos los aspectos del sistema Phoenix Hydra, incluyendo la infraestructura, la monetización, la automatización, la documentación, las pruebas y la seguridad.</description>
+      <rationale>Un análisis exhaustivo es esencial para identificar todas las tareas restantes para alcanzar el 100% de finalización.</rationale>
+      <example>
+        <scenario>Al revisar la infraestructura</scenario>
+        <good>Analizar la configuración de Podman, la configuración de la base de datos y la configuración del almacenamiento.</good>
+        <bad>Solo analizar la configuración de Podman.</bad>
+      </example>
+    </principle>
+  </general_principles>
+
+  <tool_conventions>
+    <convention category="list_files">
+      <rule>Utilizar para comprender la estructura del proyecto.</rule>
+      <examples>
+        <good>list_files con la ruta del directorio raíz del proyecto.</good>
+        <bad>Intentar adivinar la estructura del proyecto.</bad>
+      </examples>
+    </convention>
+
+    <convention category="read_file">
+      <rule>Utilizar para examinar implementaciones específicas.</rule>
+      <examples>
+        <good>read_file con la ruta de un archivo de configuración específico.</good>
+        <bad>Intentar adivinar la configuración de un componente.</bad>
+      </examples>
+    </convention>
+  </tool_conventions>
+
+  <common_pitfalls>
+    <pitfall>
+      <description>No analizar todos los aspectos del sistema.</description>
+      <why_problematic>Puede resultar en la omisión de tareas importantes.</why_problematic>
+      <correct_approach>Asegurarse de que todos los aspectos del sistema estén cubiertos por el análisis.</correct_approach>
+    </pitfall>
+  </common_pitfalls>
+
+  <quality_checklist>
+    <category name="antes_de_empezar">
+      <item>Comprender completamente la solicitud del usuario.</item>
+      <item>Verificar las implementaciones existentes.</item>
+    </category>
+    <category name="durante_la_implementación">
+      <item>Seguir los patrones establecidos.</item>
+      <item>Escribir documentación clara.</item>
+    </category>
+    <category name="antes_de_completar">
+      <item>Revisar todos los cambios.</item>
+      <item>Verificar que se cumplan los requisitos.</item>
+    </category>
+  </quality_checklist>
+</best_practices>

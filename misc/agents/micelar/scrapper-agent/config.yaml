@@ -1,0 +1,4 @@
+# Configuración específica del Scrapper Agent
+target_urls:
+  - 'https://example.com'
+data_format: 'json'

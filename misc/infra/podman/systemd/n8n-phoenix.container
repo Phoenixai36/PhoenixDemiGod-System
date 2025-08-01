@@ -1,0 +1,12 @@
+[Container]
+Image=n8nio/n8n:latest
+Name=n8n-phoenix
+Pod=phoenix-hydra
+EnvironmentFile=.env
+Environment="GENERIC_TIMEZONE=Europe/Madrid" "N8N_SECURE_COOKIE=true" "PHOENIX_WORKFLOWS_ENABLED=true"
+Volume=n8n_data:/home/node/.n8n:z
+PublishPort=5678:5678
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,7 @@
+# Excluir directorios pesados
+ignore: node_modules/
+ignore: .git/
+ignore: dist/
+ignore: build/
+ignore: .vscode/
+ignore: __pycache__/

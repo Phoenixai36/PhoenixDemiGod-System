@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # Ollama service for model downloads
+  ollama-downloader:
+    image: ollama/ollama:latest
+    container_name: phoenix-model-downloader
+    volumes:
+      - phoenix-models:/root/.ollama
+      - ./scripts:/scripts:ro
+      - ./models:/models
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+      - OLLAMA_MODELS=/root/.ollama/models
+    ports:
+      - "11434:11434"
+    networks:
+      - phoenix-network
+    restart: unless-stopped
+    command: serve
+
+  # Hugging Face model downloader
+  hf-downloader:
+    image: python:3.11-slim
+    container_name: phoenix-hf-downloader
+    volumes:
+      - phoenix-hf-cache:/root/.cache/huggingface
+      - ./scripts:/scripts:ro
+      - ./models:/models
+      - ./requirements-models.txt:/requirements.txt:ro
+    working_dir: /scripts
+    environment:
+      - HF_HOME=/root/.cache/huggingface
+      - HF_HUB_CACHE=/root/.cache/huggingface/hub
+      - TRANSFORMERS_CACHE=/root/.cache/huggingface/transformers
+    networks:
+      - phoenix-network
+    command: >
+      bash -c "
+        pip install -r /requirements.txt &&
+        python download_hf_models.py
+      "
+    depends_on:
+      - ollama-downloader
+
+  # Model management service
+  model-manager:
+    image: python:3.11-slim
+    container_name: phoenix-model-manager
+    volumes:
+      - phoenix-models:/ollama-models:ro
+      - phoenix-hf-cache:/hf-cache:ro
+      - ./src:/app/src:ro
+      - ./scripts:/scripts:ro
+      - ./models:/models
+    working_dir: /app
+    environment:
+      - OLLAMA_MODELS_PATH=/ollama-models
+      - HF_CACHE_PATH=/hf-cache
+      - MODELS_OUTPUT_PATH=/models
+    networks:
+      - phoenix-network
+    command: >
+      bash -c "
+        pip install requests pyyaml &&
+        python scripts/manage_model_inventory.py
+      "
+    depends_on:
+      - ollama-downloader
+      - hf-downloader
+
+volumes:
+  phoenix-models:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/models/ollama
+  
+  phoenix-hf-cache:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/models/huggingface
+
+networks:
+  phoenix-network:
+    driver: bridge

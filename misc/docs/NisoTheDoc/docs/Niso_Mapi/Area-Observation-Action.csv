@@ -1,0 +1,6 @@
+"Area","Observation","Action"
+"pyproject.toml","File exists but minimal content; tests not auto-discovered.","Populate[project]metadata, declarepackages = [""src""], configurepytestoptions for global discovery."
+"Compose vs. Kubernetes","Both present but not unified.","Create a single source-of-truth (e.g., Skaffold or Helm) to avoid drift."
+"Health-checks","Scripts start services but lack automated service probes.","Addhealthcheck:sections in Compose andreadinessProbein K8s."
+"Observability install","Dashboards exist, but Prometheus/Grafana deployment files absent.","Provide manifests or a Helm chart undermonitoring/."
+"Security posture","No secrets management in scripts.","Integrate Vault or use Docker/Podman secrets for API keys & .env variables."

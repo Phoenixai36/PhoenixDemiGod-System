@@ -1,0 +1,24 @@
+{
+  "grant_program": "NEOTEC 2025",
+  "project_name": "Phoenix Hydra",
+  "submission_deadline": "2025-06-12T00:00:00",
+  "requested_amount_eur": 325000,
+  "trl_level": "6-9",
+  "project_summary": {
+    "title": "Phoenix Hydra: Self-Derived AI and Multimedia Automation",
+    "description": "A self-hosted automation stack using NCA Toolkit for multimedia processing and AI workflows, designed for enterprise-readiness and open-source flexibility.",
+    "market_size_eur": "2.5B (Multimedia Automation Market)",
+    "competitive_advantage": "Self-hosted, open-source, enterprise-ready, and modular cellular architecture."
+  },
+  "team": {
+    "cto": "Principal Systems Architect",
+    "tech_stack": "n8n, Windmill, NCA Toolkit, Podman, systemd",
+    "location": "Barcelona, Spain"
+  },
+  "financials_projection": {
+    "2025_revenue_eur": 400000,
+    "2026_revenue_eur": 835000,
+    "2027_revenue_eur": 3480000
+  },
+  "generated_at": "2025-07-23T23:45:37.543683"
+}
