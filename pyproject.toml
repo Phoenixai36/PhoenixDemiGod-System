@@ -23,6 +23,11 @@ dependencies = [
     "ollama",
     "autogen==0.4.0",
     "openai==1.47.0",
+    "prometheus-client",
+    "psutil",
+    "httpx",
+    "pyyaml",
+    "click",
 ]
 
 [project.optional-dependencies]
@@ -35,8 +40,10 @@ dev = [
     "black",
     "flake8",
     "ruff==0.6.9",
-    "httpx",
 ]
+
+[project.scripts]
+phoenix-review = "phoenix_system_review.cli:main"
 
 [project.urls]
 "Homepage" = "https://github.com/Phoenixai36/BooPhoenix369"

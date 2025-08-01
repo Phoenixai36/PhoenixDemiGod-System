@@ -42,11 +42,18 @@ except ImportError:
 
 # Prometheus monitoring
 try:
-    from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
-    PROMETHEUS_AVAILABLE = True
-except ImportError:
+    from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+    from . import metrics
+    PROMETHEUS_AVAILABLE = metrics.PROMETHEUS_AVAILABLE
+    if not PROMETHEUS_AVAILABLE:
+        logging.warning("Prometheus client not available - metrics disabled")
+except (ImportError, ModuleNotFoundError):
     PROMETHEUS_AVAILABLE = False
     logging.warning("Prometheus client not available - metrics disabled")
+    # Define dummy variables to avoid runtime errors if prometheus is not available
+    generate_latest = None
+    CONTENT_TYPE_LATEST = None
+    metrics = None
 
 
 class ModelType(Enum):
@@ -124,12 +131,7 @@ class PhoenixModelRouter:
         self.models: Dict[str, ModelConfig] = {}
         self.inference_history: List[InferenceResponse] = []
         
-        # Métricas Prometheus
-        if PROMETHEUS_AVAILABLE:
-            self.inference_counter = Counter('phoenix_inferences_total', 'Total inferences', ['model', 'task_type'])
-            self.inference_duration = Histogram('phoenix_inference_duration_seconds', 'Inference duration', ['model'])
-            self.energy_gauge = Gauge('phoenix_energy_consumption_wh', 'Energy consumption in Wh')
-            self.fallback_counter = Counter('phoenix_fallbacks_total', 'Total fallbacks', ['from_model', 'to_model'])
+        # Las métricas de Prometheus se cargan desde el módulo `metrics`
         
         # Cargar configuración
         self._load_model_configs()
@@ -381,11 +383,12 @@ class PhoenixModelRouter:
                     final_model = fallback_model
                     
                     # Métricas de fallback
-                    if PROMETHEUS_AVAILABLE:
-                        self.fallback_counter.labels(
-                            from_model=selected_model.name,
-                            to_model=fallback_model.name
-                        ).inc()
+                    if PROMETHEUS_AVAILABLE and metrics:
+                        if metrics.FALLBACK_COUNTER:
+                            metrics.FALLBACK_COUNTER.labels(
+                                from_model=selected_model.name,
+                                to_model=fallback_model.name
+                            ).inc()
                     
                     break
         
@@ -411,17 +414,20 @@ class PhoenixModelRouter:
             )
             
             # Métricas Prometheus
-            if PROMETHEUS_AVAILABLE:
-                self.inference_counter.labels(
-                    model=final_model.name,
-                    task_type=request.task_type.value
-                ).inc()
+            if PROMETHEUS_AVAILABLE and metrics:
+                if metrics.INFERENCE_COUNTER:
+                    metrics.INFERENCE_COUNTER.labels(
+                        model=final_model.name,
+                        task_type=request.task_type.value
+                    ).inc()
                 
-                self.inference_duration.labels(model=final_model.name).observe(
-                    result["inference_time_ms"] / 1000
-                )
+                if metrics.INFERENCE_DURATION:
+                    metrics.INFERENCE_DURATION.labels(model=final_model.name).observe(
+                        result["inference_time_ms"] / 1000
+                    )
                 
-                self.energy_gauge.set(energy_consumed)
+                if metrics.ENERGY_GAUGE:
+                    metrics.ENERGY_GAUGE.set(energy_consumed)
             
         else:
             # Error en todos los modelos
@@ -484,7 +490,7 @@ class PhoenixModelRouter:
             "average_inference_time_ms": avg_inference_time,
             "average_confidence_score": avg_confidence,
             "model_usage_distribution": model_usage,
-            "energy_efficiency_vs_transformer": f"{((150 - avg_energy_per_inference * 1000) / 150) * 100:.1f}%",
+            "energy_efficiency_vs_transformer": "calculation_pending",
             "timestamp": datetime.now().isoformat()
         }
     
@@ -521,8 +527,26 @@ class PhoenixModelRouter:
         return health_status
 
 
-# FastAPI Application
-if FASTAPI_AVAILABLE:
+def main():
+    """
+    Main function to run the Phoenix DemiGod Model Router.
+    If FastAPI and uvicorn are available, it starts the web server.
+    Otherwise, it logs an error.
+    """
+    if not FASTAPI_AVAILABLE:
+        logging.error("FastAPI not available, web interface disabled. Install with: pip install fastapi uvicorn")
+        return
+
+    try:
+        import uvicorn
+        from fastapi import FastAPI, HTTPException
+        from fastapi.middleware.cors import CORSMiddleware
+        from fastapi.responses import Response
+        from pydantic import BaseModel, Field
+    except ImportError:
+        logging.error("uvicorn or FastAPI components not available. Install with: pip install fastapi uvicorn")
+        return
+
     app = FastAPI(
         title="Phoenix DemiGod Model Router",
         description="Router inteligente multi-modelo con Mamba/SSM y fallback automático",
@@ -624,28 +648,11 @@ if FASTAPI_AVAILABLE:
     @app.get("/metrics")
     async def prometheus_metrics():
         """Métricas Prometheus"""
-        if PROMETHEUS_AVAILABLE:
+        if PROMETHEUS_AVAILABLE and callable(generate_latest):
             return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
         else:
             return {"error": "Prometheus metrics not available"}
 
-else:
-    # Fallback if FastAPI not available
-    app = None
-    logging.error("FastAPI not available - web interface disabled")
-
-
-if __name__ == "__main__":
-    if not FASTAPI_AVAILABLE:
-        logging.error("FastAPI not available. Install with: pip install fastapi uvicorn")
-        exit(1)
-    
-    try:
-        import uvicorn
-    except ImportError:
-        logging.error("uvicorn not available. Install with: pip install uvicorn")
-        exit(1)
-    
     # Configurar logging
     logging.basicConfig(
         level=logging.INFO,
@@ -659,3 +666,7 @@ if __name__ == "__main__":
         port=8000,
         log_level="info"
     )
+
+
+if __name__ == "__main__":
+    main()
