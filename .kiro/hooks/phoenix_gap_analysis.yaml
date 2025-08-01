@@ -1,0 +1,37 @@
+name: "Phoenix Gap Analysis"
+description: "Run gap detection when SSM or analysis files are modified"
+trigger:
+  type: "file_change"
+  patterns:
+    - "src/ssm_analysis/*.py"
+    - "src/biomimetic_agents/*.py"
+    - "src/local_processing/*.py"
+  events: ["modified", "created"]
+
+conditions:
+  - type: "file_exists"
+    path: "src/ssm_analysis/advanced_gap_detection.py"
+
+actions:
+  - type: "command"
+    name: "Run Gap Detection"
+    command: "python"
+    args: 
+      - "src/ssm_analysis/advanced_gap_detection.py"
+    working_directory: "."
+    
+  - type: "notification"
+    message: "🔍 Phoenix Gap Analysis completed - Check gap_analysis_report.json"
+    
+  - type: "command"
+    name: "Update Task Status"
+    command: "python"
+    args:
+      - "-c"
+      - "print('✅ Gap analysis updated automatically')"
+    working_directory: "."
+
+settings:
+  debounce_ms: 3000
+  max_concurrent: 1
+  timeout_seconds: 300

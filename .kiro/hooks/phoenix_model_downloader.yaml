@@ -1,0 +1,39 @@
+name: "Phoenix Model Downloader"
+description: "Automatically download AI models when phoenix_hugger.py is modified"
+trigger:
+  type: "file_change"
+  patterns:
+    - "scripts/phoenix_hugger*.py"
+    - "scripts/*model*.py"
+  events: ["modified", "created"]
+
+conditions:
+  - type: "file_exists"
+    path: "scripts/phoenix_hugger.py"
+
+actions:
+  - type: "command"
+    name: "Download Models in Test Mode"
+    command: "python"
+    args: 
+      - "scripts/phoenix_hugger.py"
+      - "--test-mode"
+      - "--workers"
+      - "4"
+    working_directory: "."
+    
+  - type: "notification"
+    message: "🚀 Phoenix Hugger executed - Models downloading in test mode"
+    
+  - type: "command"
+    name: "Generate Model Inventory"
+    command: "python"
+    args:
+      - "scripts/manage_model_inventory.py"
+    working_directory: "."
+    depends_on: ["Download Models in Test Mode"]
+
+settings:
+  debounce_ms: 5000
+  max_concurrent: 1
+  timeout_seconds: 1800

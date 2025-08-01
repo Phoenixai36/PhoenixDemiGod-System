@@ -1,0 +1,81 @@
+name: "Phoenix MEGA Downloader"
+description: "Manual trigger for MEGA model downloads by category"
+trigger:
+  type: "manual"
+  
+parameters:
+  - name: "category"
+    type: "select"
+    description: "Select model category to download"
+    options:
+      - "ssm_mamba_mega"
+      - "falcon_series" 
+      - "flagship_2025_mega"
+      - "coding_specialists_mega"
+      - "energy_efficient_mega"
+      - "biomimetic_agents_mega"
+      - "flux_multimedia_mega"
+      - "reasoning_logic"
+    default: "falcon_series"
+    
+  - name: "test_mode"
+    type: "boolean"
+    description: "Use test mode (limited models)"
+    default: true
+    
+  - name: "workers"
+    type: "number"
+    description: "Number of parallel workers"
+    default: 4
+    min: 1
+    max: 8
+
+actions:
+  - type: "notification"
+    message: "🔥 Starting MEGA download for category: {{category}}"
+    
+  - type: "command"
+    name: "Download MEGA Models"
+    command: "python"
+    args: 
+      - "scripts/phoenix_hugger_mega.py"
+      - "--category"
+      - "{{category}}"
+      - "--workers"
+      - "{{workers}}"
+      - "{{#if test_mode}}--test-mode{{/if}}"
+    working_directory: "."
+    
+  - type: "command"
+    name: "Generate MEGA Report"
+    command: "python"
+    args:
+      - "-c"
+      - |
+        import json
+        import time
+        from pathlib import Path
+        
+        models_dir = Path("models")
+        if models_dir.exists():
+          hf_dirs = list((models_dir / "huggingface").rglob("*")) if (models_dir / "huggingface").exists() else []
+          report = {
+            "mega_download": True,
+            "category": "{{category}}",
+            "test_mode": {{test_mode}},
+            "timestamp": time.time(),
+            "models_downloaded": len([d for d in hf_dirs if d.is_dir()]),
+            "total_size_mb": sum(f.stat().st_size for f in models_dir.rglob("*") if f.is_file()) // (1024*1024)
+          }
+          
+          with open("mega_download_report.json", "w") as f:
+            json.dump(report, f, indent=2)
+          print(f"📊 MEGA Report: {report['models_downloaded']} models, {report['total_size_mb']} MB")
+    working_directory: "."
+    depends_on: ["Download MEGA Models"]
+    
+  - type: "notification"
+    message: "✅ MEGA download completed for {{category}}"
+
+settings:
+  timeout_seconds: 3600

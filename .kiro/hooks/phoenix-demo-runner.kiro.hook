@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "name": "Phoenix Demo Runner",
+  "description": "Run complete demo when examples are modified",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "examples/*.py",
+      "examples/complete_2025_stack_demo.py"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Phoenix Hydra demo files have been updated! Please:\n1. Check if models directory exists and has content\n2. Run the complete demo: `python examples/complete_2025_stack_demo.py`\n3. Analyze the demo output for any errors or improvements\n4. Test the integration between local processing, biomimetic agents, and SSM analysis\n5. Generate a demo report with key findings\n\nHighlight any new capabilities or improvements in the 2025 stack! 🎉"
+  }
+}

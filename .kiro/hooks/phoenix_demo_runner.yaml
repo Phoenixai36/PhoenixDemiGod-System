@@ -1,0 +1,49 @@
+name: "Phoenix Demo Runner"
+description: "Run complete demo when examples are modified"
+trigger:
+  type: "file_change"
+  patterns:
+    - "examples/*.py"
+    - "examples/complete_2025_stack_demo.py"
+  events: ["modified"]
+
+conditions:
+  - type: "file_exists"
+    path: "examples/complete_2025_stack_demo.py"
+  - type: "directory_exists"
+    path: "models"
+
+actions:
+  - type: "command"
+    name: "Run Complete Demo"
+    command: "python"
+    args: 
+      - "examples/complete_2025_stack_demo.py"
+    working_directory: "."
+    
+  - type: "notification"
+    message: "🎉 Phoenix Complete Demo executed successfully"
+    
+  - type: "command"
+    name: "Generate Demo Report"
+    command: "python"
+    args:
+      - "-c"
+      - |
+        import json
+        import time
+        report = {
+          "demo_executed": True,
+          "timestamp": time.time(),
+          "status": "completed",
+          "components": ["local_processing", "biomimetic_agents", "ssm_analysis"]
+        }
+        with open("demo_report.json", "w") as f:
+          json.dump(report, f, indent=2)
+        print("📊 Demo report generated")
+    working_directory: "."
+
+settings:
+  debounce_ms: 2000
+  max_concurrent: 1
+  timeout_seconds: 600

@@ -1,0 +1,30 @@
+{
+  "enabled": true,
+  "name": "Documentation Sync",
+  "description": "Monitors all Python source files, JavaScript/TypeScript files, configuration files, and other relevant source code in the repository. When changes are detected, automatically triggers documentation updates in README.md and the /docs folder to keep documentation synchronized with code changes.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "src/**/*.py",
+      "scripts/*.py",
+      "*.py",
+      "scripts/*.js",
+      "scripts/*.ts",
+      "src/**/*.js",
+      "src/**/*.ts",
+      "configs/*.json",
+      "configs/*.yaml",
+      "infra/**/*.yaml",
+      "pyproject.toml",
+      "requirements.txt",
+      "setup.py",
+      "README.md",
+      "docs/**/*.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Source code files have been modified in the repository. Please analyze the changes and update the documentation accordingly. Focus on:\n\n1. Update README.md if core functionality, installation steps, or usage examples have changed\n2. Update relevant files in the /docs folder based on the specific components that were modified\n3. Ensure API documentation reflects any interface changes\n4. Update configuration documentation if config files were modified\n5. Add or update code examples if new features were added\n6. Maintain consistency between code comments and external documentation\n\nPlease review the changed files and provide comprehensive documentation updates that accurately reflect the current state of the codebase."
+  }
+}

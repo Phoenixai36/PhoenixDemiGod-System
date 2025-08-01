@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Phoenix MEGA Trigger",
+  "description": "Trigger MEGA model downloads when phoenix_hugger_mega.py is saved",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "scripts/phoenix_hugger_mega.py"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Phoenix Hugger MEGA has been updated! 🔥\n\nPlease help the user choose what to download:\n1. Show available MEGA categories (falcon_series, ssm_mamba_mega, flagship_2025_mega, etc.)\n2. Recommend starting with a specific category based on current needs\n3. Provide the exact command to run: `python scripts/phoenix_hugger_mega.py --category [CATEGORY] --test-mode`\n4. Estimate download size and time for each category\n5. Suggest which models would be most useful for Phoenix Hydra development\n\nBe excited about the MEGA model collection! Include Falcon, Zamba, and other top models! 🚀"
+  }
+}

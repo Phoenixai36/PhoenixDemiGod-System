@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "name": "Phoenix Model Validator",
+  "description": "Validate downloaded models when new models are added",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "models/**/*.json",
+      "models/**/config.json",
+      "**/hf_report_*.json"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "New models have been downloaded to Phoenix Hydra! 📊\n\nPlease:\n1. Check the models directory structure\n2. Validate that config.json files are present and valid\n3. Calculate total storage used by models\n4. List the newly downloaded models by category\n5. Test loading one of the models to ensure it works\n6. Generate a model inventory report\n7. Suggest which models to test first\n\nBe thorough in validation and excited about the new AI capabilities! ✅"
+  }
+}

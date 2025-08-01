@@ -1,0 +1,20 @@
+{
+  "enabled": true,
+  "name": "Revenue Automation Hook",
+  "description": "Automatically triggers revenue tracking, affiliate badge deployment, and grant application generation when monetization configuration files are modified",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "configs/phoenix-monetization.json",
+      "scripts/revenue-tracking.js",
+      "scripts/deploy-badges.js",
+      "NEOTEC_*.json",
+      "windmill-scripts/windmill-phoenix-grants.json"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A monetization configuration file has been modified. Please analyze the changes and execute the appropriate revenue automation tasks:\n\n1. If phoenix-monetization.json was changed: Update revenue tracking metrics, deploy affiliate program badges, and refresh marketplace listings\n2. If grant-related files were modified: Generate updated NEOTEC applications and sync with Windmill workflows\n3. If revenue tracking scripts were updated: Validate the changes and run comprehensive revenue analysis\n\nFocus on maintaining accurate revenue metrics, ensuring affiliate badges are current, and keeping grant applications synchronized with the latest project status. Use the Phoenix Hydra technology stack (Podman, n8n workflows, Windmill) for automation execution."
+  }
+}

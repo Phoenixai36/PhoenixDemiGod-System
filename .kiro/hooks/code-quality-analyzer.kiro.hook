@@ -1,0 +1,25 @@
+{
+  "enabled": true,
+  "name": "Code Quality Analyzer",
+  "description": "Monitors source code files for changes and analyzes modified code for potential improvements including code smells, design patterns, and best practices. Generates suggestions for improving code quality while maintaining existing functionality, focusing on readability, maintainability, and performance optimizations.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "src/**/*.py",
+      "scripts/**/*.py",
+      "tests/**/*.py",
+      "*.py",
+      "src/**/*.js",
+      "scripts/**/*.js",
+      "src/**/*.ts",
+      "infra/**/*.tf",
+      "configs/**/*.yaml",
+      "configs/**/*.json"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A source code file has been modified. Please analyze the changed code for potential improvements:\n\nFile: {file_path}\nChange type: {change_type}\n\nPlease provide:\n1. **Code Quality Analysis**: Identify any code smells, anti-patterns, or areas that could be improved\n2. **Design Pattern Suggestions**: Recommend appropriate design patterns if applicable\n3. **Best Practices**: Suggest improvements for readability, maintainability, and performance\n4. **Security Considerations**: Highlight any potential security issues\n5. **Testing Recommendations**: Suggest test improvements or missing test coverage\n6. **Documentation**: Recommend documentation improvements if needed\n\nFocus on actionable suggestions that maintain existing functionality while improving code quality. Consider the Phoenix Hydra technology stack (Python 3.10+, Podman, SSM/Mamba models, AutoGen, n8n workflows) when making recommendations."
+  }
+}

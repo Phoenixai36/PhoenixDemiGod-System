@@ -1,0 +1,68 @@
+name: "Phoenix Model Validator"
+description: "Validate downloaded models and check integrity"
+trigger:
+  type: "file_change"
+  patterns:
+    - "models/**/*.json"
+    - "models/**/config.json"
+  events: ["created"]
+
+conditions:
+  - type: "directory_exists"
+    path: "models"
+
+actions:
+  - type: "command"
+    name: "Validate Models"
+    command: "python"
+    args: 
+      - "-c"
+      - |
+        import json
+        import os
+        from pathlib import Path
+        
+        models_dir = Path("models")
+        valid_models = []
+        invalid_models = []
+        
+        # Check HuggingFace models
+        if (models_dir / "huggingface").exists():
+          for model_dir in (models_dir / "huggingface").rglob("*"):
+            if model_dir.is_dir() and (model_dir / "config.json").exists():
+              try:
+                with open(model_dir / "config.json") as f:
+                  config = json.load(f)
+                valid_models.append({
+                  "name": model_dir.name,
+                  "path": str(model_dir),
+                  "model_type": config.get("model_type", "unknown"),
+                  "size_mb": sum(f.stat().st_size for f in model_dir.rglob("*") if f.is_file()) // (1024*1024)
+                })
+              except Exception as e:
+                invalid_models.append({"name": model_dir.name, "error": str(e)})
+        
+        # Generate validation report
+        report = {
+          "validation_timestamp": __import__("time").time(),
+          "valid_models": len(valid_models),
+          "invalid_models": len(invalid_models),
+          "total_size_gb": sum(m["size_mb"] for m in valid_models) / 1024,
+          "models": valid_models,
+          "errors": invalid_models
+        }
+        
+        with open("model_validation_report.json", "w") as f:
+          json.dump(report, f, indent=2)
+        
+        print(f"✅ Validation: {len(valid_models)} valid, {len(invalid_models)} invalid")
+        print(f"📊 Total size: {report['total_size_gb']:.2f} GB")
+    working_directory: "."
+    
+  - type: "notification"
+    message: "🔍 Model validation completed - Check model_validation_report.json"
+
+settings:
+  debounce_ms: 10000
+  max_concurrent: 1
+  timeout_seconds: 300

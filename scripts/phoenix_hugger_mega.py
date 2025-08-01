@@ -232,7 +232,7 @@ OLLAMA_MODELS_MEGA = [
 ]
 
 PARALLEL_WORKERS = int(os.environ.get("PHX_HYDRA_WORKERS", 6))  # More workers for MEGA
-DEFAULT_OUT_DIR = Path(os.environ.get("PHX_HYDRA_MODELDIR", "/models")).expanduser()
+DEFAULT_OUT_DIR = Path(os.environ.get("PHX_HYDRA_MODELDIR", "models")).expanduser()
 
 # Use the same HFDownloader and other classes from the original script
 # ... (rest of the implementation would be identical)

@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "name": "Phoenix Gap Analysis",
+  "description": "Run gap detection when SSM or analysis files are modified",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "src/ssm_analysis/*.py",
+      "src/biomimetic_agents/*.py",
+      "src/local_processing/*.py"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Phoenix Hydra analysis files have been modified! Please:\n1. Run gap detection: `python src/ssm_analysis/advanced_gap_detection.py`\n2. Analyze the gap_analysis_report.json file\n3. Identify the top 3 priority gaps\n4. Suggest specific actions to close these gaps\n5. Update the task status if any gaps were resolved\n\nFocus on SSM/Mamba implementation and energy efficiency improvements! ⚡"
+  }
+}

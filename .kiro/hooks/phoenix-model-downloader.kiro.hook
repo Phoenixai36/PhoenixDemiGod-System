@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "name": "Phoenix Model Downloader",
+  "description": "Automatically download AI models when phoenix_hugger.py is modified",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "scripts/phoenix_hugger*.py",
+      "scripts/*model*.py"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A Phoenix Hugger script has been modified. Please:\n1. Run the model downloader in test mode: `python scripts/phoenix_hugger.py --test-mode`\n2. Check if new models were added to the MODEL_STACK\n3. Generate a brief summary of what models are now available\n4. Suggest next steps for testing the new models\n\nBe enthusiastic about the new AI models! 🚀"
+  }
+}
