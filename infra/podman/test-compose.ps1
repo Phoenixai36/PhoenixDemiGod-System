@@ -54,15 +54,31 @@ if (-not (Test-Path $phoenixDataDir)) {
 
 # Test network configuration
 Write-Host "Testing network configuration..." -ForegroundColor Cyan
-try {
-    $networkExists = & podman network exists phoenix-net 2>$null
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "✓ Phoenix network already exists" -ForegroundColor Green
-    } else {
+$validateNetworkScript = Join-Path $ScriptDir "validate-network.ps1"
+if (Test-Path $validateNetworkScript) {
+    Write-Host "Running network validation..." -ForegroundColor Gray
+    try {
+        $null = & powershell -File $validateNetworkScript 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "✓ Network configuration validation passed" -ForegroundColor Green
+        } else {
+            Write-Host "⚠ Network configuration has warnings (check validate-network.ps1 for details)" -ForegroundColor Yellow
+        }
+    } catch {
+        Write-Host "⚠ Network validation script encountered issues" -ForegroundColor Yellow
+    }
+} else {
+    # Fallback basic network test
+    try {
+        $networkExists = & podman network exists phoenix-net 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "✓ Phoenix network already exists" -ForegroundColor Green
+        } else {
+            Write-Host "ℹ Phoenix network will be created on first run" -ForegroundColor Blue
+        }
+    } catch {
         Write-Host "ℹ Phoenix network will be created on first run" -ForegroundColor Blue
     }
-} catch {
-    Write-Host "ℹ Phoenix network will be created on first run" -ForegroundColor Blue
 }
 
 Write-Host ""

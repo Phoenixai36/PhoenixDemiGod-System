@@ -1,0 +1,216 @@
+# Phoenix Hydra Security Boundaries Configuration
+# This file defines security policies and network isolation rules
+
+security_policies:
+  # Network isolation policies
+  network_isolation:
+    # Restrict inter-service communication to necessary connections only
+    allowed_connections:
+      - source: "nginx"
+        destination: "gap-detector"
+        port: 8000
+        protocol: "tcp"
+      - source: "nginx"
+        destination: "windmill"
+        port: 3000
+        protocol: "tcp"
+      - source: "nginx"
+        destination: "analysis-engine"
+        port: 5000
+        protocol: "tcp"
+      - source: "recurrent-processor"
+        destination: "db"
+        port: 5432
+        protocol: "tcp"
+      - source: "windmill"
+        destination: "db"
+        port: 5432
+        protocol: "tcp"
+      - source: "gap-detector"
+        destination: "recurrent-processor"
+        port: 8080
+        protocol: "tcp"
+    
+    # Blocked connections (explicit deny rules)
+    blocked_connections:
+      - source: "*"
+        destination: "db"
+        port: "*"
+        protocol: "*"
+        except: ["recurrent-processor", "windmill"]
+      - source: "external"
+        destination: "recurrent-processor"
+        port: "*"
+        protocol: "*"
+      - source: "external"
+        destination: "rubik-agent"
+        port: "*"
+        protocol: "*"
+
+  # Container security policies
+  container_security:
+    # Default security options for all containers
+    default_security_opts:
+      - "no-new-privileges:true"
+      - "seccomp=unconfined"
+    
+    # User namespace mapping
+    user_mapping:
+      gap-detector: "1000:1000"
+      analysis-engine: "1000:1000"
+      recurrent-processor: "1000:1000"
+      rubik-agent: "1000:1000"
+      nginx: "101:101"
+      db: "999:999"
+    
+    # Capability restrictions
+    capabilities:
+      drop_all: true
+      allowed_caps:
+        nginx:
+          - "NET_BIND_SERVICE"  # Only for binding to port 8080
+        db:
+          - "SETUID"
+          - "SETGID"
+    
+    # Read-only filesystem enforcement
+    read_only_containers:
+      - "nginx"
+      - "gap-detector"
+      - "analysis-engine"
+      - "rubik-agent"
+    
+    # Temporary filesystem mounts
+    tmpfs_mounts:
+      nginx:
+        - "/tmp:noexec,nosuid,size=100m"
+        - "/var/cache/nginx:noexec,nosuid,size=50m"
+      gap-detector:
+        - "/tmp:noexec,nosuid,size=100m"
+      analysis-engine:
+        - "/tmp:noexec,nosuid,size=100m"
+      recurrent-processor:
+        - "/tmp:noexec,nosuid,size=100m"
+      rubik-agent:
+        - "/tmp:noexec,nosuid,size=100m"
+
+  # Volume security policies
+  volume_security:
+    # SELinux labels for volumes
+    selinux_labels:
+      db_data: ":Z"  # Private unshared
+      nginx_config: ":ro,Z"  # Read-only, private unshared
+      logs: ":z"  # Shared
+    
+    # Volume access restrictions
+    volume_permissions:
+      db_data:
+        mode: "700"
+        owner: "current_user"
+        group: "current_user"
+      nginx_config:
+        mode: "755"
+        owner: "current_user"
+        group: "current_user"
+      logs:
+        mode: "755"
+        owner: "current_user"
+        group: "current_user"
+
+# Port exposure policies
+port_policies:
+  # External ports (accessible from host)
+  external_ports:
+    - service: "gap-detector"
+      internal: 8000
+      external: 8000
+      interface: "0.0.0.0"
+      description: "Gap Detection API"
+    - service: "windmill"
+      internal: 3000
+      external: 3000
+      interface: "0.0.0.0"
+      description: "Windmill Workflow UI"
+    - service: "nginx"
+      internal: 8080
+      external: 8080
+      interface: "0.0.0.0"
+      description: "Nginx Reverse Proxy"
+    - service: "analysis-engine"
+      internal: 5000
+      external: 5000
+      interface: "0.0.0.0"
+      description: "Analysis Engine API"
+  
+  # Internal ports (container-to-container only)
+  internal_ports:
+    - service: "db"
+      port: 5432
+      description: "PostgreSQL Database"
+    - service: "recurrent-processor"
+      port: 8080
+      description: "Recurrent Processor Internal API"
+
+# Network security zones
+network_zones:
+  # Public zone (accessible from external)
+  public:
+    services: ["nginx"]
+    allowed_external_access: true
+    firewall_rules:
+      - "allow tcp port 8080"
+  
+  # API zone (accessible via nginx proxy)
+  api:
+    services: ["gap-detector", "windmill", "analysis-engine"]
+    allowed_external_access: false
+    proxy_access: true
+    firewall_rules:
+      - "allow tcp port 8000 from nginx"
+      - "allow tcp port 3000 from nginx"
+      - "allow tcp port 5000 from nginx"
+  
+  # Processing zone (internal processing)
+  processing:
+    services: ["recurrent-processor", "rubik-agent"]
+    allowed_external_access: false
+    proxy_access: false
+    firewall_rules:
+      - "allow tcp port 8080 from api zone"
+  
+  # Data zone (database access)
+  data:
+    services: ["db"]
+    allowed_external_access: false
+    proxy_access: false
+    firewall_rules:
+      - "allow tcp port 5432 from processing zone"
+      - "allow tcp port 5432 from windmill"
+
+# Monitoring and alerting
+security_monitoring:
+  # Network traffic monitoring
+  network_monitoring:
+    enabled: true
+    log_level: "info"
+    alert_on:
+      - "unauthorized_connection_attempts"
+      - "port_scanning"
+      - "unusual_traffic_patterns"
+  
+  # Container security monitoring
+  container_monitoring:
+    enabled: true
+    monitor:
+      - "privilege_escalation_attempts"
+      - "capability_violations"
+      - "filesystem_modifications"
+      - "network_policy_violations"
+  
+  # Volume access monitoring
+  volume_monitoring:
+    enabled: true
+    monitor:
+      - "unauthorized_volume_access"
+      - "permission_changes"
+      - "unusual_io_patterns"

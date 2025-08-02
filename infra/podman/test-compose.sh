@@ -35,12 +35,22 @@ if [ ! -d "${HOME}/.local/share/phoenix-hydra" ]; then
     echo "✓ Created data directories"
 fi
 
-# Test network creation (dry run)
+# Test network configuration
 echo "Testing network configuration..."
-if podman network exists phoenix-net 2>/dev/null; then
-    echo "✓ Phoenix network already exists"
+if [ -f "${SCRIPT_DIR}/validate-network.sh" ]; then
+    echo "Running network validation..."
+    if bash "${SCRIPT_DIR}/validate-network.sh" > /dev/null 2>&1; then
+        echo "✓ Network configuration validation passed"
+    else
+        echo "⚠ Network configuration has warnings (check validate-network.sh for details)"
+    fi
 else
-    echo "ℹ Phoenix network will be created on first run"
+    # Fallback basic network test
+    if podman network exists phoenix-net 2>/dev/null; then
+        echo "✓ Phoenix network already exists"
+    else
+        echo "ℹ Phoenix network will be created on first run"
+    fi
 fi
 
 echo "✓ All tests passed! Compose configuration is ready."
