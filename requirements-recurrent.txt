@@ -1,0 +1,14 @@
+# Requirements for recurrent-processor service
+# Core dependencies for tensor operations and numerical computing
+torch>=2.0.0,<3.0.0
+numpy>=1.24.0,<2.0.0
+
+# Additional dependencies for async processing and memory management
+asyncio-mqtt>=0.13.0
+psutil>=5.9.0
+
+# Logging and monitoring
+structlog>=23.1.0
+
+# Optional: For enhanced performance with SSM/Mamba models
+# mamba-ssm>=1.0.0  # Uncomment when available

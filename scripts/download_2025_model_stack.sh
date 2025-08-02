@@ -4,6 +4,19 @@
 
 set -euo pipefail
 
+# Compatibility Check for Linux-based environment
+if [[ "$OSTYPE" != "linux-gnu"* && "$OSTYPE" != "cygwin" && "$OSTYPE" != "msys" ]]; then
+    echo -e "\033[0;31mError: Incompatible Operating System.\033[0m"
+    echo -e "\033[1;33mThis script is designed for Linux-based environments and relies on tools like 'podman' and 'systemd'.\033[0m"
+    echo -e "\033[1;33mYou appear to be running on a different OS ('$OSTYPE'), which will cause syntax errors.\033[0m"
+    echo ""
+    echo -e "\033[0;32mRecommended Solution:\033[0m"
+    echo "Please run this script within the Windows Subsystem for Linux (WSL)."
+    echo "1. Install WSL from your terminal: wsl --install"
+    echo "2. Open a WSL terminal and re-run this script from there."
+    exit 1
+fi
+
 # Default parameters
 SKIP_VALIDATION=false
 PARALLEL=false

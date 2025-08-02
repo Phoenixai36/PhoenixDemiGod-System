@@ -619,3 +619,67 @@ class AdvancedGapDetectionSystem:
         }
 
         return ci_report
+
+
+async def main():
+    """Main execution function for gap detection system"""
+    import os
+    
+    # Get project path from environment or use current directory
+    project_path = os.getenv('PROJECT_PATH', '.')
+    
+    # Initialize gap detection system
+    gap_detector = AdvancedGapDetectionSystem(project_path)
+    
+    # Run comprehensive analysis
+    print("Starting comprehensive gap detection analysis...")
+    report = await gap_detector.run_comprehensive_analysis()
+    
+    # Print summary
+    overall = report["overall_assessment"]
+    print(f"\n=== Gap Detection Analysis Results ===")
+    print(f"Readiness Level: {overall['readiness_level']}")
+    print(f"Readiness Score: {overall['readiness_score']:.2f}")
+    print(f"Critical Issues: {overall['critical_issues_count']}")
+    print(f"Energy Target Met: {overall['energy_target_achieved']}")
+    print(f"Biomimetic Ready: {overall['biomimetic_system_ready']}")
+    print(f"Energy Reduction: {overall['estimated_energy_reduction_percent']:.1f}%")
+    
+    # Print next steps
+    print(f"\n=== Next Steps ===")
+    for step in overall['next_steps']:
+        print(f"- {step}")
+    
+    # Save detailed report
+    output_path = os.getenv('REPORT_OUTPUT_PATH', '/app/data/gap_detection_report.json')
+    gap_detector.save_report(report, output_path)
+    
+    # Generate CI/CD report
+    ci_report = await gap_detector.generate_ci_cd_report(report)
+    ci_output_path = os.getenv('CI_REPORT_OUTPUT_PATH', '/app/data/ci_gap_report.json')
+    
+    import json
+    with open(ci_output_path, 'w') as f:
+        json.dump(ci_report, f, indent=2)
+    
+    print(f"\nReports saved to:")
+    print(f"- Detailed: {output_path}")
+    print(f"- CI/CD: {ci_output_path}")
+    
+    # Exit with appropriate code
+    exit_code = 0 if ci_report['status'] == 'PASS' else 1
+    return exit_code
+
+
+if __name__ == "__main__":
+    import sys
+    
+    try:
+        exit_code = asyncio.run(main())
+        sys.exit(exit_code)
+    except KeyboardInterrupt:
+        print("\nAnalysis interrupted by user")
+        sys.exit(130)
+    except Exception as e:
+        print(f"Error during gap detection analysis: {e}")
+        sys.exit(1)

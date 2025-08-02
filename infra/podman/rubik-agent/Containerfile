@@ -1,0 +1,52 @@
+FROM alpine:latest
+
+# Install Python and required system packages
+RUN apk add --no-cache \
+    python3 \
+    python3-dev \
+    py3-pip \
+    gcc \
+    musl-dev \
+    linux-headers \
+    && ln -sf python3 /usr/bin/python \
+    && ln -sf pip3 /usr/bin/pip
+
+# Create non-root user for security (rootless execution)
+RUN addgroup -g 1000 appuser && \
+    adduser -D -u 1000 -G appuser appuser
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements first for better layer caching
+COPY requirements-rubik-agent.txt .
+
+# Install Python dependencies as non-root user
+RUN pip install --no-cache-dir --user -r requirements-rubik-agent.txt
+
+# Copy application code
+COPY src/agents/rubik_agent_service.py .
+
+# Create necessary directories and set proper permissions
+RUN mkdir -p /app/logs /app/data /app/config && \
+    chown -R appuser:appuser /app
+
+# Switch to non-root user for rootless execution
+USER appuser
+
+# Set environment variables for security and performance
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PATH="/home/appuser/.local/bin:$PATH"
+ENV RUBIK_AGENT_HOST=0.0.0.0
+ENV RUBIK_AGENT_PORT=8080
+
+# Health check endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')" || exit 1
+
+# Expose port for HTTP API
+EXPOSE 8080
+
+# Run the RUBIK agent service
+CMD ["python", "rubik_agent_service.py"]

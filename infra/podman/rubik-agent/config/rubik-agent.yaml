@@ -1,0 +1,57 @@
+# RUBIK Agent Service Configuration
+
+service:
+  name: "rubik-agent"
+  version: "1.0.0"
+  description: "HTTP API gateway for Phoenix Hydra RUBIK biomimetic agent system"
+
+server:
+  host: "0.0.0.0"
+  port: 8080
+  workers: 1
+
+logging:
+  level: "INFO"
+  format: "json"
+  structured: true
+
+ecosystem:
+  max_population: 50
+  min_population: 5
+  evolution_interval: 300.0  # 5 minutes
+  learning_enabled: true
+  auto_scaling: true
+
+agents:
+  default_archetype: "explorer"
+  fitness_threshold: 0.5
+  max_age_cycles: 1000
+  mutation_rate: 0.1
+
+health_check:
+  interval: 30
+  timeout: 10
+  retries: 3
+  memory_threshold: 90  # percent
+  cpu_threshold: 95     # percent
+
+metrics:
+  enabled: true
+  endpoint: "/metrics"
+  prometheus_format: true
+
+security:
+  rootless: true
+  non_privileged: true
+  read_only_filesystem: false  # Set to true in production
+
+# Model preferences for different task types
+model_preferences:
+  reasoning_primary: "minimax-m1-80k"
+  reasoning_fallback: "kimi-k2-instruct"
+  coding_primary: "qwen3-coder-480b-a35b"
+  coding_fallback: "qwen2.5-coder-32b"
+  multimodal_primary: "flux-kontext-max"
+  multimodal_fallback: "flux-dev"
+  local_backbone: "mamba-codestral-7b"
+  local_fallback: "llama-3.3-8b"

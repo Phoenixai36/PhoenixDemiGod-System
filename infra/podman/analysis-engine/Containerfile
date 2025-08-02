@@ -1,0 +1,61 @@
+# Containerfile for Phoenix Hydra Analysis Engine
+# SSM-based analysis engine with rootless execution and security optimizations
+
+FROM python:3.11-slim
+
+# Set labels for Phoenix Hydra project
+LABEL maintainer="Phoenix Hydra Team"
+LABEL project="phoenix-hydra"
+LABEL component="analysis-engine"
+LABEL description="SSM-based analysis engine for system component analysis"
+
+# Create non-root user for security
+RUN groupadd -r analysisuser && useradd -r -g analysisuser analysisuser
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies (minimal set)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Copy requirements first for better Docker layer caching
+COPY requirements-analysis-engine.txt .
+
+# Install Python dependencies as non-root user
+RUN pip install --no-cache-dir --user -r requirements-analysis-engine.txt
+
+# Create necessary directories with proper permissions
+RUN mkdir -p /app/logs /app/data /app/config \
+    && chown -R analysisuser:analysisuser /app
+
+# Copy application code
+COPY src/core/ssm_analysis_engine.py .
+
+# Copy any additional configuration files if they exist
+# COPY configs/analysis-engine.yaml ./config/ 2>/dev/null || true
+
+# Set proper ownership for all application files
+RUN chown -R analysisuser:analysisuser /app
+
+# Switch to non-root user
+USER analysisuser
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+ENV PROMETHEUS_PORT=8090
+ENV ANALYSIS_INTERVAL=30
+
+# Expose ports (Prometheus metrics)
+EXPOSE 8090
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import requests; requests.get('http://localhost:8090/metrics', timeout=5)" || exit 1
+
+# Run the analysis engine
+CMD ["python", "ssm_analysis_engine.py"]

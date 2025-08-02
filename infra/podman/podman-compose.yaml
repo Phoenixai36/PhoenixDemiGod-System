@@ -1,0 +1,188 @@
+version: '3.8'
+
+name: phoenix-hydra
+
+services:
+  gap-detector:
+    build:
+      context: ../..
+      dockerfile: infra/podman/gap-detector/Containerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=development
+      - PYTHONPATH=/app
+    depends_on:
+      - recurrent-processor
+    networks:
+      - phoenix-net
+    security_opt:
+      - no-new-privileges:true
+    user: "1000:1000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  analysis-engine:
+    build:
+      context: ../..
+      dockerfile: infra/podman/analysis-engine/Containerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - APP_ENV=development
+      - PYTHONPATH=/app
+    networks:
+      - phoenix-net
+    security_opt:
+      - no-new-privileges:true
+    user: "1000:1000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  recurrent-processor:
+    build:
+      context: ../..
+      dockerfile: infra/podman/recurrent-processor/Containerfile
+    depends_on:
+      - db
+    networks:
+      - phoenix-net
+    environment:
+      - APP_ENV=development
+      - PYTHONPATH=/app
+      - DATABASE_URL=postgresql://windmill_user:phoenix_demigod@db:5432/windmill
+    security_opt:
+      - no-new-privileges:true
+    user: "1000:1000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  db:
+    image: postgres:15
+    volumes:
+      - db_data:/var/lib/postgresql/data:Z
+    environment:
+      - POSTGRES_USER=windmill_user
+      - POSTGRES_PASSWORD=phoenix_demigod
+      - POSTGRES_DB=windmill
+      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
+    networks:
+      - phoenix-net
+    security_opt:
+      - no-new-privileges:true
+    user: "999:999"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U windmill_user -d windmill"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  windmill:
+    image: windmilldev/windmill:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    networks:
+      - phoenix-net
+    environment:
+      - DATABASE_URL=postgresql://windmill_user:phoenix_demigod@db:5432/windmill
+      - RUST_LOG=info
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  rubik-agent:
+    build:
+      context: ../..
+      dockerfile: infra/podman/rubik-agent/Containerfile
+    networks:
+      - phoenix-net
+    environment:
+      - APP_ENV=development
+      - PYTHONPATH=/app
+    security_opt:
+      - no-new-privileges:true
+    user: "1000:1000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  nginx:
+    build:
+      context: ../..
+      dockerfile: infra/podman/nginx/Containerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      windmill:
+        condition: service_healthy
+      recurrent-processor:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      rubik-agent:
+        condition: service_healthy
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro,Z
+    networks:
+      - phoenix-net
+    security_opt:
+      - no-new-privileges:true
+    user: "101:101"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${HOME}/.local/share/phoenix-hydra/db_data
+
+networks:
+  phoenix-net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: phoenix-br0
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
+    labels:
+      - "project=phoenix-hydra"
+      - "environment=development"

@@ -1,0 +1,38 @@
+FROM python:3.11-slim
+
+# Create non-root user for security
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements first for better layer caching
+COPY requirements-gap-detector.txt .
+
+# Install Python dependencies as non-root user
+RUN pip install --no-cache-dir --user -r requirements-gap-detector.txt
+
+# Copy application code
+COPY misc/src/ssm_analysis/gap_detection_system.py .
+
+# Create necessary directories and set proper permissions
+RUN mkdir -p /app/logs /app/data && \
+    chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
+# Set environment variables for security
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PATH="/home/appuser/.local/bin:$PATH"
+
+# Health check endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import sys; sys.exit(0)" || exit 1
+
+# Expose port (if needed for future API)
+EXPOSE 8000
+
+# Run the application
+CMD ["python", "gap_detection_system.py"]

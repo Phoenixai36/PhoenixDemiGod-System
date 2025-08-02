@@ -1,0 +1,78 @@
+services:
+  gap-detector:
+    build:
+      context: .
+      dockerfile: compose/gap-detector/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=development
+    depends_on:
+      - recurrent-processor
+    networks:
+      - phoenix-net
+
+  #  analysis-engine:
+  #    build:
+  #      context: ./compose/analysis-engine
+  #    ports:
+  #      - "5000:5000"
+  #    environment:
+  #      - APP_ENV=development
+  #    networks:
+  #      - phoenix-net
+
+  recurrent-processor:
+    build:
+      context: .
+      dockerfile: compose/Dockerfile
+    depends_on:
+      - db
+    networks:
+      - phoenix-net
+
+  db:
+    image: postgres:15
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=windmill_user
+      - POSTGRES_PASSWORD=phoenix_demigod
+      - POSTGRES_DB=windmill
+    networks:
+      - phoenix-net
+
+  windmill:
+    image: windmilldev/windmill
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    networks:
+      - phoenix-net
+
+  rubik-agent:
+    build:
+      context: ./compose/rubik-agent
+    networks:
+      - phoenix-net
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    depends_on:
+      - windmill
+      - recurrent-processor
+      - db
+      - rubik-agent
+    volumes:
+      - ./compose/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - phoenix-net
+
+volumes:
+  db_data:
+
+networks:
+  phoenix-net:
