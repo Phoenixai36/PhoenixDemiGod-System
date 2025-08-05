@@ -21,7 +21,7 @@ from phoenix_demigod.engines.differentiation import DifferentiationEngine
 from phoenix_demigod.engines.regeneration import RegenerationEngine
 from phoenix_demigod.engines.traversal import TraversalEngine
 from phoenix_demigod.utils.logging import get_logger
-from phoenixxhydra.core.event_routing import EventRouter, DefaultPatternMatcher, InMemoryEventQueue
+from src.event_routing import DefaultPatternMatcher, EventRouter, InMemoryEventQueue
 
 
 class NucleusConfig(BaseModel):

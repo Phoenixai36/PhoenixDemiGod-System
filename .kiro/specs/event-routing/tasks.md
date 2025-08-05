@@ -37,57 +37,80 @@
     - ❌ Need to write unit tests for all attribute filtering scenarios
     - _Requirements: 2.5_
 
-- [ ] 1. Migrate existing implementation to proper location
+- [x] 1. Migrate existing implementation to proper location
+
+
+
   - Move existing event routing implementation from `src/phoenixxhydra/core/event_routing.py` to `src/event_routing/`
   - Create proper module structure under `src/event_routing/`
   - Update imports and references to use new location
   - _Requirements: 1.1, 1.2, 1.3_
 
-- [ ] 2. Implement Event Store component
-  - [ ] 2.1 Create in-memory event store implementation
+- [x] 2. Implement Event Store component
+
+
+  - [x] 2.1 Create in-memory event store implementation
+
+
     - Implement EventStore class with store() and get_events() methods
     - Add chronological ordering for event retrieval
     - Create unit tests for basic storage and retrieval operations
     - _Requirements: 4.1, 4.4_
 
-  - [ ] 2.2 Add event filtering and querying
+  - [x] 2.2 Add event filtering and querying
+
+
     - Implement filter_criteria support in get_events() method
     - Add time-based filtering (start_time, end_time) for event queries
     - Create get_event_by_id() method for individual event retrieval
     - Write unit tests for all filtering and querying scenarios
     - _Requirements: 4.4_
 
-  - [ ] 2.3 Implement retention policy and cleanup
+  - [x] 2.3 Implement retention policy and cleanup
+
+
     - Create RetentionPolicy dataclass with age and count limits
     - Implement cleanup_expired_events() method with policy enforcement
     - Add support for event-type-specific retention policies
     - Write unit tests for retention policy enforcement
     - _Requirements: 4.5_
 
-- [ ] 3. Implement Event Correlator component
+- [x] 3. Implement Event Correlator component
+
   - [ ] 3.1 Create correlation tracking functionality
+
+
+
+
     - Implement EventCorrelator class with correlate() method
     - Add unique correlation ID generation for new workflows
     - Create correlation chain storage and retrieval mechanisms
     - Write unit tests for correlation ID generation and tracking
     - _Requirements: 3.1, 3.4_
 
-  - [ ] 3.2 Implement correlation chain management
+  - [x] 3.2 Implement correlation chain management
+
+
     - Add get_correlation_chain() method to retrieve related events
     - Implement causation_id tracking for event relationships
     - Create methods to associate events with existing correlations
     - Write unit tests for correlation chain retrieval and management
     - _Requirements: 3.2, 3.3, 3.5_
 
-- [ ] 4. Complete Event Router implementation
-  - [ ] 4.1 Complete publish/subscribe mechanism
+- [x] 4. Complete Event Router implementation
+
+
+  - [x] 4.1 Complete publish/subscribe mechanism
+
+
     - ✅ Basic EventRouter class structure already exists
     - Complete publish() method with all delivery modes
     - Enhance subscribe() and unsubscribe() methods
     - Write unit tests for basic pub/sub functionality
     - _Requirements: 1.1, 1.2, 1.3_
 
-  - [ ] 4.2 Add synchronous and asynchronous delivery modes
+  - [x] 4.2 Add synchronous and asynchronous delivery modes
+
     - ✅ DeliveryMode enum already implemented
     - Complete mode-specific delivery logic in publish() method
     - Add concurrent delivery for ASYNC mode using asyncio
@@ -95,7 +118,8 @@
     - Write unit tests for both delivery modes
     - _Requirements: 1.4_
 
-  - [ ] 4.3 Implement multi-subscriber delivery
+  - [x] 4.3 Implement multi-subscriber delivery
+
     - Ensure events are delivered to all matching subscribers
     - Add proper error handling for individual subscriber failures
     - Implement delivery confirmation and failure tracking
