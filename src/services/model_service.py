@@ -25,6 +25,7 @@ from ..core.model_manager import (
     load_model,
     model_manager,
 )
+from . import dynamic_ui_service
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -36,6 +37,9 @@ app = FastAPI(
     description="Local AI model management and inference service",
     version="1.0.0"
 )
+
+# Include the dynamic UI router
+app.include_router(dynamic_ui_service.router, prefix="/api", tags=["Dynamic UI"])
 
 # Pydantic models for API
 class ModelDownloadRequest(BaseModel):

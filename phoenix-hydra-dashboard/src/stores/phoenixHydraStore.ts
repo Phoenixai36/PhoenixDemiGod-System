@@ -3,7 +3,7 @@ import { subscribeWithSelector } from 'zustand/middleware';
 
 export interface ChatMessage {
   id: string;
-  type: 'user' | 'bot' | 'system' | 'error';
+  type: 'user' | 'bot' | 'system' | 'error' | 'command';
   content: string;
   timestamp: Date;
   metadata?: {
@@ -338,34 +338,5 @@ function handleWebSocketMessage(message: any) {
   }
 }
 
-// Subscribe to message changes for gamification
-usePhoenixHydraStore.subscribe(
-  (state) => state.messages,
-  (messages) => {
-    // Import gamification store dynamically to avoid circular dependency
-    import('./gamificationStore').then(({ useGamificationStore }) => {
-      const gamificationStore = useGamificationStore.getState();
-      
-      // Update stats based on new messages
-      const userMessages = messages.filter(m => m.type === 'user').length;
-      const commands = messages.filter(m => m.metadata?.command).length;
-      const errors = messages.filter(m => m.type === 'error').length;
-      const successes = messages.filter(m => m.metadata?.status === 'success').length;
-      
-      gamificationStore.updateStats({
-        totalMessages: userMessages,
-        totalCommands: commands,
-        totalErrors: errors,
-        totalSuccesses: successes
-      });
-      
-      // Award XP for interactions
-      const lastMessage = messages[messages.length - 1];
-      if (lastMessage && lastMessage.type === 'user') {
-        gamificationStore.addXP(5, 'Message sent');
-      } else if (lastMessage && lastMessage.metadata?.status === 'success') {
-        gamificationStore.addXP(10, 'Command executed');
-      }
-    });
-  }
-);
+// The gamification store will now listen for changes to this store
+// through the mediator.
