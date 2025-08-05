@@ -73,3 +73,5 @@ master_key.txt
 
 # Ollama data directory
 BooPhoenix369/ollama-data/
+
+.bevel/do_not_share
