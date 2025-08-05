@@ -1,6 +1,7 @@
 #!/bin/bash
 # Phoenix Hydra 2025 Advanced AI Model Stack Downloader
 # Automated download script for the complete 2025 model ecosystem
+# Integrated with Phoenix Model Manager
 
 set -euo pipefail
 
@@ -15,6 +16,15 @@ if [[ "$OSTYPE" != "linux-gnu"* && "$OSTYPE" != "cygwin" && "$OSTYPE" != "msys" 
     echo "1. Install WSL from your terminal: wsl --install"
     echo "2. Open a WSL terminal and re-run this script from there."
     exit 1
+fi
+
+# Check if Python Model Manager is available
+PYTHON_MANAGER_AVAILABLE=false
+if command -v python3 &> /dev/null; then
+    if python3 -c "from src.core.model_manager import model_manager" 2>/dev/null; then
+        PYTHON_MANAGER_AVAILABLE=true
+        echo -e "\033[0;32m✅ Phoenix Model Manager detected - using integrated approach\033[0m"
+    fi
 fi
 
 # Default parameters
@@ -81,14 +91,18 @@ fi
 mkdir -p "$OUTPUT_PATH"
 echo -e "${GREEN}📁 Created model directory: $OUTPUT_PATH${NC}"
 
-# 2025 Advanced Model Ecosystem
+# Phoenix Hydra 2025 Model Stack - Optimized for Local Processing
 declare -A MODEL_STACK=(
-    ["Core SSM/Mamba Models"]="mamba-7b mamba-13b mamba-30b state-spaces/mamba-130m state-spaces/mamba-370m state-spaces/mamba-790m"
-    ["2025 Flagship Models"]="minimax/abab6.5s-chat minimax/abab6.5g-chat kimi/moonshot-v1-8k kimi/moonshot-v1-32k kimi/moonshot-v1-128k flux/kontext-7b flux/kontext-13b glm-4.5-chat glm-4.5-coder qwen2.5-coder:7b qwen2.5-coder:14b qwen2.5-coder:32b"
-    ["Specialized Coding Models"]="deepseek-coder-v2:16b deepseek-coder-v2:236b codestral:22b codegemma:7b starcoder2:7b starcoder2:15b"
-    ["Local Processing Optimized"]="phi3:mini phi3:medium gemma2:2b gemma2:9b llama3.2:1b llama3.2:3b mistral-nemo:12b"
-    ["Biomimetic Agent Models"]="neural-chat:7b orca-mini:3b orca-mini:7b vicuna:7b vicuna:13b"
-    ["Energy Efficient Models"]="tinyllama:1.1b stablelm2:1.6b stablelm2:12b openchat:7b solar:10.7b"
+    ["Reasoning Models (SSM Priority)"]="zamba2:2.7b llama3:8b falcon:7b"
+    ["Coding Models (Energy Efficient)"]="deepseek-coder:6.7b codestral:7b qwen2.5-coder:7b starcoder2:7b codegemma:7b"
+    ["General LLM Models"]="llama3.2:3b falcon:7b mistral:7b phi3:mini gemma2:2b"
+    ["Creative/Multimodal Models"]="phi3:14b nous-hermes2:mixtral-8x7b gemma:7b"
+    ["Vision Models (Lightweight)"]="clip llava:7b moondream:1.8b"
+    ["Audio/TTS Models"]="whisper:base xtts-v2 bark"
+    ["Context Long/RAG Models"]="command-r:35b qwen2.5:72b mixtral:8x22b"
+    ["CPU Optimized Models"]="tinyllama:1.1b stablelm2:1.6b rwkv:7b openchat:7b"
+    ["SSM/Mamba Models (Phoenix Specialty)"]="mamba:7b mamba:13b state-spaces/mamba-130m state-spaces/mamba-370m"
+    ["Biomimetic Agent Models"]="neural-chat:7b orca-mini:3b vicuna:7b alpaca:7b"
 )
 
 # Count total models
@@ -227,16 +241,51 @@ if [ $FAILED -gt 0 ]; then
 fi
 
 # Phoenix Hydra integration commands
+# Initialize Phoenix Model Manager if available
+if [ "$PYTHON_MANAGER_AVAILABLE" = true ]; then
+    echo -e "\n${CYAN}🔧 Initializing Phoenix Model Manager...${NC}"
+    python3 -c "
+from src.core.model_manager import model_manager
+import asyncio
+
+async def initialize_models():
+    print('📊 Loading model configurations...')
+    model_manager.load_config()
+    
+    print('🔍 Checking model status...')
+    models = model_manager.list_models()
+    downloaded = len([m for m in models if m['status'] == 'downloaded'])
+    total = len(models)
+    
+    print(f'✅ Model Manager initialized: {downloaded}/{total} models ready')
+    
+    # Save updated configuration
+    model_manager._save_config()
+    print('💾 Configuration saved')
+
+asyncio.run(initialize_models())
+"
+fi
+
 echo -e "\n${CYAN}🔧 Phoenix Hydra Integration Commands:${NC}"
 echo -e "${CYAN}=====================================${NC}"
 echo -e "${NC}# Start Phoenix Hydra with 2025 models:${NC}"
-echo -e "${NC}podman-compose -f infra/podman/compose.yaml up -d${NC}"
-echo -e "\n${NC}# Test local processing pipeline:${NC}"
-echo -e "${NC}python examples/local_processing_demo.py${NC}"
-echo -e "\n${NC}# Run RUBIK biomimetic agents:${NC}"
-echo -e "${NC}python examples/rubik_ecosystem_demo.py${NC}"
-echo -e "\n${NC}# Test SSM analysis engines:${NC}"
-echo -e "${NC}python examples/ssm_analysis_demo.py${NC}"
+echo -e "${NC}podman-compose -f infra/podman/podman-compose.yaml up -d${NC}"
+echo -e "\n${NC}# Start Model Service:${NC}"
+echo -e "${NC}python -m src.services.model_service${NC}"
+echo -e "\n${NC}# Test model inference via API:${NC}"
+echo -e "${NC}curl -X POST http://localhost:8090/inference -H 'Content-Type: application/json' -d '{\"model_type\": \"reasoning\", \"prompt\": \"Hello Phoenix Hydra!\"}'${NC}"
+echo -e "\n${NC}# Load all downloaded models:${NC}"
+echo -e "${NC}curl -X POST http://localhost:8090/models/download${NC}"
+echo -e "\n${NC}# Check system health:${NC}"
+echo -e "${NC}curl http://localhost:8090/health${NC}"
+echo -e "\n${NC}# List available models:${NC}"
+echo -e "${NC}curl http://localhost:8090/models${NC}"
 
 echo -e "\n${GREEN}🎉 Phoenix Hydra 2025 Model Stack download complete!${NC}"
 echo -e "${CYAN}Ready for 100% local AI processing with energy-efficient SSM architecture!${NC}"
+echo -e "\n${YELLOW}📋 Next Steps:${NC}"
+echo -e "${NC}1. Start the model service: python -m src.services.model_service${NC}"
+echo -e "${NC}2. Load models via API or web interface${NC}"
+echo -e "${NC}3. Deploy Phoenix Hydra stack: ./deploy.sh${NC}"
+echo -e "${NC}4. Access model management at: http://localhost:8090${NC}"

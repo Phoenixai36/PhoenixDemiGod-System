@@ -1,0 +1,79 @@
+# Phoenix Hydra Model Manager Requirements
+# Core dependencies for local AI model management
+
+# Core ML/AI Libraries
+torch>=2.0.0
+transformers>=4.35.0
+tokenizers>=0.15.0
+accelerate>=0.24.0
+safetensors>=0.4.0
+
+# State Space Models (SSM) - Phoenix Hydra Specialty
+mamba-ssm>=1.2.0
+causal-conv1d>=1.1.0
+
+# Vision Models
+torchvision>=0.15.0
+pillow>=10.0.0
+opencv-python>=4.8.0
+ultralytics>=8.0.0  # For YOLO models
+
+# Audio Models
+torchaudio>=2.0.0
+librosa>=0.10.0
+soundfile>=0.12.0
+whisper-openai>=20231117
+
+# Hugging Face Integration
+huggingface-hub>=0.19.0
+datasets>=2.14.0
+
+# FastAPI and Web Service
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+
+# Async and Concurrency
+asyncio-mqtt>=0.13.0
+aiofiles>=23.2.0
+aiohttp>=3.9.0
+
+# Configuration and Data
+pyyaml>=6.0.1
+python-dotenv>=1.0.0
+configparser>=6.0.0
+
+# Monitoring and Logging
+prometheus-client>=0.19.0
+psutil>=5.9.0
+structlog>=23.2.0
+
+# Utilities
+numpy>=1.24.0
+pandas>=2.1.0
+scipy>=1.11.0
+scikit-learn>=1.3.0
+
+# Development and Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+black>=23.10.0
+ruff>=0.1.0
+
+# Optional GPU Support
+# torch-audio  # Uncomment if using GPU
+# torch-vision  # Uncomment if using GPU
+
+# Energy Efficiency Monitoring
+py-cpuinfo>=9.0.0
+nvidia-ml-py>=12.535.0  # For NVIDIA GPU monitoring
+
+# Model Optimization
+optimum>=1.14.0
+onnx>=1.15.0
+onnxruntime>=1.16.0
+
+# Biomimetic Agent Support
+networkx>=3.2.0
+matplotlib>=3.8.0
+seaborn>=0.13.0

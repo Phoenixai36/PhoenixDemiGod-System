@@ -4,9 +4,25 @@
     "description": "Integration tests for the Phoenix DemiGod containerized deployment.",
     "main": "index.js",
     "scripts": {
-        "test": "jest"
+        "test": "jest",
+        "test:migration": "jest --testPathPattern=podman-migration",
+        "test:performance": "jest --testPathPattern=performance-comparison",
+        "test:network": "jest --testPathPattern=network-connectivity",
+        "test:validation": "jest --testPathPattern=migration-validation",
+        "test:comprehensive": "jest --testPathPattern=comprehensive-migration-validation",
+        "test:all": "jest --testPathPattern='(podman-migration|performance-comparison|network-connectivity|migration-validation|comprehensive-migration-validation)'",
+        "test:original": "jest --testPathPattern=deployment.integration",
+        "test:migration-validation": "node scripts/test-migration-validation.js",
+        "test:migration-validation:pattern": "node scripts/test-migration-validation.js --pattern",
+        "test:migration-validation:report": "node scripts/test-migration-validation.js --report-only"
     },
-    "keywords": [],
+    "keywords": [
+        "docker",
+        "podman",
+        "migration",
+        "testing",
+        "phoenix-hydra"
+    ],
     "author": "",
     "license": "ISC",
     "devDependencies": {

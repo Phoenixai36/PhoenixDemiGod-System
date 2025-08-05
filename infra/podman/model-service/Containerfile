@@ -1,0 +1,72 @@
+# Phoenix Hydra Model Service Containerfile
+# Energy-efficient local AI model management service
+
+FROM python:3.11-slim
+
+# Set environment variables for energy efficiency
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+ENV TRANSFORMERS_CACHE=/app/models/cache
+ENV HF_HOME=/app/models/cache
+ENV OLLAMA_HOST=http://localhost:11434
+
+# Create non-root user for security
+RUN groupadd -r modeluser && useradd -r -g modeluser -u 1000 modeluser
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    build-essential \
+    ffmpeg \
+    libsndfile1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Ollama for local model management
+RUN curl -fsSL https://ollama.ai/install.sh | sh
+
+# Set working directory
+WORKDIR /app
+
+# Create necessary directories with proper permissions
+RUN mkdir -p /app/models/cache /app/config /app/logs && \
+    chown -R modeluser:modeluser /app
+
+# Copy requirements first for better caching
+COPY requirements-model-manager.txt .
+
+# Install Python dependencies as root, then switch to non-root
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements-model-manager.txt
+
+# Copy application code
+COPY src/ ./src/
+COPY config/ ./config/
+
+# Create default model configuration
+RUN echo "# Phoenix Hydra Model Configuration" > /app/config/models.yaml && \
+    echo "models: {}" >> /app/config/models.yaml && \
+    echo "active_models: {}" >> /app/config/models.yaml
+
+# Set proper ownership
+RUN chown -R modeluser:modeluser /app
+
+# Switch to non-root user
+USER modeluser
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8090/health || exit 1
+
+# Expose port
+EXPOSE 8090
+
+# Set resource limits for energy efficiency
+ENV PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0
+ENV OMP_NUM_THREADS=4
+ENV MKL_NUM_THREADS=4
+
+# Start the model service
+CMD ["python", "-m", "src.services.model_service"]

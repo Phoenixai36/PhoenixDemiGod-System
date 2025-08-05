@@ -109,22 +109,21 @@
   - Add monitoring and status reporting for service health
   - _Requirements: 4.2, 5.2_
 
-- [ ] 17. Create comprehensive migration validation tests
-
+- [x] 17. Create comprehensive migration validation tests
   - Write integration tests to verify all services start correctly with Podman
   - Create network connectivity tests between services
   - Implement data persistence tests for PostgreSQL volume
   - Add performance comparison tests between Docker and Podman setups
   - _Requirements: 1.3, 3.2, 5.2_
 
-- [ ] 18. Update VS Code tasks for Podman
+- [x] 18. Update VS Code tasks for Podman
   - Modify `.vscode/tasks.json` to use podman-compose commands
   - Add Podman-specific tasks for building, starting, and stopping services
   - Create debugging tasks for individual service troubleshooting
   - Implement log viewing tasks for Podman containers
   - _Requirements: 4.1, 4.4_
 
-- [ ] 19. Create comprehensive Podman documentation
+- [x] 19. Create comprehensive Podman documentation
   - Write comprehensive migration guide from Docker to Podman
   - Create troubleshooting documentation for common Podman issues
   - Add performance tuning guide for Podman containers
@@ -132,9 +131,44 @@
   - Consolidate existing README files and documentation
   - _Requirements: 4.4, 6.4_
 
-- [ ] 20. Implement rollback mechanism
+- [x] 20. Implement rollback mechanism
   - Create rollback scripts to revert to Docker if needed
   - Add backup procedures for current Docker configuration
   - Implement validation checks before migration
   - Create recovery procedures for failed migration scenarios
   - _Requirements: 1.4, 4.4_
+
+- [x] 21. Add model-service integration to compose configuration
+  - Update `infra/podman/podman-compose.yaml` to include model-service with proper configuration
+  - Configure model-service with appropriate volumes for model cache and config
+  - Set up proper networking and health checks for model-service
+  - Ensure model-service integrates with existing Phoenix Hydra services
+  - _Requirements: 2.1, 3.1, 5.1_
+
+- [x] 22. Create systemd integration for production deployment
+  - Create systemd service files for Phoenix Hydra pod and individual services
+  - Implement Quadlet configuration files for container management
+  - Set up automatic startup and dependency management
+  - Add systemd-based health monitoring and restart policies
+  - _Requirements: 4.1, 4.2, 6.1_
+
+- [x] 23. Implement comprehensive monitoring and observability
+  - Add Prometheus metrics collection for all services
+  - Create Grafana dashboards for Phoenix Hydra monitoring
+  - Implement centralized logging with structured log format
+  - Set up alerting for service failures and performance issues
+  - _Requirements: 4.2, 5.2_
+
+- [x] 24. Enhance security configuration and compliance
+  - Implement custom seccomp profiles for enhanced container security
+  - Add AppArmor/SELinux profiles for additional security layers
+  - Create security scanning automation for container images
+  - Implement secrets rotation and management procedures
+  - _Requirements: 6.1, 6.2, 6.3, 6.4_
+
+- [x] 25. Create automated testing and CI/CD integration
+  - Implement automated testing pipeline for Podman deployment
+  - Create GitHub Actions workflow for container building and testing
+  - Add automated security scanning in CI/CD pipeline
+  - Implement deployment validation and rollback automation
+  - _Requirements: 1.3, 4.4_

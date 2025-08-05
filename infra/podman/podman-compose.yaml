@@ -136,6 +136,34 @@ services:
       retries: 3
       start_period: 40s
 
+  model-service:
+    build:
+      context: ../..
+      dockerfile: infra/podman/model-service/Containerfile
+    ports:
+      - "8090:8090"
+    environment:
+      - APP_ENV=development
+      - PYTHONPATH=/app
+      - OLLAMA_HOST=http://localhost:11434
+      - TRANSFORMERS_CACHE=/app/models/cache
+      - HF_HOME=/app/models/cache
+    volumes:
+      - model_cache:/app/models/cache:Z
+      - model_config:/app/config:Z
+    networks:
+      - phoenix-net
+    security_opt:
+      - no-new-privileges:true
+    user: "1000:1000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
   nginx:
     build:
       context: ../..
@@ -150,6 +178,8 @@ services:
       db:
         condition: service_healthy
       rubik-agent:
+        condition: service_healthy
+      model-service:
         condition: service_healthy
     volumes:
       - nginx_config:/etc/nginx/conf.d:ro,Z
@@ -179,6 +209,18 @@ volumes:
       type: none
       o: bind
       device: ${HOME}/.local/share/phoenix-hydra/nginx_config
+  model_cache:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${HOME}/.local/share/phoenix-hydra/models/cache
+  model_config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${HOME}/.local/share/phoenix-hydra/config
 
 networks:
   phoenix-net:

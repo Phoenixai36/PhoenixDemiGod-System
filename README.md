@@ -61,6 +61,16 @@ The project is designed for a multi-channel revenue stream without altering the 
    - n8n Workflows: http://localhost:5678
    - Windmill: http://localhost:8000
 
+## 📚 Documentation
+
+For comprehensive documentation, see the **[docs/](docs/)** directory:
+
+- **[Podman Comprehensive Guide](docs/podman-comprehensive-guide.md)** - Complete migration and deployment guide
+- **[Troubleshooting Guide](docs/podman-troubleshooting.md)** - Solutions for common issues
+- **[Performance Tuning](docs/podman-performance-tuning.md)** - Optimization strategies
+- **[Security Best Practices](docs/podman-security-best-practices.md)** - Security hardening
+- **[Service Documentation](docs/README.md)** - Service-specific guides
+
 ## 🎯 Project Status: 95% Complete
 
 Phoenix Hydra is **production-ready** with all core components operational:
