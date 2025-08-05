@@ -2534,10 +2534,17 @@
     },
     "linesOfCode" : 220
   }, {
+    "path" : "phoenix-hydra-dashboard\\src\\components\\character\\Character3D.tsx",
+    "modificationInfo" : {
+      "contentHash" : -2029350270,
+      "lastModified" : 1754404100724
+    },
+    "linesOfCode" : 291
+  }, {
     "path" : "phoenix-hydra-dashboard\\src\\components\\chat\\MessageBubble.tsx",
     "modificationInfo" : {
       "contentHash" : 1757501542,
-      "lastModified" : 1754403951849
+      "lastModified" : 1754406240550
     },
     "linesOfCode" : 163
   }, {

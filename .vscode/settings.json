@@ -1,0 +1,36 @@
+{
+  "phoenix.hydra.monetization": {
+    "target_revenue_2025": "€400k",
+    "affiliate_programs": [
+      "digitalocean",
+      "customgpt",
+      "huggingface"
+    ],
+    "marketplace_integration": [
+      "aws",
+      "cloudflare"
+    ],
+    "grant_applications": [
+      "neotec",
+      "enisa",
+      "eic"
+    ]
+  },
+  "phoenix.hydra.stack": {
+    "nca_toolkit_url": "https://sea-turtle-app-nlak2.ondigitalocean.app/v1/",
+    "container_engine": "podman",
+    "orchestration": "systemd",
+    "observability": "prometheus+grafana"
+  },
+  "files.associations": {
+    "*.container": "ini",
+    "*.pod": "ini"
+  },
+  "python.defaultInterpreterPath": "./venv/bin/python",
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "bevel.largeLanguageModel": "GEMINI"
+}

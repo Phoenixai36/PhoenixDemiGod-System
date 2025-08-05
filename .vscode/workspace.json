@@ -1,0 +1,46 @@
+{
+    "folders": {
+        "folder1": {
+            "name": "agents",
+            "path": "agents"
+        },
+        "folder2": {
+            "name": "models",
+            "path": "models"
+        },
+        "folder3": {
+            "name": "config",
+            "path": "config"
+        },
+        "folder4": {
+            "name": "autogen",
+            "path": "autogen"
+        },
+        "folder5": {
+            "name": "docs",
+            "path": "docs"
+        },
+        "folder6": {
+            "name": "omas",
+            "path": "omas"
+        },
+        "folder7": {
+            "name": "src",
+            "path": "src"
+        },
+        "folder8": {
+            "name": "shell-commands",
+            "path": "shell-commands"
+        }
+    },
+    "settings": {
+        "python.pythonPath": "venv/python",
+        "docker.enableBuildx": true,
+        "gitlens.enabled": true
+    },
+    "extensions": [
+        "vscode-python",
+        "docker",
+        "gitlens"
+    ]
+}

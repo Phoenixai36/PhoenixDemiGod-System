@@ -1,2 +1,0 @@
-# Añade aquí las dependencias de Python
-podman-compose

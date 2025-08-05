@@ -1,0 +1,991 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Deploy Phoenix Badges",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "scripts/deploy-badges.js"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Generate NEOTEC Application",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "scripts/neotec-generator.py"
+      ],
+      "group": "deploy",
+      "options": {
+        "env": {
+          "DEADLINE": "2025-06-12",
+          "AMOUNT": "€325k",
+          "TRL": "6-9"
+        }
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Update Revenue Metrics",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "scripts/revenue-tracking.js"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Deploy to AWS Marketplace",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "scripts/aws-marketplace-deploy.sh"
+      ],
+      "group": "deploy",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Refactor Root Folder",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "src/hooks/refactor_root_folder.py"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "options": {
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}/src"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Refactor Root Folder (Dry Run)",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "src/hooks/refactor_root_folder.py",
+        "--dry-run"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "options": {
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}/src"
+        }
+      },
+      "problemMatcher": []
+    },
+    // Podman Container Management Tasks
+    {
+      "label": "Podman: Start Phoenix Hydra",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "up",
+        "-d"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: Stop Phoenix Hydra",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "down"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: Restart Phoenix Hydra",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "restart"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: Build All Services",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "build"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: Build and Start Services",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "up",
+        "--build",
+        "-d"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    // Individual Service Management
+    {
+      "label": "Podman: Start Gap Detector",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "up",
+        "-d",
+        "gap-detector"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Podman: Start Analysis Engine",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "up",
+        "-d",
+        "analysis-engine"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Podman: Start Windmill",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "up",
+        "-d",
+        "windmill"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Podman: Start Database",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "up",
+        "-d",
+        "db"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    // Service Building Tasks
+    {
+      "label": "Podman: Build Gap Detector",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "build",
+        "gap-detector"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Podman: Build Analysis Engine",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "build",
+        "analysis-engine"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Podman: Build Recurrent Processor",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "build",
+        "recurrent-processor"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Podman: Build Rubik Agent",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "build",
+        "rubik-agent"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Podman: Build Nginx",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "build",
+        "nginx"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    // Health Check and Status Tasks
+    {
+      "label": "Podman: Phoenix Health Check",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-f",
+        "http://localhost:8080/health"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Podman: Service Status",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "ps"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Podman: Check All Service Health",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "echo 'Checking service health...' && curl -f http://localhost:8000/health && echo ' Gap Detector: OK' && curl -f http://localhost:5000/health && echo ' Analysis Engine: OK' && curl -f http://localhost:3000/api/version && echo ' Windmill: OK' && curl -f http://localhost:8080/health && echo ' Nginx: OK'"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    // Log Viewing Tasks
+    {
+      "label": "Podman: View All Logs",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "logs",
+        "-f"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: View Gap Detector Logs",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "logs",
+        "-f",
+        "gap-detector"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: View Analysis Engine Logs",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "logs",
+        "-f",
+        "analysis-engine"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: View Windmill Logs",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "logs",
+        "-f",
+        "windmill"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: View Database Logs",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "logs",
+        "-f",
+        "db"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: View Recurrent Processor Logs",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "logs",
+        "-f",
+        "recurrent-processor"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: View Rubik Agent Logs",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "logs",
+        "-f",
+        "rubik-agent"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: View Nginx Logs",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "logs",
+        "-f",
+        "nginx"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    // Debugging Tasks
+    {
+      "label": "Podman: Debug Gap Detector",
+      "type": "shell",
+      "command": "podman",
+      "args": [
+        "exec",
+        "-it",
+        "phoenix-hydra_gap-detector_1",
+        "/bin/bash"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: Debug Analysis Engine",
+      "type": "shell",
+      "command": "podman",
+      "args": [
+        "exec",
+        "-it",
+        "phoenix-hydra_analysis-engine_1",
+        "/bin/bash"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: Debug Database",
+      "type": "shell",
+      "command": "podman",
+      "args": [
+        "exec",
+        "-it",
+        "phoenix-hydra_db_1",
+        "psql",
+        "-U",
+        "windmill_user",
+        "-d",
+        "windmill"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: Debug Recurrent Processor",
+      "type": "shell",
+      "command": "podman",
+      "args": [
+        "exec",
+        "-it",
+        "phoenix-hydra_recurrent-processor_1",
+        "/bin/bash"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: Debug Rubik Agent",
+      "type": "shell",
+      "command": "podman",
+      "args": [
+        "exec",
+        "-it",
+        "phoenix-hydra_rubik-agent_1",
+        "/bin/bash"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: Debug Nginx",
+      "type": "shell",
+      "command": "podman",
+      "args": [
+        "exec",
+        "-it",
+        "phoenix-hydra_nginx_1",
+        "/bin/bash"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    // Network and Volume Debugging
+    {
+      "label": "Podman: Inspect Network",
+      "type": "shell",
+      "command": "podman",
+      "args": [
+        "network",
+        "inspect",
+        "phoenix-hydra_phoenix-net"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Podman: List Volumes",
+      "type": "shell",
+      "command": "podman",
+      "args": [
+        "volume",
+        "ls"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Podman: Inspect Database Volume",
+      "type": "shell",
+      "command": "podman",
+      "args": [
+        "volume",
+        "inspect",
+        "phoenix-hydra_db_data"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    // Model Management Tasks
+    {
+      "label": "Download 2025 Model Stack",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "scripts/download_2025_model_stack.sh"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Integrate Local Models",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "scripts/integrate_local_models.py"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "options": {
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Model Service",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "-m",
+        "src.services.model_service"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "options": {
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}"
+        }
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Podman: Start Model Service",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "up",
+        "-d",
+        "model-service"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Podman: Build Model Service",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "build",
+        "model-service"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Test Local Processing",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "examples/local_processing_demo.py"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "options": {
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Test RUBIK Ecosystem",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "examples/rubik_ecosystem_demo.py"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "options": {
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Test SSM Analysis",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "examples/ssm_analysis_demo.py"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "options": {
+        "env": {
+          "PYTHONPATH": "${workspaceFolder}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Model Service Health Check",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-f",
+        "http://localhost:8090/health"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "List Available Models",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-s",
+        "http://localhost:8090/models"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "View Model Service Logs",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "logs",
+        "-f",
+        "model-service"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    // Cleanup Tasks
+    {
+      "label": "Podman: Clean Up Containers",
+      "type": "shell",
+      "command": "podman-compose",
+      "args": [
+        "-f",
+        "infra/podman/podman-compose.yaml",
+        "down",
+        "--volumes",
+        "--remove-orphans"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Podman: Prune System",
+      "type": "shell",
+      "command": "podman",
+      "args": [
+        "system",
+        "prune",
+        "-f"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      }
+    }
+  ]
+}

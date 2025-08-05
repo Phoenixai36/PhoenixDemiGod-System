@@ -1,0 +1,167 @@
+{
+    "phoenix_hydra_validation_rules": {
+        "offline_compatibility": {
+            "description": "Ensures packages work without internet connectivity",
+            "rules": [
+                {
+                    "type": "package_analysis",
+                    "check": "no_external_cdn_dependencies",
+                    "severity": "blocking",
+                    "message": "Package requires external CDN resources"
+                },
+                {
+                    "type": "package_analysis",
+                    "check": "no_remote_api_calls",
+                    "severity": "warning",
+                    "message": "Package makes remote API calls - ensure offline fallback"
+                },
+                {
+                    "type": "dependency_analysis",
+                    "check": "no_network_required_dependencies",
+                    "severity": "blocking",
+                    "message": "Package has dependencies that require network access"
+                }
+            ]
+        },
+        "privacy_compliance": {
+            "description": "Ensures packages comply with Phoenix Hydra privacy principles",
+            "rules": [
+                {
+                    "type": "package_analysis",
+                    "check": "no_telemetry_collection",
+                    "severity": "blocking",
+                    "message": "Package collects telemetry data"
+                },
+                {
+                    "type": "package_analysis",
+                    "check": "no_user_tracking",
+                    "severity": "blocking",
+                    "message": "Package includes user tracking functionality"
+                },
+                {
+                    "type": "license_check",
+                    "check": "privacy_compatible_license",
+                    "severity": "warning",
+                    "message": "Package license may conflict with privacy requirements"
+                }
+            ]
+        },
+        "container_compatibility": {
+            "description": "Ensures packages work in rootless Podman containers",
+            "rules": [
+                {
+                    "type": "system_requirements",
+                    "check": "no_root_privileges_required",
+                    "severity": "blocking",
+                    "message": "Package requires root privileges"
+                },
+                {
+                    "type": "system_requirements",
+                    "check": "no_privileged_ports",
+                    "severity": "blocking",
+                    "message": "Package attempts to bind to privileged ports"
+                },
+                {
+                    "type": "file_system",
+                    "check": "no_system_directory_writes",
+                    "severity": "blocking",
+                    "message": "Package writes to system directories"
+                }
+            ]
+        },
+        "security_requirements": {
+            "description": "Phoenix Hydra specific security requirements",
+            "rules": [
+                {
+                    "type": "vulnerability_assessment",
+                    "check": "no_known_critical_vulnerabilities",
+                    "severity": "blocking",
+                    "message": "Package has known critical vulnerabilities"
+                },
+                {
+                    "type": "vulnerability_assessment",
+                    "check": "no_known_high_vulnerabilities",
+                    "severity": "blocking",
+                    "message": "Package has known high severity vulnerabilities"
+                },
+                {
+                    "type": "dependency_analysis",
+                    "check": "secure_dependency_chain",
+                    "severity": "warning",
+                    "message": "Package dependency chain includes vulnerable components"
+                }
+            ]
+        },
+        "phoenix_core_components": {
+            "description": "Special rules for Phoenix Hydra core components",
+            "packages": [
+                "react-syntax-highlighter",
+                "prismjs",
+                "highlight.js",
+                "lowlight",
+                "@types/react",
+                "react",
+                "react-dom"
+            ],
+            "escalation_rules": [
+                {
+                    "type": "severity_escalation",
+                    "from": "moderate",
+                    "to": "high",
+                    "reason": "Core component vulnerability affects entire system"
+                },
+                {
+                    "type": "impact_escalation",
+                    "from": "warning",
+                    "to": "blocking",
+                    "reason": "Core component must maintain highest security standards"
+                }
+            ]
+        }
+    },
+    "validation_workflow": {
+        "pre_install": [
+            "check_blocked_packages",
+            "validate_offline_compatibility",
+            "validate_privacy_compliance",
+            "validate_container_compatibility"
+        ],
+        "post_install": [
+            "scan_for_vulnerabilities",
+            "verify_no_external_connections",
+            "validate_file_permissions",
+            "check_resource_usage"
+        ],
+        "continuous": [
+            "monitor_for_new_vulnerabilities",
+            "track_dependency_changes",
+            "audit_package_behavior"
+        ]
+    },
+    "remediation_strategies": {
+        "offline_compatibility_failure": [
+            "Look for alternative packages with offline support",
+            "Configure package to disable network features",
+            "Implement local fallback mechanisms",
+            "Cache required external resources locally"
+        ],
+        "privacy_compliance_failure": [
+            "Disable telemetry and tracking features",
+            "Use privacy-focused package alternatives",
+            "Implement data collection opt-out",
+            "Review and modify package configuration"
+        ],
+        "container_compatibility_failure": [
+            "Use rootless-compatible alternatives",
+            "Modify package to avoid privileged operations",
+            "Implement capability-based security model",
+            "Use user namespace mapping"
+        ],
+        "security_vulnerability": [
+            "Update to patched version immediately",
+            "Apply temporary mitigation measures",
+            "Replace with secure alternative package",
+            "Implement additional security controls"
+        ]
+    }
+}

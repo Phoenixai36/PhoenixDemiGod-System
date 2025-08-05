@@ -1,0 +1,73 @@
+{
+    "vulnerability_thresholds": {
+        "critical_block_build": true,
+        "high_block_build": true,
+        "moderate_block_build": false,
+        "low_block_build": false,
+        "phoenix_core_escalation": true,
+        "offline_compatibility_required": true,
+        "privacy_compliance_required": true
+    },
+    "scanner": {
+        "npm_audit_enabled": true,
+        "osv_database_enabled": true,
+        "snyk_enabled": false,
+        "vulnerability_db_path": ".phoenix-hydra/security/vulnerability-db.sqlite",
+        "cache_duration_hours": 24,
+        "offline_mode": false,
+        "database_update_interval_hours": 6,
+        "scan_interval_minutes": 30
+    },
+    "validator": {
+        "require_offline_compatibility": true,
+        "require_privacy_compliance": true,
+        "require_rootless_container_support": true,
+        "check_external_network_access": true,
+        "check_telemetry_tracking": true,
+        "check_license_compatibility": true,
+        "allowed_packages": [],
+        "blocked_packages": [
+            "analytics",
+            "google-analytics",
+            "mixpanel",
+            "segment",
+            "hotjar",
+            "fullstory"
+        ]
+    },
+    "update_manager": {
+        "auto_apply_security_patches": true,
+        "auto_apply_patch_updates": false,
+        "auto_apply_minor_updates": false,
+        "auto_apply_major_updates": false,
+        "require_tests_pass": true,
+        "require_manual_approval_major": true,
+        "emergency_update_timeout_minutes": 30,
+        "emergency_rollback_enabled": true,
+        "create_backup_before_update": true,
+        "rollback_timeout_minutes": 15
+    },
+    "audit": {
+        "audit_log_path": ".phoenix-hydra/security/audit-logs/",
+        "log_retention_days": 90,
+        "log_rotation_size_mb": 100,
+        "log_all_scans": true,
+        "log_all_updates": true,
+        "log_validation_failures": true,
+        "generate_compliance_reports": true,
+        "compliance_report_interval_days": 7
+    },
+    "notifications": {
+        "email_enabled": false,
+        "webhook_enabled": false,
+        "vs_code_notifications": true,
+        "notify_critical_vulnerabilities": true,
+        "notify_high_vulnerabilities": true,
+        "notify_update_failures": true,
+        "notify_emergency_responses": true,
+        "email_recipients": [],
+        "webhook_url": null
+    },
+    "environment": "development",
+    "debug_mode": true
+}
