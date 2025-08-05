@@ -1,0 +1,2944 @@
+{
+  "fileInfos" : [ {
+    "path" : ".kiro\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -667713237,
+      "lastModified" : 1753219354137
+    },
+    "linesOfCode" : 3
+  }, {
+    "path" : ".kiro\\engine\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1684582791,
+      "lastModified" : 1753219357874
+    },
+    "linesOfCode" : 3
+  }, {
+    "path" : ".kiro\\engine\\core\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -1128901516,
+      "lastModified" : 1753219361845
+    },
+    "linesOfCode" : 3
+  }, {
+    "path" : ".kiro\\engine\\core\\event_bus.py",
+    "modificationInfo" : {
+      "contentHash" : -1011728530,
+      "lastModified" : 1753049593309
+    },
+    "linesOfCode" : 295
+  }, {
+    "path" : ".kiro\\engine\\core\\hook_dispatcher.py",
+    "modificationInfo" : {
+      "contentHash" : -1699865910,
+      "lastModified" : 1753050161074
+    },
+    "linesOfCode" : 300
+  }, {
+    "path" : ".kiro\\engine\\core\\hook_registry.py",
+    "modificationInfo" : {
+      "contentHash" : 336239967,
+      "lastModified" : 1753049650767
+    },
+    "linesOfCode" : 345
+  }, {
+    "path" : ".kiro\\engine\\core\\models.py",
+    "modificationInfo" : {
+      "contentHash" : -2138294951,
+      "lastModified" : 1753219188314
+    },
+    "linesOfCode" : 185
+  }, {
+    "path" : ".kiro\\engine\\events\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1797858775,
+      "lastModified" : 1753219365839
+    },
+    "linesOfCode" : 3
+  }, {
+    "path" : ".kiro\\engine\\events\\components\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -1477375527,
+      "lastModified" : 1753219369554
+    },
+    "linesOfCode" : 3
+  }, {
+    "path" : ".kiro\\engine\\events\\components\\correlator.py",
+    "modificationInfo" : {
+      "contentHash" : 1627978855,
+      "lastModified" : 1753224989276
+    },
+    "linesOfCode" : 68
+  }, {
+    "path" : ".kiro\\engine\\events\\components\\file_system_watcher.py",
+    "modificationInfo" : {
+      "contentHash" : 197249139,
+      "lastModified" : 1753050634407
+    },
+    "linesOfCode" : 372
+  }, {
+    "path" : ".kiro\\engine\\events\\components\\filters.py",
+    "modificationInfo" : {
+      "contentHash" : 935494620,
+      "lastModified" : 1753042844789
+    },
+    "linesOfCode" : 153
+  }, {
+    "path" : ".kiro\\engine\\events\\components\\queue.py",
+    "modificationInfo" : {
+      "contentHash" : 354998981,
+      "lastModified" : 1753042865846
+    },
+    "linesOfCode" : 85
+  }, {
+    "path" : ".kiro\\engine\\events\\components\\subscription.py",
+    "modificationInfo" : {
+      "contentHash" : -747554531,
+      "lastModified" : 1753042893205
+    },
+    "linesOfCode" : 77
+  }, {
+    "path" : ".kiro\\engine\\events\\matcher.py",
+    "modificationInfo" : {
+      "contentHash" : -1506036557,
+      "lastModified" : 1753209279032
+    },
+    "linesOfCode" : 57
+  }, {
+    "path" : ".kiro\\engine\\events\\models.py",
+    "modificationInfo" : {
+      "contentHash" : 820409473,
+      "lastModified" : 1753208969267
+    },
+    "linesOfCode" : 816
+  }, {
+    "path" : ".kiro\\engine\\events\\router.py",
+    "modificationInfo" : {
+      "contentHash" : 52259079,
+      "lastModified" : 1753209255096
+    },
+    "linesOfCode" : 45
+  }, {
+    "path" : ".kiro\\engine\\hooks\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -322395736,
+      "lastModified" : 1753219210740
+    },
+    "linesOfCode" : 3
+  }, {
+    "path" : ".kiro\\engine\\hooks\\automated_test_runner_hook.py",
+    "modificationInfo" : {
+      "contentHash" : -275108878,
+      "lastModified" : 1753219280552
+    },
+    "linesOfCode" : 391
+  }, {
+    "path" : ".kiro\\engine\\hooks\\cellular_communication_hook.py",
+    "modificationInfo" : {
+      "contentHash" : -1404963486,
+      "lastModified" : 1753223765891
+    },
+    "linesOfCode" : 532
+  }, {
+    "path" : ".kiro\\engine\\hooks\\container_health_restart_hook.py",
+    "modificationInfo" : {
+      "contentHash" : -1334874942,
+      "lastModified" : 1753224013206
+    },
+    "linesOfCode" : 534
+  }, {
+    "path" : ".kiro\\engine\\hooks\\container_log_analysis_hook.py",
+    "modificationInfo" : {
+      "contentHash" : 108663313,
+      "lastModified" : 1753224358836
+    },
+    "linesOfCode" : 761
+  }, {
+    "path" : ".kiro\\engine\\hooks\\container_resource_scaling_hook.py",
+    "modificationInfo" : {
+      "contentHash" : 845548592,
+      "lastModified" : 1753224509456
+    },
+    "linesOfCode" : 606
+  }, {
+    "path" : ".kiro\\engine\\hooks\\example_hook.py",
+    "modificationInfo" : {
+      "contentHash" : 1183413677,
+      "lastModified" : 1753224611791
+    },
+    "linesOfCode" : 450
+  }, {
+    "path" : ".kiro\\engine\\utils\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -997680873,
+      "lastModified" : 1753219197803
+    },
+    "linesOfCode" : 3
+  }, {
+    "path" : ".kiro\\engine\\utils\\logging.py",
+    "modificationInfo" : {
+      "contentHash" : 1571978145,
+      "lastModified" : 1753219205945
+    },
+    "linesOfCode" : 41
+  }, {
+    "path" : ".kiro\\hooks\\automated_test_runner_hook.py",
+    "modificationInfo" : {
+      "contentHash" : 973168059,
+      "lastModified" : 1753219295455
+    },
+    "linesOfCode" : 35
+  }, {
+    "path" : ".kiro\\hooks\\cellular_communication_hook.py",
+    "modificationInfo" : {
+      "contentHash" : -145538669,
+      "lastModified" : 1754016301920
+    },
+    "linesOfCode" : 43
+  }, {
+    "path" : ".kiro\\main.py",
+    "modificationInfo" : {
+      "contentHash" : 89504985,
+      "lastModified" : 1753209304403
+    },
+    "linesOfCode" : 47
+  }, {
+    "path" : "__tests__\\comprehensive-migration-validation.test.js",
+    "modificationInfo" : {
+      "contentHash" : -1325734997,
+      "lastModified" : 1754207542528
+    },
+    "linesOfCode" : 1367
+  }, {
+    "path" : "__tests__\\deployment.integration.test.js",
+    "modificationInfo" : {
+      "contentHash" : 174464938,
+      "lastModified" : 1754082727065
+    },
+    "linesOfCode" : 47
+  }, {
+    "path" : "__tests__\\migration-validation.test.js",
+    "modificationInfo" : {
+      "contentHash" : -699070324,
+      "lastModified" : 1754207304754
+    },
+    "linesOfCode" : 532
+  }, {
+    "path" : "__tests__\\network-connectivity.test.js",
+    "modificationInfo" : {
+      "contentHash" : -807422231,
+      "lastModified" : 1754144455452
+    },
+    "linesOfCode" : 457
+  }, {
+    "path" : "__tests__\\performance-comparison.test.js",
+    "modificationInfo" : {
+      "contentHash" : -492380755,
+      "lastModified" : 1754144556752
+    },
+    "linesOfCode" : 830
+  }, {
+    "path" : "__tests__\\podman-migration.integration.test.js",
+    "modificationInfo" : {
+      "contentHash" : -1993138400,
+      "lastModified" : 1754143145336
+    },
+    "linesOfCode" : 659
+  }, {
+    "path" : "agents\\cognitivo\\chaos_agent.py",
+    "modificationInfo" : {
+      "contentHash" : -1027857848,
+      "lastModified" : 1754057605441
+    },
+    "linesOfCode" : 8
+  }, {
+    "path" : "agents\\cognitivo\\demigod_agent.py",
+    "modificationInfo" : {
+      "contentHash" : 406019565,
+      "lastModified" : 1754057605441
+    },
+    "linesOfCode" : 10
+  }, {
+    "path" : "autogen\\scripts\\thanatos-agent.py",
+    "modificationInfo" : {
+      "contentHash" : -319141669,
+      "lastModified" : 1754057605439
+    },
+    "linesOfCode" : 22
+  }, {
+    "path" : "autogen\\tests\\test-chaos-agent.py",
+    "modificationInfo" : {
+      "contentHash" : -673642374,
+      "lastModified" : 1754057605438
+    },
+    "linesOfCode" : 13
+  }, {
+    "path" : "autogen\\tests\\test-demigod-agent.py",
+    "modificationInfo" : {
+      "contentHash" : 1331750964,
+      "lastModified" : 1754057605438
+    },
+    "linesOfCode" : 21
+  }, {
+    "path" : "completion_percentage_validator.py",
+    "modificationInfo" : {
+      "contentHash" : -1321854365,
+      "lastModified" : 1754057605438
+    },
+    "linesOfCode" : 769
+  }, {
+    "path" : "completion_roadmap_generator.py",
+    "modificationInfo" : {
+      "contentHash" : -525490286,
+      "lastModified" : 1754057605438
+    },
+    "linesOfCode" : 934
+  }, {
+    "path" : "docs\\NisoTheDoc\\docs\\py\\chart_script.py",
+    "modificationInfo" : {
+      "contentHash" : -966254795,
+      "lastModified" : 1754057605414
+    },
+    "linesOfCode" : 39
+  }, {
+    "path" : "docs\\NisoTheDoc\\docs\\py\\chart_script_1.py",
+    "modificationInfo" : {
+      "contentHash" : -625432033,
+      "lastModified" : 1754057605414
+    },
+    "linesOfCode" : 143
+  }, {
+    "path" : "docs\\NisoTheDoc\\docs\\py\\phoenix_mcp_router.py",
+    "modificationInfo" : {
+      "contentHash" : 525982183,
+      "lastModified" : 1754057605414
+    },
+    "linesOfCode" : 128
+  }, {
+    "path" : "docs\\NisoTheDoc\\docs\\py\\script.py",
+    "modificationInfo" : {
+      "contentHash" : 1112691619,
+      "lastModified" : 1754057605414
+    },
+    "linesOfCode" : 113
+  }, {
+    "path" : "examples\\complete_2025_stack_demo.py",
+    "modificationInfo" : {
+      "contentHash" : 1624853942,
+      "lastModified" : 1754057605395
+    },
+    "linesOfCode" : 350
+  }, {
+    "path" : "examples\\local_processing_demo.py",
+    "modificationInfo" : {
+      "contentHash" : -979222323,
+      "lastModified" : 1754300281025
+    },
+    "linesOfCode" : 220
+  }, {
+    "path" : "examples\\rubik_ecosystem_demo.py",
+    "modificationInfo" : {
+      "contentHash" : -702324473,
+      "lastModified" : 1754300358371
+    },
+    "linesOfCode" : 354
+  }, {
+    "path" : "examples\\ssm_analysis_demo.py",
+    "modificationInfo" : {
+      "contentHash" : -446523271,
+      "lastModified" : 1754300521933
+    },
+    "linesOfCode" : 328
+  }, {
+    "path" : "final_system_review_validation.py",
+    "modificationInfo" : {
+      "contentHash" : 500924845,
+      "lastModified" : 1754057605394
+    },
+    "linesOfCode" : 1248
+  }, {
+    "path" : "infra\\podman\\systemd\\phoenix-hydra.pod",
+    "modificationInfo" : {
+      "contentHash" : 1968818277,
+      "lastModified" : 1754057605392
+    },
+    "linesOfCode" : 14
+  }, {
+    "path" : "jest.config.js",
+    "modificationInfo" : {
+      "contentHash" : -200191628,
+      "lastModified" : 1754207555760
+    },
+    "linesOfCode" : 14
+  }, {
+    "path" : "misc\\agents\\cognitivo\\chaos_agent.py",
+    "modificationInfo" : {
+      "contentHash" : -1027857848,
+      "lastModified" : 1752409461987
+    },
+    "linesOfCode" : 8
+  }, {
+    "path" : "misc\\agents\\cognitivo\\demigod_agent.py",
+    "modificationInfo" : {
+      "contentHash" : 406019565,
+      "lastModified" : 1752409461988
+    },
+    "linesOfCode" : 10
+  }, {
+    "path" : "misc\\autogen\\scripts\\thanatos-agent.py",
+    "modificationInfo" : {
+      "contentHash" : -319141669,
+      "lastModified" : 1752409461988
+    },
+    "linesOfCode" : 22
+  }, {
+    "path" : "misc\\autogen\\tests\\test-chaos-agent.py",
+    "modificationInfo" : {
+      "contentHash" : -673642374,
+      "lastModified" : 1752406995862
+    },
+    "linesOfCode" : 13
+  }, {
+    "path" : "misc\\autogen\\tests\\test-demigod-agent.py",
+    "modificationInfo" : {
+      "contentHash" : 1331750964,
+      "lastModified" : 1752406995862
+    },
+    "linesOfCode" : 21
+  }, {
+    "path" : "misc\\completion_percentage_validator.py",
+    "modificationInfo" : {
+      "contentHash" : -1321854365,
+      "lastModified" : 1753991439971
+    },
+    "linesOfCode" : 769
+  }, {
+    "path" : "misc\\completion_roadmap_generator.py",
+    "modificationInfo" : {
+      "contentHash" : -525490286,
+      "lastModified" : 1753983035907
+    },
+    "linesOfCode" : 934
+  }, {
+    "path" : "misc\\docs\\NisoTheDoc\\docs\\py\\chart_script.py",
+    "modificationInfo" : {
+      "contentHash" : -966254795,
+      "lastModified" : 1752406995850
+    },
+    "linesOfCode" : 39
+  }, {
+    "path" : "misc\\docs\\NisoTheDoc\\docs\\py\\chart_script_1.py",
+    "modificationInfo" : {
+      "contentHash" : -625432033,
+      "lastModified" : 1752406995851
+    },
+    "linesOfCode" : 143
+  }, {
+    "path" : "misc\\docs\\NisoTheDoc\\docs\\py\\phoenix_mcp_router.py",
+    "modificationInfo" : {
+      "contentHash" : 525982183,
+      "lastModified" : 1752406995856
+    },
+    "linesOfCode" : 128
+  }, {
+    "path" : "misc\\docs\\NisoTheDoc\\docs\\py\\script.py",
+    "modificationInfo" : {
+      "contentHash" : 1112691619,
+      "lastModified" : 1752406995857
+    },
+    "linesOfCode" : 113
+  }, {
+    "path" : "misc\\examples\\complete_2025_stack_demo.py",
+    "modificationInfo" : {
+      "contentHash" : 1624853942,
+      "lastModified" : 1754012057117
+    },
+    "linesOfCode" : 350
+  }, {
+    "path" : "misc\\examples\\local_processing_demo.py",
+    "modificationInfo" : {
+      "contentHash" : -2071491779,
+      "lastModified" : 1754009311142
+    },
+    "linesOfCode" : 309
+  }, {
+    "path" : "misc\\examples\\rubik_ecosystem_demo.py",
+    "modificationInfo" : {
+      "contentHash" : 407083662,
+      "lastModified" : 1754010181815
+    },
+    "linesOfCode" : 472
+  }, {
+    "path" : "misc\\examples\\ssm_analysis_demo.py",
+    "modificationInfo" : {
+      "contentHash" : -1658003497,
+      "lastModified" : 1754011071095
+    },
+    "linesOfCode" : 509
+  }, {
+    "path" : "misc\\final_system_review_validation.py",
+    "modificationInfo" : {
+      "contentHash" : 500924845,
+      "lastModified" : 1754002851771
+    },
+    "linesOfCode" : 1248
+  }, {
+    "path" : "misc\\infra\\podman\\systemd\\phoenix-hydra.pod",
+    "modificationInfo" : {
+      "contentHash" : 1968818277,
+      "lastModified" : 1753274884277
+    },
+    "linesOfCode" : 14
+  }, {
+    "path" : "misc\\models\\huggingface\\flagship_2025\\deepseek-ai_DeepSeek-R1-0528\\configuration_deepseek.py",
+    "modificationInfo" : {
+      "contentHash" : 1658888218,
+      "lastModified" : 1754013931044
+    },
+    "linesOfCode" : 199
+  }, {
+    "path" : "misc\\models\\huggingface\\flagship_2025\\deepseek-ai_DeepSeek-R1\\configuration_deepseek.py",
+    "modificationInfo" : {
+      "contentHash" : 1658888218,
+      "lastModified" : 1754013931221
+    },
+    "linesOfCode" : 199
+  }, {
+    "path" : "misc\\phoenix_demigod_deployment_script.py",
+    "modificationInfo" : {
+      "contentHash" : 1346789594,
+      "lastModified" : 1753975606335
+    },
+    "linesOfCode" : 456
+  }, {
+    "path" : "misc\\phoenix_hydra_comprehensive_review.py",
+    "modificationInfo" : {
+      "contentHash" : -1445062796,
+      "lastModified" : 1753363601704
+    },
+    "linesOfCode" : 564
+  }, {
+    "path" : "misc\\phoenix_hydra_review_test.py",
+    "modificationInfo" : {
+      "contentHash" : -851405261,
+      "lastModified" : 1753363491202
+    },
+    "linesOfCode" : 289
+  }, {
+    "path" : "misc\\reorganize.py",
+    "modificationInfo" : {
+      "contentHash" : -1069725015,
+      "lastModified" : 1754057263953
+    },
+    "linesOfCode" : 82
+  }, {
+    "path" : "misc\\reorganize2.py",
+    "modificationInfo" : {
+      "contentHash" : -190555721,
+      "lastModified" : 1754057516442
+    },
+    "linesOfCode" : 48
+  }, {
+    "path" : "misc\\scripts\\configure_n8n_credentials.py",
+    "modificationInfo" : {
+      "contentHash" : 1172249999,
+      "lastModified" : 1753969168833
+    },
+    "linesOfCode" : 111
+  }, {
+    "path" : "misc\\scripts\\download_hf_models.py",
+    "modificationInfo" : {
+      "contentHash" : -2085039152,
+      "lastModified" : 1754011761672
+    },
+    "linesOfCode" : 285
+  }, {
+    "path" : "misc\\scripts\\execute_comprehensive_analysis.py",
+    "modificationInfo" : {
+      "contentHash" : -845194981,
+      "lastModified" : 1753977561769
+    },
+    "linesOfCode" : 453
+  }, {
+    "path" : "misc\\scripts\\integrate_with_existing_pod.py",
+    "modificationInfo" : {
+      "contentHash" : -1977066671,
+      "lastModified" : 1754012516588
+    },
+    "linesOfCode" : 372
+  }, {
+    "path" : "misc\\scripts\\manage_model_inventory.py",
+    "modificationInfo" : {
+      "contentHash" : -762028139,
+      "lastModified" : 1754011816584
+    },
+    "linesOfCode" : 353
+  }, {
+    "path" : "misc\\scripts\\phoenix_hugger.py",
+    "modificationInfo" : {
+      "contentHash" : 424887571,
+      "lastModified" : 1754014017542
+    },
+    "linesOfCode" : 528
+  }, {
+    "path" : "misc\\scripts\\phoenix_hugger_mega.py",
+    "modificationInfo" : {
+      "contentHash" : -926041885,
+      "lastModified" : 1754029695112
+    },
+    "linesOfCode" : 291
+  }, {
+    "path" : "misc\\scripts\\setup_secrets.py",
+    "modificationInfo" : {
+      "contentHash" : -1465055663,
+      "lastModified" : 1753968993205
+    },
+    "linesOfCode" : 259
+  }, {
+    "path" : "misc\\scripts\\validate_config.py",
+    "modificationInfo" : {
+      "contentHash" : -938854601,
+      "lastModified" : 1753969392781
+    },
+    "linesOfCode" : 41
+  }, {
+    "path" : "misc\\setup.py",
+    "modificationInfo" : {
+      "contentHash" : 1407149322,
+      "lastModified" : 1753976852436
+    },
+    "linesOfCode" : 74
+  }, {
+    "path" : "misc\\src\\biomimetic_agents\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1602443796,
+      "lastModified" : 1754009958716
+    },
+    "linesOfCode" : 88
+  }, {
+    "path" : "misc\\src\\biomimetic_agents\\agent_system.py",
+    "modificationInfo" : {
+      "contentHash" : -178030514,
+      "lastModified" : 1754009678490
+    },
+    "linesOfCode" : 697
+  }, {
+    "path" : "misc\\src\\biomimetic_agents\\cross_generational_learning.py",
+    "modificationInfo" : {
+      "contentHash" : -1809252923,
+      "lastModified" : 1754009938498
+    },
+    "linesOfCode" : 892
+  }, {
+    "path" : "misc\\src\\biomimetic_agents\\ecosystem.py",
+    "modificationInfo" : {
+      "contentHash" : -2136728885,
+      "lastModified" : 1754010061121
+    },
+    "linesOfCode" : 652
+  }, {
+    "path" : "misc\\src\\biomimetic_agents\\rubik_genome.py",
+    "modificationInfo" : {
+      "contentHash" : -1088342378,
+      "lastModified" : 1754009552096
+    },
+    "linesOfCode" : 767
+  }, {
+    "path" : "misc\\src\\biomimetic_agents\\thanatos_controller.py",
+    "modificationInfo" : {
+      "contentHash" : 625475629,
+      "lastModified" : 1754009781864
+    },
+    "linesOfCode" : 661
+  }, {
+    "path" : "misc\\src\\containers\\compose_manager.py",
+    "modificationInfo" : {
+      "contentHash" : 947246897,
+      "lastModified" : 1754056786923
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "misc\\src\\containers\\environment_manager.py",
+    "modificationInfo" : {
+      "contentHash" : 2061465330,
+      "lastModified" : 1754056795233
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "misc\\src\\containers\\event_integration.py",
+    "modificationInfo" : {
+      "contentHash" : -2078480462,
+      "lastModified" : 1754056825116
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "misc\\src\\containers\\event_listener.py",
+    "modificationInfo" : {
+      "contentHash" : 292860581,
+      "lastModified" : 1753006250615
+    },
+    "linesOfCode" : 500
+  }, {
+    "path" : "misc\\src\\containers\\example.py",
+    "modificationInfo" : {
+      "contentHash" : 1704376448,
+      "lastModified" : 1753006643719
+    },
+    "linesOfCode" : 69
+  }, {
+    "path" : "misc\\src\\containers\\health_monitor.py",
+    "modificationInfo" : {
+      "contentHash" : -697262462,
+      "lastModified" : 1754056805446
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "misc\\src\\containers\\models.py",
+    "modificationInfo" : {
+      "contentHash" : -1085049233,
+      "lastModified" : 1754056909085
+    },
+    "linesOfCode" : 94
+  }, {
+    "path" : "misc\\src\\containers\\podman_client.py",
+    "modificationInfo" : {
+      "contentHash" : -45031665,
+      "lastModified" : 1753005772642
+    },
+    "linesOfCode" : 596
+  }, {
+    "path" : "misc\\src\\containers\\vscode_integration.py",
+    "modificationInfo" : {
+      "contentHash" : -1864387050,
+      "lastModified" : 1754056815492
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "misc\\src\\core\\analytics\\topological_data_analysis.py",
+    "modificationInfo" : {
+      "contentHash" : -323332314,
+      "lastModified" : 1752409644995
+    },
+    "linesOfCode" : 683
+  }, {
+    "path" : "misc\\src\\core\\core.py",
+    "modificationInfo" : {
+      "contentHash" : -1963182006,
+      "lastModified" : 1752406998241
+    },
+    "linesOfCode" : 74
+  }, {
+    "path" : "misc\\src\\core\\demigod_agent.py",
+    "modificationInfo" : {
+      "contentHash" : -1655521423,
+      "lastModified" : 1752406998242
+    },
+    "linesOfCode" : 14
+  }, {
+    "path" : "misc\\src\\core\\ethics\\ethical_governance.py",
+    "modificationInfo" : {
+      "contentHash" : 2088905651,
+      "lastModified" : 1752409895652
+    },
+    "linesOfCode" : 644
+  }, {
+    "path" : "misc\\src\\core\\memory\\holographic_memory.py",
+    "modificationInfo" : {
+      "contentHash" : -414320589,
+      "lastModified" : 1752409374896
+    },
+    "linesOfCode" : 381
+  }, {
+    "path" : "misc\\src\\core\\nlp\\quantum_attention.py",
+    "modificationInfo" : {
+      "contentHash" : 477971713,
+      "lastModified" : 1752409494924
+    },
+    "linesOfCode" : 472
+  }, {
+    "path" : "misc\\src\\core\\optimization\\quantum_gradient_descent.py",
+    "modificationInfo" : {
+      "contentHash" : -608524453,
+      "lastModified" : 1752409752733
+    },
+    "linesOfCode" : 459
+  }, {
+    "path" : "misc\\src\\core\\orchestration.py",
+    "modificationInfo" : {
+      "contentHash" : -1368862818,
+      "lastModified" : 1752406998242
+    },
+    "linesOfCode" : 8
+  }, {
+    "path" : "misc\\src\\core\\orchestration\\neuromorphic_scheduler.py",
+    "modificationInfo" : {
+      "contentHash" : -1631021083,
+      "lastModified" : 1752409825156
+    },
+    "linesOfCode" : 708
+  }, {
+    "path" : "misc\\src\\core\\router.py",
+    "modificationInfo" : {
+      "contentHash" : 1182628103,
+      "lastModified" : 1752534355038
+    },
+    "linesOfCode" : 47
+  }, {
+    "path" : "misc\\src\\core\\specialization.py",
+    "modificationInfo" : {
+      "contentHash" : -1535767960,
+      "lastModified" : 1752534416114
+    },
+    "linesOfCode" : 47
+  }, {
+    "path" : "misc\\src\\core\\testing\\quantum_resilience_tester.py",
+    "modificationInfo" : {
+      "contentHash" : 90707974,
+      "lastModified" : 1752409970865
+    },
+    "linesOfCode" : 681
+  }, {
+    "path" : "misc\\src\\core\\training\\exponential_learning.py",
+    "modificationInfo" : {
+      "contentHash" : 1067013337,
+      "lastModified" : 1752409679273
+    },
+    "linesOfCode" : 252
+  }, {
+    "path" : "misc\\src\\core\\training\\neuroevolution_manager.py",
+    "modificationInfo" : {
+      "contentHash" : -742247628,
+      "lastModified" : 1752409439510
+    },
+    "linesOfCode" : 599
+  }, {
+    "path" : "misc\\src\\dashboard\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 538490508,
+      "lastModified" : 1753043709288
+    },
+    "linesOfCode" : 37
+  }, {
+    "path" : "misc\\src\\dashboard\\api.py",
+    "modificationInfo" : {
+      "contentHash" : -1936896785,
+      "lastModified" : 1753043587966
+    },
+    "linesOfCode" : 756
+  }, {
+    "path" : "misc\\src\\dashboard\\layout.py",
+    "modificationInfo" : {
+      "contentHash" : -937362201,
+      "lastModified" : 1753019731986
+    },
+    "linesOfCode" : 252
+  }, {
+    "path" : "misc\\src\\dashboard\\models.py",
+    "modificationInfo" : {
+      "contentHash" : 1833300685,
+      "lastModified" : 1753043646293
+    },
+    "linesOfCode" : 332
+  }, {
+    "path" : "misc\\src\\dashboard\\overview.py",
+    "modificationInfo" : {
+      "contentHash" : 362129245,
+      "lastModified" : 1753043454554
+    },
+    "linesOfCode" : 492
+  }, {
+    "path" : "misc\\src\\dashboard\\service.py",
+    "modificationInfo" : {
+      "contentHash" : 92343778,
+      "lastModified" : 1753020228349
+    },
+    "linesOfCode" : 304
+  }, {
+    "path" : "misc\\src\\dashboard\\widgets.py",
+    "modificationInfo" : {
+      "contentHash" : -374350917,
+      "lastModified" : 1753020134066
+    },
+    "linesOfCode" : 274
+  }, {
+    "path" : "misc\\src\\event_routing\\event_correlator.py",
+    "modificationInfo" : {
+      "contentHash" : 2085475867,
+      "lastModified" : 1754056454041
+    },
+    "linesOfCode" : 28
+  }, {
+    "path" : "misc\\src\\event_routing\\event_replayer.py",
+    "modificationInfo" : {
+      "contentHash" : 1262396549,
+      "lastModified" : 1754056512809
+    },
+    "linesOfCode" : 54
+  }, {
+    "path" : "misc\\src\\event_routing\\event_router.py",
+    "modificationInfo" : {
+      "contentHash" : -1526664665,
+      "lastModified" : 1754028818809
+    },
+    "linesOfCode" : 138
+  }, {
+    "path" : "misc\\src\\event_routing\\event_routing.py",
+    "modificationInfo" : {
+      "contentHash" : -197788177,
+      "lastModified" : 1753264763269
+    },
+    "linesOfCode" : 949
+  }, {
+    "path" : "misc\\src\\event_routing\\event_store.py",
+    "modificationInfo" : {
+      "contentHash" : 55768810,
+      "lastModified" : 1754052086251
+    },
+    "linesOfCode" : 78
+  }, {
+    "path" : "misc\\src\\event_routing\\influxdb_store.py",
+    "modificationInfo" : {
+      "contentHash" : -1600935432,
+      "lastModified" : 1754056351377
+    },
+    "linesOfCode" : 64
+  }, {
+    "path" : "misc\\src\\frontend\\js\\app.js",
+    "modificationInfo" : {
+      "contentHash" : 1706558918,
+      "lastModified" : 1752406998243
+    },
+    "linesOfCode" : 3
+  }, {
+    "path" : "misc\\src\\hooks\\cellular_communication_hook.py",
+    "modificationInfo" : {
+      "contentHash" : 1735743286,
+      "lastModified" : 1754044079358
+    },
+    "linesOfCode" : 36
+  }, {
+    "path" : "misc\\src\\hooks\\container_health_restart.py",
+    "modificationInfo" : {
+      "contentHash" : -992614007,
+      "lastModified" : 1754043938324
+    },
+    "linesOfCode" : 32
+  }, {
+    "path" : "misc\\src\\hooks\\container_log_analysis_hook.py",
+    "modificationInfo" : {
+      "contentHash" : -1860474290,
+      "lastModified" : 1754044439426
+    },
+    "linesOfCode" : 46
+  }, {
+    "path" : "misc\\src\\hooks\\container_resource_scaling_hook.py",
+    "modificationInfo" : {
+      "contentHash" : -1756586271,
+      "lastModified" : 1754044602713
+    },
+    "linesOfCode" : 45
+  }, {
+    "path" : "misc\\src\\hooks\\core\\config.py",
+    "modificationInfo" : {
+      "contentHash" : 1081213982,
+      "lastModified" : 1754044480950
+    },
+    "linesOfCode" : 327
+  }, {
+    "path" : "misc\\src\\hooks\\core\\events.py",
+    "modificationInfo" : {
+      "contentHash" : 1959382781,
+      "lastModified" : 1753109184368
+    },
+    "linesOfCode" : 410
+  }, {
+    "path" : "misc\\src\\hooks\\event_sources\\file_watcher.py",
+    "modificationInfo" : {
+      "contentHash" : -618617544,
+      "lastModified" : 1753108961540
+    },
+    "linesOfCode" : 387
+  }, {
+    "path" : "misc\\src\\hooks\\events\\cellular_communication.py",
+    "modificationInfo" : {
+      "contentHash" : 325970493,
+      "lastModified" : 1754044021849
+    },
+    "linesOfCode" : 10
+  }, {
+    "path" : "misc\\src\\hooks\\events\\container_health.py",
+    "modificationInfo" : {
+      "contentHash" : 1010219920,
+      "lastModified" : 1754043929038
+    },
+    "linesOfCode" : 10
+  }, {
+    "path" : "misc\\src\\hooks\\events\\container_log_analysis.py",
+    "modificationInfo" : {
+      "contentHash" : 454587578,
+      "lastModified" : 1754044141415
+    },
+    "linesOfCode" : 10
+  }, {
+    "path" : "misc\\src\\hooks\\events\\container_resource_scaling.py",
+    "modificationInfo" : {
+      "contentHash" : 1446181787,
+      "lastModified" : 1754044540147
+    },
+    "linesOfCode" : 13
+  }, {
+    "path" : "misc\\src\\hooks\\refactor_root_folder.py",
+    "modificationInfo" : {
+      "contentHash" : -1814272065,
+      "lastModified" : 1754022627837
+    },
+    "linesOfCode" : 750
+  }, {
+    "path" : "misc\\src\\hooks\\register_refactor_hook.py",
+    "modificationInfo" : {
+      "contentHash" : -522968589,
+      "lastModified" : 1754044592234
+    },
+    "linesOfCode" : 15
+  }, {
+    "path" : "misc\\src\\integration\\cyberglitch_bridge.py",
+    "modificationInfo" : {
+      "contentHash" : 125477454,
+      "lastModified" : 1752410193311
+    },
+    "linesOfCode" : 288
+  }, {
+    "path" : "misc\\src\\local_processing\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -551903701,
+      "lastModified" : 1754009266123
+    },
+    "linesOfCode" : 66
+  }, {
+    "path" : "misc\\src\\local_processing\\engines\\base.py",
+    "modificationInfo" : {
+      "contentHash" : 1445610448,
+      "lastModified" : 1754042513993
+    },
+    "linesOfCode" : 21
+  }, {
+    "path" : "misc\\src\\local_processing\\engines\\mamba.py",
+    "modificationInfo" : {
+      "contentHash" : 1960835721,
+      "lastModified" : 1754043680835
+    },
+    "linesOfCode" : 106
+  }, {
+    "path" : "misc\\src\\local_processing\\model_manager.py",
+    "modificationInfo" : {
+      "contentHash" : -972612712,
+      "lastModified" : 1754043120948
+    },
+    "linesOfCode" : 444
+  }, {
+    "path" : "misc\\src\\local_processing\\offline_detector.py",
+    "modificationInfo" : {
+      "contentHash" : -1457671538,
+      "lastModified" : 1754009185825
+    },
+    "linesOfCode" : 534
+  }, {
+    "path" : "misc\\src\\local_processing\\pipeline.py",
+    "modificationInfo" : {
+      "contentHash" : -2011813618,
+      "lastModified" : 1754043338968
+    },
+    "linesOfCode" : 477
+  }, {
+    "path" : "misc\\src\\metrics\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 99478300,
+      "lastModified" : 1753015083631
+    },
+    "linesOfCode" : 131
+  }, {
+    "path" : "misc\\src\\metrics\\alerting\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -1625459344,
+      "lastModified" : 1752968305727
+    },
+    "linesOfCode" : 64
+  }, {
+    "path" : "misc\\src\\metrics\\alerting\\alert_generator.py",
+    "modificationInfo" : {
+      "contentHash" : -344777182,
+      "lastModified" : 1752965803010
+    },
+    "linesOfCode" : 506
+  }, {
+    "path" : "misc\\src\\metrics\\alerting\\alert_manager.py",
+    "modificationInfo" : {
+      "contentHash" : -1611734732,
+      "lastModified" : 1752968208183
+    },
+    "linesOfCode" : 357
+  }, {
+    "path" : "misc\\src\\metrics\\alerting\\alert_models.py",
+    "modificationInfo" : {
+      "contentHash" : 55457633,
+      "lastModified" : 1752965707519
+    },
+    "linesOfCode" : 392
+  }, {
+    "path" : "misc\\src\\metrics\\alerting\\alert_rule.py",
+    "modificationInfo" : {
+      "contentHash" : 1289735169,
+      "lastModified" : 1752968134976
+    },
+    "linesOfCode" : 412
+  }, {
+    "path" : "misc\\src\\metrics\\alerting\\example.py",
+    "modificationInfo" : {
+      "contentHash" : 985094803,
+      "lastModified" : 1752968501253
+    },
+    "linesOfCode" : 357
+  }, {
+    "path" : "misc\\src\\metrics\\alerting\\notification.py",
+    "modificationInfo" : {
+      "contentHash" : -1970481997,
+      "lastModified" : 1752968293353
+    },
+    "linesOfCode" : 416
+  }, {
+    "path" : "misc\\src\\metrics\\alerting\\notification_system.py",
+    "modificationInfo" : {
+      "contentHash" : -726275081,
+      "lastModified" : 1752965909792
+    },
+    "linesOfCode" : 580
+  }, {
+    "path" : "misc\\src\\metrics\\api\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -2025082077,
+      "lastModified" : 1753014941565
+    },
+    "linesOfCode" : 12
+  }, {
+    "path" : "misc\\src\\metrics\\api\\metrics_api.py",
+    "modificationInfo" : {
+      "contentHash" : 167254355,
+      "lastModified" : 1753014931831
+    },
+    "linesOfCode" : 334
+  }, {
+    "path" : "misc\\src\\metrics\\collector_factory.py",
+    "modificationInfo" : {
+      "contentHash" : -452484071,
+      "lastModified" : 1753013687828
+    },
+    "linesOfCode" : 222
+  }, {
+    "path" : "misc\\src\\metrics\\collector_interface.py",
+    "modificationInfo" : {
+      "contentHash" : -665276492,
+      "lastModified" : 1752958544442
+    },
+    "linesOfCode" : 266
+  }, {
+    "path" : "misc\\src\\metrics\\collectors\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 427319212,
+      "lastModified" : 1752958585746
+    },
+    "linesOfCode" : 17
+  }, {
+    "path" : "misc\\src\\metrics\\collectors\\cpu_collector.py",
+    "modificationInfo" : {
+      "contentHash" : -579432711,
+      "lastModified" : 1752958621900
+    },
+    "linesOfCode" : 211
+  }, {
+    "path" : "misc\\src\\metrics\\collectors\\disk_collector.py",
+    "modificationInfo" : {
+      "contentHash" : 725041119,
+      "lastModified" : 1752958768937
+    },
+    "linesOfCode" : 298
+  }, {
+    "path" : "misc\\src\\metrics\\collectors\\lifecycle_collector.py",
+    "modificationInfo" : {
+      "contentHash" : 109693047,
+      "lastModified" : 1752958819262
+    },
+    "linesOfCode" : 289
+  }, {
+    "path" : "misc\\src\\metrics\\collectors\\memory_collector.py",
+    "modificationInfo" : {
+      "contentHash" : -642830458,
+      "lastModified" : 1752958667281
+    },
+    "linesOfCode" : 290
+  }, {
+    "path" : "misc\\src\\metrics\\collectors\\network_collector.py",
+    "modificationInfo" : {
+      "contentHash" : -864353410,
+      "lastModified" : 1752958720822
+    },
+    "linesOfCode" : 327
+  }, {
+    "path" : "misc\\src\\metrics\\config_loader.py",
+    "modificationInfo" : {
+      "contentHash" : -777616224,
+      "lastModified" : 1752959513022
+    },
+    "linesOfCode" : 312
+  }, {
+    "path" : "misc\\src\\metrics\\empirical_data_collector.py",
+    "modificationInfo" : {
+      "contentHash" : 1225535800,
+      "lastModified" : 1752410374281
+    },
+    "linesOfCode" : 415
+  }, {
+    "path" : "misc\\src\\metrics\\lifecycle\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1389968333,
+      "lastModified" : 1753013641113
+    },
+    "linesOfCode" : 41
+  }, {
+    "path" : "misc\\src\\metrics\\lifecycle\\container_lifecycle_collector.py",
+    "modificationInfo" : {
+      "contentHash" : -2075479845,
+      "lastModified" : 1753013547509
+    },
+    "linesOfCode" : 131
+  }, {
+    "path" : "misc\\src\\metrics\\lifecycle\\event_collector.py",
+    "modificationInfo" : {
+      "contentHash" : -998688613,
+      "lastModified" : 1752960009804
+    },
+    "linesOfCode" : 480
+  }, {
+    "path" : "misc\\src\\metrics\\lifecycle\\event_listener.py",
+    "modificationInfo" : {
+      "contentHash" : -70366111,
+      "lastModified" : 1752963854568
+    },
+    "linesOfCode" : 50
+  }, {
+    "path" : "misc\\src\\metrics\\lifecycle\\integration_example.py",
+    "modificationInfo" : {
+      "contentHash" : 1760462196,
+      "lastModified" : 1753013729144
+    },
+    "linesOfCode" : 105
+  }, {
+    "path" : "misc\\src\\metrics\\lifecycle\\lifecycle_collector.py",
+    "modificationInfo" : {
+      "contentHash" : -2068568074,
+      "lastModified" : 1753013491075
+    },
+    "linesOfCode" : 263
+  }, {
+    "path" : "misc\\src\\metrics\\lifecycle\\lifecycle_manager.py",
+    "modificationInfo" : {
+      "contentHash" : -946422935,
+      "lastModified" : 1752960219364
+    },
+    "linesOfCode" : 356
+  }, {
+    "path" : "misc\\src\\metrics\\lifecycle\\restart_tracker.py",
+    "modificationInfo" : {
+      "contentHash" : -1852140600,
+      "lastModified" : 1752960080183
+    },
+    "linesOfCode" : 335
+  }, {
+    "path" : "misc\\src\\metrics\\lifecycle\\uptime_tracker.py",
+    "modificationInfo" : {
+      "contentHash" : 819884696,
+      "lastModified" : 1752960148679
+    },
+    "linesOfCode" : 359
+  }, {
+    "path" : "misc\\src\\metrics\\models.py",
+    "modificationInfo" : {
+      "contentHash" : -1871629107,
+      "lastModified" : 1752958502409
+    },
+    "linesOfCode" : 176
+  }, {
+    "path" : "misc\\src\\metrics\\prometheus\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -1764508317,
+      "lastModified" : 1752965419647
+    },
+    "linesOfCode" : 36
+  }, {
+    "path" : "misc\\src\\metrics\\prometheus\\exporter.py",
+    "modificationInfo" : {
+      "contentHash" : 426149565,
+      "lastModified" : 1752961943010
+    },
+    "linesOfCode" : 282
+  }, {
+    "path" : "misc\\src\\metrics\\prometheus\\formatter.py",
+    "modificationInfo" : {
+      "contentHash" : -1176447945,
+      "lastModified" : 1752961767599
+    },
+    "linesOfCode" : 352
+  }, {
+    "path" : "misc\\src\\metrics\\prometheus\\prometheus_exporter.py",
+    "modificationInfo" : {
+      "contentHash" : 1515978481,
+      "lastModified" : 1752965502915
+    },
+    "linesOfCode" : 405
+  }, {
+    "path" : "misc\\src\\metrics\\prometheus\\prometheus_formatter.py",
+    "modificationInfo" : {
+      "contentHash" : -897000708,
+      "lastModified" : 1752965537271
+    },
+    "linesOfCode" : 182
+  }, {
+    "path" : "misc\\src\\metrics\\prometheus\\prometheus_server.py",
+    "modificationInfo" : {
+      "contentHash" : 87566410,
+      "lastModified" : 1752965592163
+    },
+    "linesOfCode" : 287
+  }, {
+    "path" : "misc\\src\\metrics\\prometheus\\registry.py",
+    "modificationInfo" : {
+      "contentHash" : -691944964,
+      "lastModified" : 1752961825845
+    },
+    "linesOfCode" : 332
+  }, {
+    "path" : "misc\\src\\metrics\\prometheus\\scrape_endpoint.py",
+    "modificationInfo" : {
+      "contentHash" : 1650974712,
+      "lastModified" : 1752961883328
+    },
+    "linesOfCode" : 318
+  }, {
+    "path" : "misc\\src\\metrics\\storage\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1463026649,
+      "lastModified" : 1753016622848
+    },
+    "linesOfCode" : 53
+  }, {
+    "path" : "misc\\src\\metrics\\storage\\integration_example.py",
+    "modificationInfo" : {
+      "contentHash" : -853030964,
+      "lastModified" : 1753016594736
+    },
+    "linesOfCode" : 168
+  }, {
+    "path" : "misc\\src\\metrics\\storage\\metrics_storage_system.py",
+    "modificationInfo" : {
+      "contentHash" : -1248592356,
+      "lastModified" : 1753016806016
+    },
+    "linesOfCode" : 553
+  }, {
+    "path" : "misc\\src\\metrics\\storage\\query_engine.py",
+    "modificationInfo" : {
+      "contentHash" : 1122339392,
+      "lastModified" : 1753014693753
+    },
+    "linesOfCode" : 201
+  }, {
+    "path" : "misc\\src\\metrics\\storage\\query_interface.py",
+    "modificationInfo" : {
+      "contentHash" : -1681622845,
+      "lastModified" : 1752961272974
+    },
+    "linesOfCode" : 490
+  }, {
+    "path" : "misc\\src\\metrics\\storage\\retention_manager.py",
+    "modificationInfo" : {
+      "contentHash" : 1298843230,
+      "lastModified" : 1752961182290
+    },
+    "linesOfCode" : 322
+  }, {
+    "path" : "misc\\src\\metrics\\storage\\retention_policy.py",
+    "modificationInfo" : {
+      "contentHash" : -1685280796,
+      "lastModified" : 1752964446667
+    },
+    "linesOfCode" : 392
+  }, {
+    "path" : "misc\\src\\metrics\\storage\\storage_factory.py",
+    "modificationInfo" : {
+      "contentHash" : 1522940564,
+      "lastModified" : 1752964582482
+    },
+    "linesOfCode" : 176
+  }, {
+    "path" : "misc\\src\\metrics\\storage\\storage_manager.py",
+    "modificationInfo" : {
+      "contentHash" : -756167885,
+      "lastModified" : 1752961346796
+    },
+    "linesOfCode" : 358
+  }, {
+    "path" : "misc\\src\\metrics\\storage\\time_series_storage.py",
+    "modificationInfo" : {
+      "contentHash" : 382598675,
+      "lastModified" : 1753014647886
+    },
+    "linesOfCode" : 576
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1522739100,
+      "lastModified" : 1753039108618
+    },
+    "linesOfCode" : 29
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\cli.py",
+    "modificationInfo" : {
+      "contentHash" : 1258664379,
+      "lastModified" : 1753041025663
+    },
+    "linesOfCode" : 223
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\communication\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -225933760,
+      "lastModified" : 1753039155311
+    },
+    "linesOfCode" : 18
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\core\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1847682346,
+      "lastModified" : 1753039115566
+    },
+    "linesOfCode" : 19
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\core\\interfaces.py",
+    "modificationInfo" : {
+      "contentHash" : 412290405,
+      "lastModified" : 1753039134469
+    },
+    "linesOfCode" : 119
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\core\\nucleus.py",
+    "modificationInfo" : {
+      "contentHash" : -1866904519,
+      "lastModified" : 1754396110417
+    },
+    "linesOfCode" : 541
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\core\\state_tree.py",
+    "modificationInfo" : {
+      "contentHash" : 1761017822,
+      "lastModified" : 1753040659271
+    },
+    "linesOfCode" : 618
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\engines\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1838563033,
+      "lastModified" : 1753039141211
+    },
+    "linesOfCode" : 16
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\engines\\differentiation.py",
+    "modificationInfo" : {
+      "contentHash" : -1470643452,
+      "lastModified" : 1753040887314
+    },
+    "linesOfCode" : 735
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\engines\\regeneration.py",
+    "modificationInfo" : {
+      "contentHash" : -1147454774,
+      "lastModified" : 1753040991066
+    },
+    "linesOfCode" : 726
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\engines\\traversal.py",
+    "modificationInfo" : {
+      "contentHash" : -1475490981,
+      "lastModified" : 1753040776474
+    },
+    "linesOfCode" : 651
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\phoenixxhydra\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1626771730,
+      "lastModified" : 1753134446430
+    },
+    "linesOfCode" : 47
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\phoenixxhydra\\core\\digital_cell.py",
+    "modificationInfo" : {
+      "contentHash" : 33762,
+      "lastModified" : 1753134857647
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\phoenixxhydra\\core\\events.py",
+    "modificationInfo" : {
+      "contentHash" : -33303967,
+      "lastModified" : 1753134561529
+    },
+    "linesOfCode" : 384
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\phoenixxhydra\\core\\gene_py.py",
+    "modificationInfo" : {
+      "contentHash" : -1814915349,
+      "lastModified" : 1753134751906
+    },
+    "linesOfCode" : 550
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\subsystems\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1969456512,
+      "lastModified" : 1753039147845
+    },
+    "linesOfCode" : 18
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\utils\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 289125148,
+      "lastModified" : 1753039162831
+    },
+    "linesOfCode" : 21
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\utils\\config.py",
+    "modificationInfo" : {
+      "contentHash" : 315357159,
+      "lastModified" : 1753266914369
+    },
+    "linesOfCode" : 49
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\utils\\logging.py",
+    "modificationInfo" : {
+      "contentHash" : 1806590948,
+      "lastModified" : 1753040687608
+    },
+    "linesOfCode" : 142
+  }, {
+    "path" : "misc\\src\\phoenix_demigod\\utils\\validation.py",
+    "modificationInfo" : {
+      "contentHash" : 525054266,
+      "lastModified" : 1753267458622
+    },
+    "linesOfCode" : 33
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\analysis\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 369287985,
+      "lastModified" : 1753890203331
+    },
+    "linesOfCode" : 100
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\analysis\\component_evaluator.py",
+    "modificationInfo" : {
+      "contentHash" : 60065641,
+      "lastModified" : 1753453495585
+    },
+    "linesOfCode" : 876
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\analysis\\dependency_analyzer.py",
+    "modificationInfo" : {
+      "contentHash" : -294830817,
+      "lastModified" : 1753443319617
+    },
+    "linesOfCode" : 573
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\analysis\\gap_analysis_engine.py",
+    "modificationInfo" : {
+      "contentHash" : 1560054114,
+      "lastModified" : 1753442800741
+    },
+    "linesOfCode" : 844
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\analysis\\n8n_analyzer.py",
+    "modificationInfo" : {
+      "contentHash" : -854508443,
+      "lastModified" : 1753889567379
+    },
+    "linesOfCode" : 937
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\analysis\\phoenix_analyzer.py",
+    "modificationInfo" : {
+      "contentHash" : -41872275,
+      "lastModified" : 1754046527035
+    },
+    "linesOfCode" : 436
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\analysis\\phoenix_hydra_integrator.py",
+    "modificationInfo" : {
+      "contentHash" : -680877209,
+      "lastModified" : 1753890186351
+    },
+    "linesOfCode" : 539
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\analysis\\podman_analyzer.py",
+    "modificationInfo" : {
+      "contentHash" : 304906565,
+      "lastModified" : 1753874323606
+    },
+    "linesOfCode" : 670
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\analysis\\quality_assessor.py",
+    "modificationInfo" : {
+      "contentHash" : -645919771,
+      "lastModified" : 1753453031988
+    },
+    "linesOfCode" : 913
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\analysis\\windmill_analyzer.py",
+    "modificationInfo" : {
+      "contentHash" : -1934715787,
+      "lastModified" : 1753889256848
+    },
+    "linesOfCode" : 868
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\analysis\\windmill_demo.py",
+    "modificationInfo" : {
+      "contentHash" : -1298598478,
+      "lastModified" : 1753889419491
+    },
+    "linesOfCode" : 122
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\assessment\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -1861608368,
+      "lastModified" : 1753453913729
+    },
+    "linesOfCode" : 21
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\assessment\\completion_calculator.py",
+    "modificationInfo" : {
+      "contentHash" : -1725341830,
+      "lastModified" : 1753452512837
+    },
+    "linesOfCode" : 505
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\assessment\\gap_analyzer.py",
+    "modificationInfo" : {
+      "contentHash" : 866666404,
+      "lastModified" : 1753453905239
+    },
+    "linesOfCode" : 840
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\assessment\\priority_ranker.py",
+    "modificationInfo" : {
+      "contentHash" : -25428601,
+      "lastModified" : 1753452825945
+    },
+    "linesOfCode" : 712
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\automation\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -702240100,
+      "lastModified" : 1753976900981
+    },
+    "linesOfCode" : 18
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\automation\\kiro_hooks.py",
+    "modificationInfo" : {
+      "contentHash" : 275179972,
+      "lastModified" : 1754046524211
+    },
+    "linesOfCode" : 415
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\automation\\monitoring.py",
+    "modificationInfo" : {
+      "contentHash" : -449016308,
+      "lastModified" : 1754046522591
+    },
+    "linesOfCode" : 601
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\automation\\scheduler.py",
+    "modificationInfo" : {
+      "contentHash" : -947576987,
+      "lastModified" : 1754046520798
+    },
+    "linesOfCode" : 393
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\automation\\vscode_integration.py",
+    "modificationInfo" : {
+      "contentHash" : -1018393199,
+      "lastModified" : 1754046519115
+    },
+    "linesOfCode" : 397
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\cli.py",
+    "modificationInfo" : {
+      "contentHash" : -437059220,
+      "lastModified" : 1753975829163
+    },
+    "linesOfCode" : 757
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\cli\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -750345178,
+      "lastModified" : 1753976671613
+    },
+    "linesOfCode" : 23
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\cli\\commands.py",
+    "modificationInfo" : {
+      "contentHash" : 867423263,
+      "lastModified" : 1754046541675
+    },
+    "linesOfCode" : 442
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\cli\\main.py",
+    "modificationInfo" : {
+      "contentHash" : 843486227,
+      "lastModified" : 1754046515105
+    },
+    "linesOfCode" : 208
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\cli_config.py",
+    "modificationInfo" : {
+      "contentHash" : 2034250813,
+      "lastModified" : 1753975999757
+    },
+    "linesOfCode" : 338
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\core\\config_validator.py",
+    "modificationInfo" : {
+      "contentHash" : 524272130,
+      "lastModified" : 1753969118532
+    },
+    "linesOfCode" : 478
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\core\\error_handler.py",
+    "modificationInfo" : {
+      "contentHash" : -636979222,
+      "lastModified" : 1753968318074
+    },
+    "linesOfCode" : 483
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\core\\exceptions.py",
+    "modificationInfo" : {
+      "contentHash" : 375004433,
+      "lastModified" : 1754001489844
+    },
+    "linesOfCode" : 29
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\core\\interfaces.py",
+    "modificationInfo" : {
+      "contentHash" : -161958284,
+      "lastModified" : 1754001751778
+    },
+    "linesOfCode" : 219
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\core\\logging_system.py",
+    "modificationInfo" : {
+      "contentHash" : -2141297823,
+      "lastModified" : 1753968523881
+    },
+    "linesOfCode" : 796
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\core\\secrets_manager.py",
+    "modificationInfo" : {
+      "contentHash" : -1959525910,
+      "lastModified" : 1753968935549
+    },
+    "linesOfCode" : 525
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\core\\system_controller.py",
+    "modificationInfo" : {
+      "contentHash" : 1151133829,
+      "lastModified" : 1754001146795
+    },
+    "linesOfCode" : 243
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\core\\system_review_engine.py",
+    "modificationInfo" : {
+      "contentHash" : 659187289,
+      "lastModified" : 1753976583707
+    },
+    "linesOfCode" : 5
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\criteria\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -1083963065,
+      "lastModified" : 1753443064943
+    },
+    "linesOfCode" : 13
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\criteria\\automation_criteria.py",
+    "modificationInfo" : {
+      "contentHash" : 676722282,
+      "lastModified" : 1753442975382
+    },
+    "linesOfCode" : 533
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\criteria\\infrastructure_criteria.py",
+    "modificationInfo" : {
+      "contentHash" : 1702352878,
+      "lastModified" : 1753375997704
+    },
+    "linesOfCode" : 714
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\criteria\\monetization_criteria.py",
+    "modificationInfo" : {
+      "contentHash" : 1314815694,
+      "lastModified" : 1753376553582
+    },
+    "linesOfCode" : 667
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\demo_component_evaluator.py",
+    "modificationInfo" : {
+      "contentHash" : 1924568627,
+      "lastModified" : 1753453649018
+    },
+    "linesOfCode" : 114
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\demo_phoenix_integrations.py",
+    "modificationInfo" : {
+      "contentHash" : -228356720,
+      "lastModified" : 1753890352203
+    },
+    "linesOfCode" : 308
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\demo_review.py",
+    "modificationInfo" : {
+      "contentHash" : 307013264,
+      "lastModified" : 1754002255408
+    },
+    "linesOfCode" : 540
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\discovery\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1849812652,
+      "lastModified" : 1753374408108
+    },
+    "linesOfCode" : 18
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\discovery\\config_parser.py",
+    "modificationInfo" : {
+      "contentHash" : 1509442555,
+      "lastModified" : 1753374614561
+    },
+    "linesOfCode" : 707
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\discovery\\file_scanner.py",
+    "modificationInfo" : {
+      "contentHash" : 151806421,
+      "lastModified" : 1753374764819
+    },
+    "linesOfCode" : 513
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\discovery\\service_discovery.py",
+    "modificationInfo" : {
+      "contentHash" : 15354015,
+      "lastModified" : 1753373099795
+    },
+    "linesOfCode" : 682
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\mamba_integration\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 343121319,
+      "lastModified" : 1753973448325
+    },
+    "linesOfCode" : 85
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\mamba_integration\\mamba_engine.py",
+    "modificationInfo" : {
+      "contentHash" : 328238682,
+      "lastModified" : 1753973260613
+    },
+    "linesOfCode" : 389
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\mamba_integration\\metrics.py",
+    "modificationInfo" : {
+      "contentHash" : -200009084,
+      "lastModified" : 1753975911169
+    },
+    "linesOfCode" : 67
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\mamba_integration\\phoenix_demigod_validator.py",
+    "modificationInfo" : {
+      "contentHash" : -496890168,
+      "lastModified" : 1753975525347
+    },
+    "linesOfCode" : 683
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\mamba_integration\\phoenix_hydra_integration.py",
+    "modificationInfo" : {
+      "contentHash" : -2090737645,
+      "lastModified" : 1753974902662
+    },
+    "linesOfCode" : 407
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\mamba_integration\\phoenix_model_router.py",
+    "modificationInfo" : {
+      "contentHash" : -661576457,
+      "lastModified" : 1753976436757
+    },
+    "linesOfCode" : 672
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\models\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -232755678,
+      "lastModified" : 1753363695251
+    },
+    "linesOfCode" : 39
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\models\\data_models.py",
+    "modificationInfo" : {
+      "contentHash" : 1616220227,
+      "lastModified" : 1754001928062
+    },
+    "linesOfCode" : 190
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\reporting\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1431173716,
+      "lastModified" : 1753363718315
+    },
+    "linesOfCode" : 6
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\reporting\\recommendation_engine.py",
+    "modificationInfo" : {
+      "contentHash" : -2031557267,
+      "lastModified" : 1753531011236
+    },
+    "linesOfCode" : 834
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\reporting\\status_reporter.py",
+    "modificationInfo" : {
+      "contentHash" : -641595869,
+      "lastModified" : 1753530440852
+    },
+    "linesOfCode" : 921
+  }, {
+    "path" : "misc\\src\\phoenix_system_review\\reporting\\todo_generator.py",
+    "modificationInfo" : {
+      "contentHash" : -1996482361,
+      "lastModified" : 1753530057468
+    },
+    "linesOfCode" : 813
+  }, {
+    "path" : "misc\\src\\phoenixxhydra\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 907021018,
+      "lastModified" : 1753135939936
+    },
+    "linesOfCode" : 7
+  }, {
+    "path" : "misc\\src\\phoenixxhydra\\core\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1688285567,
+      "lastModified" : 1753135201033
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "misc\\src\\phoenixxhydra\\core\\config.py",
+    "modificationInfo" : {
+      "contentHash" : 1895760960,
+      "lastModified" : 1753177698301
+    },
+    "linesOfCode" : 374
+  }, {
+    "path" : "misc\\src\\phoenixxhydra\\core\\container.py",
+    "modificationInfo" : {
+      "contentHash" : -321476620,
+      "lastModified" : 1753177600307
+    },
+    "linesOfCode" : 126
+  }, {
+    "path" : "misc\\src\\phoenixxhydra\\core\\events.py",
+    "modificationInfo" : {
+      "contentHash" : -1994113585,
+      "lastModified" : 1753224937981
+    },
+    "linesOfCode" : 368
+  }, {
+    "path" : "misc\\src\\phoenixxhydra\\core\\interfaces.py",
+    "modificationInfo" : {
+      "contentHash" : -1870490350,
+      "lastModified" : 1753135369073
+    },
+    "linesOfCode" : 344
+  }, {
+    "path" : "misc\\src\\phoenixxhydra\\core\\models.py",
+    "modificationInfo" : {
+      "contentHash" : -202778592,
+      "lastModified" : 1753135298247
+    },
+    "linesOfCode" : 280
+  }, {
+    "path" : "misc\\src\\phoenixxhydra\\networking\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -1798783485,
+      "lastModified" : 1753177944487
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "misc\\src\\phoenixxhydra\\networking\\ccp\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1029086668,
+      "lastModified" : 1753209564261
+    },
+    "linesOfCode" : 30
+  }, {
+    "path" : "misc\\src\\phoenixxhydra\\networking\\ccp\\core.py",
+    "modificationInfo" : {
+      "contentHash" : -1257183215,
+      "lastModified" : 1753224989276
+    },
+    "linesOfCode" : 120
+  }, {
+    "path" : "misc\\src\\phoenixxhydra\\networking\\ccp\\data_models.py",
+    "modificationInfo" : {
+      "contentHash" : -1786097135,
+      "lastModified" : 1753209669651
+    },
+    "linesOfCode" : 140
+  }, {
+    "path" : "misc\\src\\phoenixxhydra\\networking\\gene_transfer.py",
+    "modificationInfo" : {
+      "contentHash" : 1673874779,
+      "lastModified" : 1753178337805
+    },
+    "linesOfCode" : 175
+  }, {
+    "path" : "misc\\src\\phoenixxhydra\\networking\\p2p_manager.py",
+    "modificationInfo" : {
+      "contentHash" : -1060919609,
+      "lastModified" : 1753178124889
+    },
+    "linesOfCode" : 658
+  }, {
+    "path" : "misc\\src\\scheduler\\adaptive_trainer.py",
+    "modificationInfo" : {
+      "contentHash" : 1598511086,
+      "lastModified" : 1752410251277
+    },
+    "linesOfCode" : 437
+  }, {
+    "path" : "misc\\src\\scripts\\neotec-generator.py",
+    "modificationInfo" : {
+      "contentHash" : 1976828803,
+      "lastModified" : 1753310727596
+    },
+    "linesOfCode" : 59
+  }, {
+    "path" : "misc\\src\\scripts\\neotec_enhanced_generator.py",
+    "modificationInfo" : {
+      "contentHash" : -579161376,
+      "lastModified" : 1753364623578
+    },
+    "linesOfCode" : 521
+  }, {
+    "path" : "misc\\src\\ssm_analysis\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 51228999,
+      "lastModified" : 1754010998670
+    },
+    "linesOfCode" : 98
+  }, {
+    "path" : "misc\\src\\ssm_analysis\\advanced_gap_detection.py",
+    "modificationInfo" : {
+      "contentHash" : 906745874,
+      "lastModified" : 1754011994820
+    },
+    "linesOfCode" : 755
+  }, {
+    "path" : "misc\\src\\ssm_analysis\\advanced_ssm_components.py",
+    "modificationInfo" : {
+      "contentHash" : 641507878,
+      "lastModified" : 1754010688980
+    },
+    "linesOfCode" : 678
+  }, {
+    "path" : "misc\\src\\ssm_analysis\\gap_detection_system.py",
+    "modificationInfo" : {
+      "contentHash" : -1854690661,
+      "lastModified" : 1754123500009
+    },
+    "linesOfCode" : 685
+  }, {
+    "path" : "misc\\src\\ssm_analysis\\state_space_engine.py",
+    "modificationInfo" : {
+      "contentHash" : 1076713467,
+      "lastModified" : 1754010410315
+    },
+    "linesOfCode" : 710
+  }, {
+    "path" : "misc\\src\\test_dashboard.py",
+    "modificationInfo" : {
+      "contentHash" : -1374592585,
+      "lastModified" : 1753020421040
+    },
+    "linesOfCode" : 115
+  }, {
+    "path" : "misc\\src\\test_dashboard_overview.py",
+    "modificationInfo" : {
+      "contentHash" : 79012537,
+      "lastModified" : 1753043659990
+    },
+    "linesOfCode" : 189
+  }, {
+    "path" : "misc\\src\\test_overview_simple.py",
+    "modificationInfo" : {
+      "contentHash" : -913712295,
+      "lastModified" : 1753043684305
+    },
+    "linesOfCode" : 149
+  }, {
+    "path" : "misc\\src\\utils.py",
+    "modificationInfo" : {
+      "contentHash" : -1786679906,
+      "lastModified" : 1752406998243
+    },
+    "linesOfCode" : 25
+  }, {
+    "path" : "misc\\src\\utils\\data_migration.py",
+    "modificationInfo" : {
+      "contentHash" : -106117488,
+      "lastModified" : 1752409328568
+    },
+    "linesOfCode" : 416
+  }, {
+    "path" : "misc\\test_cellular_communication_hook.py",
+    "modificationInfo" : {
+      "contentHash" : 306971628,
+      "lastModified" : 1754016387329
+    },
+    "linesOfCode" : 164
+  }, {
+    "path" : "misc\\tests\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 413,
+      "lastModified" : 1753309588234
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "misc\\tests\\automation\\test_scheduler.py",
+    "modificationInfo" : {
+      "contentHash" : 258198919,
+      "lastModified" : 1754046513445
+    },
+    "linesOfCode" : 289
+  }, {
+    "path" : "misc\\tests\\cli\\test_main.py",
+    "modificationInfo" : {
+      "contentHash" : -2053732644,
+      "lastModified" : 1753976885927
+    },
+    "linesOfCode" : 151
+  }, {
+    "path" : "misc\\tests\\grants\\neotec_generator.py",
+    "modificationInfo" : {
+      "contentHash" : 1976828803,
+      "lastModified" : 1753310889711
+    },
+    "linesOfCode" : 59
+  }, {
+    "path" : "misc\\tests\\integration\\test_cli.py",
+    "modificationInfo" : {
+      "contentHash" : 1747140966,
+      "lastModified" : 1753976097486
+    },
+    "linesOfCode" : 596
+  }, {
+    "path" : "misc\\tests\\integration\\test_component_integration.py",
+    "modificationInfo" : {
+      "contentHash" : 98473509,
+      "lastModified" : 1753970941382
+    },
+    "linesOfCode" : 585
+  }, {
+    "path" : "misc\\tests\\integration\\test_configuration_integration.py",
+    "modificationInfo" : {
+      "contentHash" : 1654298855,
+      "lastModified" : 1753970605430
+    },
+    "linesOfCode" : 512
+  }, {
+    "path" : "misc\\tests\\integration\\test_dependency_analysis_integration.py",
+    "modificationInfo" : {
+      "contentHash" : 326542597,
+      "lastModified" : 1753440743184
+    },
+    "linesOfCode" : 425
+  }, {
+    "path" : "misc\\tests\\integration\\test_discovery_engine_integration.py",
+    "modificationInfo" : {
+      "contentHash" : -1656570730,
+      "lastModified" : 1753375127710
+    },
+    "linesOfCode" : 358
+  }, {
+    "path" : "misc\\tests\\integration\\test_discovery_integration.py",
+    "modificationInfo" : {
+      "contentHash" : -1179733102,
+      "lastModified" : 1753438566755
+    },
+    "linesOfCode" : 402
+  }, {
+    "path" : "misc\\tests\\integration\\test_logging_system.py",
+    "modificationInfo" : {
+      "contentHash" : 1078806617,
+      "lastModified" : 1753968628125
+    },
+    "linesOfCode" : 616
+  }, {
+    "path" : "misc\\tests\\integration\\test_n8n_analyzer.py",
+    "modificationInfo" : {
+      "contentHash" : -1409861558,
+      "lastModified" : 1753889775316
+    },
+    "linesOfCode" : 471
+  }, {
+    "path" : "misc\\tests\\integration\\test_phoenix_hydra_integrations.py",
+    "modificationInfo" : {
+      "contentHash" : -553541847,
+      "lastModified" : 1753890290505
+    },
+    "linesOfCode" : 469
+  }, {
+    "path" : "misc\\tests\\integration\\test_podman_analyzer.py",
+    "modificationInfo" : {
+      "contentHash" : -2087279368,
+      "lastModified" : 1753874374565
+    },
+    "linesOfCode" : 405
+  }, {
+    "path" : "misc\\tests\\integration\\test_service_discovery_integration.py",
+    "modificationInfo" : {
+      "contentHash" : 1844586140,
+      "lastModified" : 1753970751738
+    },
+    "linesOfCode" : 489
+  }, {
+    "path" : "misc\\tests\\integration\\test_system_review_workflow.py",
+    "modificationInfo" : {
+      "contentHash" : -475240741,
+      "lastModified" : 1753971155649
+    },
+    "linesOfCode" : 528
+  }, {
+    "path" : "misc\\tests\\integration\\test_windmill_analyzer.py",
+    "modificationInfo" : {
+      "contentHash" : 2079505285,
+      "lastModified" : 1753889277175
+    },
+    "linesOfCode" : 672
+  }, {
+    "path" : "misc\\tests\\performance\\conftest.py",
+    "modificationInfo" : {
+      "contentHash" : 452281247,
+      "lastModified" : 1753972060943
+    },
+    "linesOfCode" : 209
+  }, {
+    "path" : "misc\\tests\\performance\\run_performance_tests.py",
+    "modificationInfo" : {
+      "contentHash" : -370034455,
+      "lastModified" : 1753972105865
+    },
+    "linesOfCode" : 290
+  }, {
+    "path" : "misc\\tests\\performance\\test_load_testing.py",
+    "modificationInfo" : {
+      "contentHash" : 2010138007,
+      "lastModified" : 1753972241125
+    },
+    "linesOfCode" : 505
+  }, {
+    "path" : "misc\\tests\\performance\\test_memory_benchmarks.py",
+    "modificationInfo" : {
+      "contentHash" : 1968331901,
+      "lastModified" : 1753972292986
+    },
+    "linesOfCode" : 686
+  }, {
+    "path" : "misc\\tests\\performance\\test_scalability.py",
+    "modificationInfo" : {
+      "contentHash" : -772356983,
+      "lastModified" : 1753972344450
+    },
+    "linesOfCode" : 749
+  }, {
+    "path" : "misc\\tests\\test_system_review_structure.py",
+    "modificationInfo" : {
+      "contentHash" : -1206107134,
+      "lastModified" : 1753363740377
+    },
+    "linesOfCode" : 117
+  }, {
+    "path" : "misc\\tests\\unit\\analysis\\test_component_evaluator.py",
+    "modificationInfo" : {
+      "contentHash" : 882397263,
+      "lastModified" : 1753453563549
+    },
+    "linesOfCode" : 490
+  }, {
+    "path" : "misc\\tests\\unit\\analysis\\test_n8n_analyzer.py",
+    "modificationInfo" : {
+      "contentHash" : 2131701158,
+      "lastModified" : 1753889737037
+    },
+    "linesOfCode" : 519
+  }, {
+    "path" : "misc\\tests\\unit\\analysis\\test_quality_assessor.py",
+    "modificationInfo" : {
+      "contentHash" : 1875547262,
+      "lastModified" : 1753443477844
+    },
+    "linesOfCode" : 442
+  }, {
+    "path" : "misc\\tests\\unit\\assessment\\test_completion_calculator.py",
+    "modificationInfo" : {
+      "contentHash" : 1606186989,
+      "lastModified" : 1753452628699
+    },
+    "linesOfCode" : 504
+  }, {
+    "path" : "misc\\tests\\unit\\assessment\\test_gap_analyzer.py",
+    "modificationInfo" : {
+      "contentHash" : 2032991742,
+      "lastModified" : 1753454044845
+    },
+    "linesOfCode" : 675
+  }, {
+    "path" : "misc\\tests\\unit\\assessment\\test_priority_ranker.py",
+    "modificationInfo" : {
+      "contentHash" : -1214802881,
+      "lastModified" : 1753452801923
+    },
+    "linesOfCode" : 433
+  }, {
+    "path" : "misc\\tests\\unit\\criteria\\test_automation_criteria.py",
+    "modificationInfo" : {
+      "contentHash" : -1481143081,
+      "lastModified" : 1753443014965
+    },
+    "linesOfCode" : 241
+  }, {
+    "path" : "misc\\tests\\unit\\event_routing\\test_event_correlator.py",
+    "modificationInfo" : {
+      "contentHash" : -519906427,
+      "lastModified" : 1754028855941
+    },
+    "linesOfCode" : 87
+  }, {
+    "path" : "misc\\tests\\unit\\event_routing\\test_event_router.py",
+    "modificationInfo" : {
+      "contentHash" : 150496678,
+      "lastModified" : 1754028829861
+    },
+    "linesOfCode" : 315
+  }, {
+    "path" : "misc\\tests\\unit\\event_routing\\test_event_store.py",
+    "modificationInfo" : {
+      "contentHash" : 1886434228,
+      "lastModified" : 1754027236034
+    },
+    "linesOfCode" : 110
+  }, {
+    "path" : "misc\\tests\\unit\\test_analysis_engine.py",
+    "modificationInfo" : {
+      "contentHash" : 198891018,
+      "lastModified" : 1753969885814
+    },
+    "linesOfCode" : 427
+  }, {
+    "path" : "misc\\tests\\unit\\test_assessment_engine.py",
+    "modificationInfo" : {
+      "contentHash" : 1729947234,
+      "lastModified" : 1753969960573
+    },
+    "linesOfCode" : 461
+  }, {
+    "path" : "misc\\tests\\unit\\test_automation_criteria.py",
+    "modificationInfo" : {
+      "contentHash" : -1365268716,
+      "lastModified" : 1753438481341
+    },
+    "linesOfCode" : 476
+  }, {
+    "path" : "misc\\tests\\unit\\test_component_evaluator.py",
+    "modificationInfo" : {
+      "contentHash" : 493232828,
+      "lastModified" : 1753439355596
+    },
+    "linesOfCode" : 237
+  }, {
+    "path" : "misc\\tests\\unit\\test_config_parser.py",
+    "modificationInfo" : {
+      "contentHash" : 968478764,
+      "lastModified" : 1753367320862
+    },
+    "linesOfCode" : 522
+  }, {
+    "path" : "misc\\tests\\unit\\test_core_components.py",
+    "modificationInfo" : {
+      "contentHash" : 1207034145,
+      "lastModified" : 1753970164396
+    },
+    "linesOfCode" : 460
+  }, {
+    "path" : "misc\\tests\\unit\\test_data_models.py",
+    "modificationInfo" : {
+      "contentHash" : -1994197674,
+      "lastModified" : 1753970102462
+    },
+    "linesOfCode" : 486
+  }, {
+    "path" : "misc\\tests\\unit\\test_dependency_analyzer.py",
+    "modificationInfo" : {
+      "contentHash" : -33191611,
+      "lastModified" : 1753440638194
+    },
+    "linesOfCode" : 492
+  }, {
+    "path" : "misc\\tests\\unit\\test_discovery_engine.py",
+    "modificationInfo" : {
+      "contentHash" : 489898998,
+      "lastModified" : 1753971011320
+    },
+    "linesOfCode" : 384
+  }, {
+    "path" : "misc\\tests\\unit\\test_error_handling.py",
+    "modificationInfo" : {
+      "contentHash" : -1393096886,
+      "lastModified" : 1753968409508
+    },
+    "linesOfCode" : 617
+  }, {
+    "path" : "misc\\tests\\unit\\test_file_scanner.py",
+    "modificationInfo" : {
+      "contentHash" : -753042478,
+      "lastModified" : 1753364925601
+    },
+    "linesOfCode" : 335
+  }, {
+    "path" : "misc\\tests\\unit\\test_infrastructure_criteria.py",
+    "modificationInfo" : {
+      "contentHash" : -822593596,
+      "lastModified" : 1753376112669
+    },
+    "linesOfCode" : 399
+  }, {
+    "path" : "misc\\tests\\unit\\test_monetization_criteria.py",
+    "modificationInfo" : {
+      "contentHash" : 990216838,
+      "lastModified" : 1753377080555
+    },
+    "linesOfCode" : 452
+  }, {
+    "path" : "misc\\tests\\unit\\test_quality_assessor.py",
+    "modificationInfo" : {
+      "contentHash" : -1572476466,
+      "lastModified" : 1753441096359
+    },
+    "linesOfCode" : 460
+  }, {
+    "path" : "misc\\tests\\unit\\test_recommendation_engine.py",
+    "modificationInfo" : {
+      "contentHash" : -867609437,
+      "lastModified" : 1753530993460
+    },
+    "linesOfCode" : 660
+  }, {
+    "path" : "misc\\tests\\unit\\test_refactor_hook.py",
+    "modificationInfo" : {
+      "contentHash" : 162954224,
+      "lastModified" : 1754015712410
+    },
+    "linesOfCode" : 295
+  }, {
+    "path" : "misc\\tests\\unit\\test_reporting_engine.py",
+    "modificationInfo" : {
+      "contentHash" : 845976899,
+      "lastModified" : 1753970034612
+    },
+    "linesOfCode" : 517
+  }, {
+    "path" : "misc\\tests\\unit\\test_service_discovery.py",
+    "modificationInfo" : {
+      "contentHash" : 1020297769,
+      "lastModified" : 1753373313339
+    },
+    "linesOfCode" : 475
+  }, {
+    "path" : "misc\\tests\\unit\\test_status_reporter.py",
+    "modificationInfo" : {
+      "contentHash" : -741190421,
+      "lastModified" : 1753530472529
+    },
+    "linesOfCode" : 547
+  }, {
+    "path" : "misc\\tests\\unit\\test_todo_generator.py",
+    "modificationInfo" : {
+      "contentHash" : 910579322,
+      "lastModified" : 1753530067551
+    },
+    "linesOfCode" : 412
+  }, {
+    "path" : "misc\\tests\\unit\\test_windmill_analyzer.py",
+    "modificationInfo" : {
+      "contentHash" : 1353957975,
+      "lastModified" : 1753889370233
+    },
+    "linesOfCode" : 383
+  }, {
+    "path" : "misc\\todo_checklist_validator.py",
+    "modificationInfo" : {
+      "contentHash" : -274718414,
+      "lastModified" : 1753996390550
+    },
+    "linesOfCode" : 220
+  }, {
+    "path" : "models\\huggingface\\flagship_2025\\deepseek-ai_DeepSeek-R1-0528\\configuration_deepseek.py",
+    "modificationInfo" : {
+      "contentHash" : 1658888218,
+      "lastModified" : 1754057605382
+    },
+    "linesOfCode" : 199
+  }, {
+    "path" : "models\\huggingface\\flagship_2025\\deepseek-ai_DeepSeek-R1\\configuration_deepseek.py",
+    "modificationInfo" : {
+      "contentHash" : 1658888218,
+      "lastModified" : 1754057605381
+    },
+    "linesOfCode" : 199
+  }, {
+    "path" : "phoenix-hydra-dashboard\\eslint.config.js",
+    "modificationInfo" : {
+      "contentHash" : -746634584,
+      "lastModified" : 1754400169446
+    },
+    "linesOfCode" : 23
+  }, {
+    "path" : "phoenix-hydra-dashboard\\postcss.config.js",
+    "modificationInfo" : {
+      "contentHash" : 259860997,
+      "lastModified" : 1754400426580
+    },
+    "linesOfCode" : 6
+  }, {
+    "path" : "phoenix-hydra-dashboard\\src\\App.tsx",
+    "modificationInfo" : {
+      "contentHash" : -2040999962,
+      "lastModified" : 1754402797250
+    },
+    "linesOfCode" : 220
+  }, {
+    "path" : "phoenix-hydra-dashboard\\src\\components\\chat\\MessageBubble.tsx",
+    "modificationInfo" : {
+      "contentHash" : 1757501542,
+      "lastModified" : 1754403951849
+    },
+    "linesOfCode" : 163
+  }, {
+    "path" : "phoenix-hydra-dashboard\\src\\main.tsx",
+    "modificationInfo" : {
+      "contentHash" : 997623777,
+      "lastModified" : 1754400169595
+    },
+    "linesOfCode" : 10
+  }, {
+    "path" : "phoenix-hydra-dashboard\\src\\vite-env.d.ts",
+    "modificationInfo" : {
+      "contentHash" : 1908583301,
+      "lastModified" : 1754400169581
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "phoenix-hydra-dashboard\\tailwind.config.js",
+    "modificationInfo" : {
+      "contentHash" : -82105782,
+      "lastModified" : 1754400421904
+    },
+    "linesOfCode" : 184
+  }, {
+    "path" : "phoenix-hydra-dashboard\\vite.config.ts",
+    "modificationInfo" : {
+      "contentHash" : 678313308,
+      "lastModified" : 1754400169586
+    },
+    "linesOfCode" : 7
+  }, {
+    "path" : "phoenix_demigod_deployment_script.py",
+    "modificationInfo" : {
+      "contentHash" : 1346789594,
+      "lastModified" : 1754057605377
+    },
+    "linesOfCode" : 456
+  }, {
+    "path" : "phoenix_hydra_comprehensive_review.py",
+    "modificationInfo" : {
+      "contentHash" : -1445062796,
+      "lastModified" : 1754057605377
+    },
+    "linesOfCode" : 564
+  }, {
+    "path" : "phoenix_hydra_review_test.py",
+    "modificationInfo" : {
+      "contentHash" : -851405261,
+      "lastModified" : 1754057605377
+    },
+    "linesOfCode" : 289
+  }, {
+    "path" : "reorganize.py",
+    "modificationInfo" : {
+      "contentHash" : -479544548,
+      "lastModified" : 1754057605369
+    },
+    "linesOfCode" : 52
+  }, {
+    "path" : "scripts\\configure_n8n_credentials.py",
+    "modificationInfo" : {
+      "contentHash" : 1172249999,
+      "lastModified" : 1754057605368
+    },
+    "linesOfCode" : 111
+  }, {
+    "path" : "scripts\\download_hf_models.py",
+    "modificationInfo" : {
+      "contentHash" : -2085039152,
+      "lastModified" : 1754057605367
+    },
+    "linesOfCode" : 285
+  }, {
+    "path" : "scripts\\execute_comprehensive_analysis.py",
+    "modificationInfo" : {
+      "contentHash" : -845194981,
+      "lastModified" : 1754057605367
+    },
+    "linesOfCode" : 453
+  }, {
+    "path" : "scripts\\integrate_local_models.py",
+    "modificationInfo" : {
+      "contentHash" : 999874859,
+      "lastModified" : 1754300640839
+    },
+    "linesOfCode" : 508
+  }, {
+    "path" : "scripts\\integrate_with_existing_pod.py",
+    "modificationInfo" : {
+      "contentHash" : -1977066671,
+      "lastModified" : 1754057605367
+    },
+    "linesOfCode" : 372
+  }, {
+    "path" : "scripts\\manage_model_inventory.py",
+    "modificationInfo" : {
+      "contentHash" : -762028139,
+      "lastModified" : 1754057605367
+    },
+    "linesOfCode" : 353
+  }, {
+    "path" : "scripts\\phoenix_hugger.py",
+    "modificationInfo" : {
+      "contentHash" : 424887571,
+      "lastModified" : 1754057605366
+    },
+    "linesOfCode" : 528
+  }, {
+    "path" : "scripts\\phoenix_hugger_mega.py",
+    "modificationInfo" : {
+      "contentHash" : -926041885,
+      "lastModified" : 1754057605366
+    },
+    "linesOfCode" : 291
+  }, {
+    "path" : "scripts\\setup_secrets.py",
+    "modificationInfo" : {
+      "contentHash" : -1465055663,
+      "lastModified" : 1754057605364
+    },
+    "linesOfCode" : 259
+  }, {
+    "path" : "scripts\\test-migration-validation.js",
+    "modificationInfo" : {
+      "contentHash" : -830865994,
+      "lastModified" : 1754207595787
+    },
+    "linesOfCode" : 255
+  }, {
+    "path" : "scripts\\validate_config.py",
+    "modificationInfo" : {
+      "contentHash" : -938854601,
+      "lastModified" : 1754057605363
+    },
+    "linesOfCode" : 41
+  }, {
+    "path" : "setup.py",
+    "modificationInfo" : {
+      "contentHash" : 1407149322,
+      "lastModified" : 1754057605363
+    },
+    "linesOfCode" : 74
+  }, {
+    "path" : "src\\agents\\chatbot\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 505311895,
+      "lastModified" : 1754398759351
+    },
+    "linesOfCode" : 18
+  }, {
+    "path" : "src\\agents\\chatbot\\chatbot_agent.py",
+    "modificationInfo" : {
+      "contentHash" : 2101121086,
+      "lastModified" : 1754398917889
+    },
+    "linesOfCode" : 563
+  }, {
+    "path" : "src\\agents\\rubik_agent_service.py",
+    "modificationInfo" : {
+      "contentHash" : 1249476193,
+      "lastModified" : 1754125051706
+    },
+    "linesOfCode" : 351
+  }, {
+    "path" : "src\\biomimetic_agents\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 1602443796,
+      "lastModified" : 1754057605362
+    },
+    "linesOfCode" : 88
+  }, {
+    "path" : "src\\biomimetic_agents\\agent_system.py",
+    "modificationInfo" : {
+      "contentHash" : -178030514,
+      "lastModified" : 1754057605360
+    },
+    "linesOfCode" : 697
+  }, {
+    "path" : "src\\biomimetic_agents\\cross_generational_learning.py",
+    "modificationInfo" : {
+      "contentHash" : -1809252923,
+      "lastModified" : 1754057605360
+    },
+    "linesOfCode" : 892
+  }, {
+    "path" : "src\\biomimetic_agents\\ecosystem.py",
+    "modificationInfo" : {
+      "contentHash" : -2136728885,
+      "lastModified" : 1754057605360
+    },
+    "linesOfCode" : 652
+  }, {
+    "path" : "src\\biomimetic_agents\\rubik_genome.py",
+    "modificationInfo" : {
+      "contentHash" : -1088342378,
+      "lastModified" : 1754057605359
+    },
+    "linesOfCode" : 767
+  }, {
+    "path" : "src\\biomimetic_agents\\thanatos_controller.py",
+    "modificationInfo" : {
+      "contentHash" : 625475629,
+      "lastModified" : 1754057605359
+    },
+    "linesOfCode" : 661
+  }, {
+    "path" : "src\\containers\\compose_manager.py",
+    "modificationInfo" : {
+      "contentHash" : 947246897,
+      "lastModified" : 1754057605358
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "src\\containers\\environment_manager.py",
+    "modificationInfo" : {
+      "contentHash" : 2061465330,
+      "lastModified" : 1754057605358
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "src\\containers\\event_integration.py",
+    "modificationInfo" : {
+      "contentHash" : -2078480462,
+      "lastModified" : 1754057605358
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "src\\containers\\event_listener.py",
+    "modificationInfo" : {
+      "contentHash" : 292860581,
+      "lastModified" : 1754057605358
+    },
+    "linesOfCode" : 500
+  }, {
+    "path" : "src\\containers\\example.py",
+    "modificationInfo" : {
+      "contentHash" : 1704376448,
+      "lastModified" : 1754057605357
+    },
+    "linesOfCode" : 69
+  }, {
+    "path" : "src\\containers\\health_monitor.py",
+    "modificationInfo" : {
+      "contentHash" : -697262462,
+      "lastModified" : 1754057605357
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "src\\containers\\models.py",
+    "modificationInfo" : {
+      "contentHash" : -1085049233,
+      "lastModified" : 1754057605357
+    },
+    "linesOfCode" : 94
+  }, {
+    "path" : "src\\containers\\podman_client.py",
+    "modificationInfo" : {
+      "contentHash" : -45031665,
+      "lastModified" : 1754057605357
+    },
+    "linesOfCode" : 596
+  }, {
+    "path" : "src\\containers\\vscode_integration.py",
+    "modificationInfo" : {
+      "contentHash" : -1864387050,
+      "lastModified" : 1754057605356
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "src\\core\\analytics\\topological_data_analysis.py",
+    "modificationInfo" : {
+      "contentHash" : -323332314,
+      "lastModified" : 1754057605356
+    },
+    "linesOfCode" : 683
+  }, {
+    "path" : "src\\core\\core.py",
+    "modificationInfo" : {
+      "contentHash" : -1963182006,
+      "lastModified" : 1754057605355
+    },
+    "linesOfCode" : 74
+  }, {
+    "path" : "src\\core\\demigod_agent.py",
+    "modificationInfo" : {
+      "contentHash" : -1655521423,
+      "lastModified" : 1754057605354
+    },
+    "linesOfCode" : 14
+  }, {
+    "path" : "src\\core\\ethics\\ethical_governance.py",
+    "modificationInfo" : {
+      "contentHash" : 2088905651,
+      "lastModified" : 1754057605354
+    },
+    "linesOfCode" : 644
+  }, {
+    "path" : "src\\core\\memory\\holographic_memory.py",
+    "modificationInfo" : {
+      "contentHash" : -414320589,
+      "lastModified" : 1754057605353
+    },
+    "linesOfCode" : 381
+  }, {
+    "path" : "src\\core\\model_manager.py",
+    "modificationInfo" : {
+      "contentHash" : 194881777,
+      "lastModified" : 1754300006446
+    },
+    "linesOfCode" : 662
+  }, {
+    "path" : "src\\core\\nlp\\quantum_attention.py",
+    "modificationInfo" : {
+      "contentHash" : 477971713,
+      "lastModified" : 1754057605353
+    },
+    "linesOfCode" : 472
+  }, {
+    "path" : "src\\core\\optimization\\quantum_gradient_descent.py",
+    "modificationInfo" : {
+      "contentHash" : -608524453,
+      "lastModified" : 1754057605353
+    },
+    "linesOfCode" : 459
+  }, {
+    "path" : "src\\core\\orchestration.py",
+    "modificationInfo" : {
+      "contentHash" : -1368862818,
+      "lastModified" : 1754057605352
+    },
+    "linesOfCode" : 8
+  }, {
+    "path" : "src\\core\\recurrent_processor.py",
+    "modificationInfo" : {
+      "contentHash" : -296371052,
+      "lastModified" : 1754123397490
+    },
+    "linesOfCode" : 233
+  }, {
+    "path" : "src\\core\\ssm_analysis_engine.py",
+    "modificationInfo" : {
+      "contentHash" : -157157426,
+      "lastModified" : 1754131861299
+    },
+    "linesOfCode" : 504
+  }, {
+    "path" : "src\\event_routing\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -698406795,
+      "lastModified" : 1754397310079
+    },
+    "linesOfCode" : 65
+  }, {
+    "path" : "src\\event_routing\\event_correlator.py",
+    "modificationInfo" : {
+      "contentHash" : 359336896,
+      "lastModified" : 1754397567011
+    },
+    "linesOfCode" : 374
+  }, {
+    "path" : "src\\event_routing\\event_routing.py",
+    "modificationInfo" : {
+      "contentHash" : 1506911931,
+      "lastModified" : 1754397295486
+    },
+    "linesOfCode" : 1309
+  }, {
+    "path" : "src\\event_routing\\event_store.py",
+    "modificationInfo" : {
+      "contentHash" : 154381741,
+      "lastModified" : 1754396913817
+    },
+    "linesOfCode" : 888
+  }, {
+    "path" : "src\\event_routing\\test_event_store.py",
+    "modificationInfo" : {
+      "contentHash" : 355237105,
+      "lastModified" : 1754396960918
+    },
+    "linesOfCode" : 209
+  }, {
+    "path" : "src\\event_routing\\test_migration.py",
+    "modificationInfo" : {
+      "contentHash" : 1163989231,
+      "lastModified" : 1754397364374
+    },
+    "linesOfCode" : 144
+  }, {
+    "path" : "src\\event_routing\\test_router_correlator.py",
+    "modificationInfo" : {
+      "contentHash" : -414784986,
+      "lastModified" : 1754397350226
+    },
+    "linesOfCode" : 253
+  }, {
+    "path" : "src\\services\\model_service.py",
+    "modificationInfo" : {
+      "contentHash" : 1719955335,
+      "lastModified" : 1754300084918
+    },
+    "linesOfCode" : 430
+  } ],
+  "appVersion" : "1.3.0"
+}
